@@ -6,7 +6,7 @@ public class ComboUI : MonoBehaviour
 {
     public Slider comboSlider;
     public TextMeshProUGUI comboText;
-    public TextMeshProUGUI multikillText;
+    //public TextMeshProUGUI multikillText;
 
     private float multikillDisplayTime = 1.2f;
     private float multikillTimer = 0f;
@@ -31,8 +31,8 @@ public class ComboUI : MonoBehaviour
     void ShowMultikill(int count)
     {
         multikillTimer = multikillDisplayTime;
-        multikillText.text = $"{count}x MULTIKILL!";
-        multikillText.alpha = 1f;
+        //multikillText.text = $"{count}x MULTIKILL!";
+        //multikillText.alpha = 1f;
     }
 
     void Update()
@@ -40,7 +40,7 @@ public class ComboUI : MonoBehaviour
         if (multikillTimer > 0)
         {
             multikillTimer -= Time.deltaTime;
-            multikillText.alpha = multikillTimer / multikillDisplayTime;
+            //multikillText.alpha = multikillTimer / multikillDisplayTime;
         }
     }
 }
