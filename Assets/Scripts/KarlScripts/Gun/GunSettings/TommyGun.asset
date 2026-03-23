@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d457d375df1464d4fb4523a09e4b0af6, type: 3}
+  m_Name: TommyGun
+  m_EditorClassIdentifier: 
+  GunName: M1928
+  TimeBetweenShooting: 0.1
+  Spread: 0
+  ReloadTime: 1
+  TimeBetweenShots: 0
+  MagazineSize: 50
+  ReserveAmmo: 250
+  BulletsPerTap: 1
+  AllowButtonHold: 1
+  Bullet: {fileID: 2573404913163577411, guid: 2f179690cadb8a64d9546ef39eadec39, type: 3}
+  ShootForce: 300
+  UpwardForce: 0
+  BulletDamage: 70
+  BulletRange: 0.01
+  MaxCollisions: 1
+  Bounciness: 0
+  UseGravity: 1
+  ExplodeOnTouch: 1
+  HipfireRecoilX: -1.5
+  HipfireRecoilY: 1.5
+  HipfireRecoilZ: 0.35
+  AimRecoilX: -1
+  AimRecoilY: 1
+  AimRecoilZ: 0.2
+  Snappiness: 6
+  ReturnSpeed: 2

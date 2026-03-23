@@ -23,6 +23,7 @@ public class PlayerMove : MonoBehaviour
     [Header("Sliding")]
     [SerializeField] private float _maxSlideTime;
     [SerializeField] private float _slideJumpForce;
+    [SerializeField] private float _lerpGunTime;
 
     private float _slideTimer;
     private float _startHeight;
@@ -47,7 +48,7 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private KeyCode _slideKey = KeyCode.C;
 
     [Header("PlayerStates")]
-    [SerializeField] private MovementState _state;
+    public MovementState State;
 
     private float _horizontalInput;
     private float _verticalInput;
@@ -67,14 +68,26 @@ public class PlayerMove : MonoBehaviour
 
     private Vector2 _slideDir;
 
-    private enum MovementState 
+    private Transform _weaponHolder;
+    private Coroutine _gunRotationCoroutine;
+
+    [HideInInspector]public enum MovementState 
     {
         walking,
         sprinting,
         crouching,
         sliding,
         outSliding,
-        air
+        air,
+        idle
+    }
+
+    private void Awake()
+    {
+        _weaponHolder = transform.Find("CameraHolder").transform.Find("CameraRecoil").
+            transform.Find("GunCamera").transform.Find("WeaponHolder");
+        
+        _playerMesh = transform.Find("PlayerMesh");
     }
 
     void Start()
@@ -83,7 +96,6 @@ public class PlayerMove : MonoBehaviour
         _rb.freezeRotation = true;
         _readyToJump = true;
 
-        _playerMesh = transform.Find("PlayerMesh");
         _startYScale = _playerMesh.localScale.y;
     }
 
@@ -150,7 +162,7 @@ public class PlayerMove : MonoBehaviour
             Invoke(nameof(ResetJump), _jumpCooldown);
         }
 
-        if (Input.GetKeyDown(_slideKey) && _verticalInput > 0 && !_isCrouching && !IsSliding && _state == MovementState.sprinting)
+        if (Input.GetKeyDown(_slideKey) && _verticalInput > 0 && !_isCrouching && !IsSliding && State == MovementState.sprinting)
         {
             _slideDir = new Vector2(_horizontalInput, _verticalInput);
             Crouch(true);
@@ -171,31 +183,35 @@ public class PlayerMove : MonoBehaviour
     {
         if (IsSliding)
         {
-            _state = MovementState.sliding;
+            State = MovementState.sliding;
         }
         else if (JumpSlide)
         {
-            _state = MovementState.outSliding;
+            State = MovementState.outSliding;
             _moveSpeed = _sprintSpeed;
         }
         else if (_isCrouching)
         {
-            _state = MovementState.crouching;
+            State = MovementState.crouching;
             _moveSpeed = _crouchSpeed;
         }
         else if(GroundCheck() && Input.GetKey(_sprintKey) && Input.GetKey(KeyCode.W))
         {
-            _state = MovementState.sprinting;
+            State = MovementState.sprinting;
             _moveSpeed = _sprintSpeed;
+        }
+        else if (GroundCheck() && Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
+        {
+            State = MovementState.walking;
+            _moveSpeed = _walkSpeed;
         }
         else if(GroundCheck())
         {
-            _state = MovementState.walking;
-            _moveSpeed = _walkSpeed;
+            State = MovementState.idle;
         }
         else
         {
-            _state = MovementState.air;
+            State = MovementState.air;
         }
     }
 
@@ -284,7 +300,7 @@ public class PlayerMove : MonoBehaviour
         _exitingSlope = false;
     }
 
-    private bool GroundCheck()
+    public bool GroundCheck()
     {
         return Physics.Raycast(transform.position, Vector3.down, _playerHeight * 0.5f + 0.2f, _groundMask);
     }
@@ -331,6 +347,7 @@ public class PlayerMove : MonoBehaviour
         {
             IsSliding = true;
             _slideTimer = _maxSlideTime;
+            SetGunRotation(new Vector3(0, 0, 30));
         }
         else
         {
@@ -345,6 +362,7 @@ public class PlayerMove : MonoBehaviour
         IsSliding = false;
         _isCrouching = false;
         _playerMesh.localScale = new Vector3(_playerMesh.localScale.x, _startYScale, _playerMesh.localScale.z);
+        SetGunRotation(Vector3.zero);
     }
 
     IEnumerator DelayJumping()
@@ -364,5 +382,26 @@ public class PlayerMove : MonoBehaviour
             yield return null;
         }
         _playerCollider.height = endHeight;
+    }
+
+    private void SetGunRotation(Vector3 gunRot)
+    {
+        if (_gunRotationCoroutine != null)
+            StopCoroutine(_gunRotationCoroutine);
+        _gunRotationCoroutine = StartCoroutine(LerpGunRotation(gunRot));
+    }
+
+    IEnumerator LerpGunRotation(Vector3 gunRot)
+    {
+        float elapsedTime = 0;
+
+        while (elapsedTime < _lerpGunTime)
+        {
+            _weaponHolder.localRotation = Quaternion.Lerp(_weaponHolder.localRotation, Quaternion.Euler(gunRot), elapsedTime / _lerpGunTime);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        _weaponHolder.localRotation = Quaternion.Euler(gunRot);
     }
 }

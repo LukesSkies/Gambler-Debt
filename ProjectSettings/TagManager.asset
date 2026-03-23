@@ -18,8 +18,8 @@ TagManager:
   - Interactions
   - Player
   - Ground
-  - 
-  - 
+  - Enemy
+  - PostProcessing
   - 
   - 
   - 

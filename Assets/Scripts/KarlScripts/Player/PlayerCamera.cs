@@ -15,14 +15,10 @@ public class PlayerCamera : MonoBehaviour
 
     private float _zRot;
 
-    private Transform _currentGun;
-
     private void Awake()
     {
         _rb = GetComponentInParent<Rigidbody>();
         _pm = GetComponentInParent<PlayerMove>();
-
-        _currentGun = transform.GetChild(0).GetChild(0).GetChild(0).Find("WeaponHolder");
     }
 
     void Start()
@@ -45,8 +41,11 @@ public class PlayerCamera : MonoBehaviour
         HandleCameraTilt();
 
         transform.rotation = Quaternion.Euler(_xRot, _yRot, _zRot);
-        _currentGun.localRotation = Quaternion.Euler(0, 0, _zRot * 5);
-        _rb.MoveRotation(Quaternion.Euler(0, _yRot, 0));
+
+        if (!_pm.IsSliding)
+        {
+            _rb.MoveRotation(Quaternion.Euler(0, _yRot, 0));
+        }
     }
 
     private void HandleCameraTilt()

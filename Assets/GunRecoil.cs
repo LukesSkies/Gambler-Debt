@@ -5,25 +5,33 @@ public class GunRecoil : MonoBehaviour
     private Vector3 _currentRot;
     private Vector3 _targetRot;
 
-    [Header("Hipfire")]
-    [SerializeField] private float _recoilX;
-    [SerializeField] private float _recoilY;
-    [SerializeField] private float _recoilZ;
-
-    [Header("Settings")]
-    [SerializeField] private float _snappiness;
-    [SerializeField] private float _returnSpeed;
+    [HideInInspector] public GunSettings GunSettings;
+    [HideInInspector] public bool IsAiming;
 
     void Update()
     {
-        _targetRot = Vector3.Lerp(_targetRot, Vector3.zero, _returnSpeed * Time.deltaTime);
-        _currentRot = Vector3.Slerp(_currentRot, _targetRot, _snappiness * Time.fixedDeltaTime);
+        if(GunSettings != null)
+        {
+            _targetRot = Vector3.Lerp(_targetRot, Vector3.zero, GunSettings.ReturnSpeed * Time.deltaTime);
+            _currentRot = Vector3.Slerp(_currentRot, _targetRot, GunSettings.Snappiness * Time.fixedDeltaTime);
+        }
 
         transform.localRotation = Quaternion.Euler(_currentRot);
     }
 
     public void RecoilFire()
     {
-        _targetRot += new Vector3(_recoilX, Random.Range(-_recoilY, _recoilY), Random.Range(-_recoilZ, _recoilZ));
+        if (IsAiming && GunSettings != null)
+        {
+            _targetRot += new Vector3(GunSettings.AimRecoilX,
+            Random.Range(-GunSettings.AimRecoilY, GunSettings.AimRecoilY),
+            Random.Range(-GunSettings.AimRecoilZ, GunSettings.AimRecoilZ));
+        }
+        else if(!IsAiming && GunSettings != null)
+        {
+            _targetRot += new Vector3(GunSettings.HipfireRecoilX,
+            Random.Range(-GunSettings.HipfireRecoilY, GunSettings.HipfireRecoilY),
+            Random.Range(-GunSettings.HipfireRecoilZ, GunSettings.HipfireRecoilZ));
+        }
     }
 }

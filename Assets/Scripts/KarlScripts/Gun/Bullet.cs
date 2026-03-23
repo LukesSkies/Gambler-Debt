@@ -1,5 +1,6 @@
-using System.Xml.Serialization;
 using UnityEngine;
+using Biostart.Impact;
+using Biostart.Blood;
 
 public class Bullet : MonoBehaviour
 {
@@ -22,9 +23,15 @@ public class Bullet : MonoBehaviour
     private PhysicsMaterial _physicsMaterial;
     public Vector3 ExplosionNormal;
 
+    [HideInInspector]public Points PointsScript;
+
+    private Transform _pointAdditionParent;
+
     private void Awake()
     {
         _rb = GetComponent<Rigidbody>();
+
+        _pointAdditionParent = GameObject.Find("HUD").transform.Find("Points").transform.Find("Player0").transform.Find("PointAdditionParent");
     }
 
     private void Start()
@@ -42,14 +49,14 @@ public class Bullet : MonoBehaviour
     private void Update()
     {
         _maxLifetime -= Time.deltaTime;
-        if(_maxLifetime <= 0) Explode();
+        if(_maxLifetime <= 0) Explode(0);
     }
 
-    private void Explode(Vector3? explosionPosition = null)
+    private void Explode(int layer, Vector3? explosionPosition = null)
     {
         Vector3 spawnPosition = explosionPosition ?? transform.position;
 
-        if (_metalSparks != null)
+        if (_metalSparks != null && layer != 11)
         {
             GameObject explosion = Instantiate(_metalSparks, spawnPosition, Quaternion.identity);
             explosion.transform.forward = ExplosionNormal;
@@ -72,13 +79,25 @@ public class Bullet : MonoBehaviour
         ContactPoint contact = collision.contacts[0];
         ExplosionNormal = contact.normal;
 
+        //Enemy Hit
+        if(collision.gameObject.layer == 11)
+        {
+            ImpactEffect impact = collision.gameObject.GetComponent<ImpactEffect>();
+            if(impact != null)
+            {
+                impact.SpawnBloodEffect(transform.position, contact.normal);
+            }
+            PointsScript.Money += GameManager.Instance.HitPoints;
+            Instantiate(GameManager.Instance.PointsAdditionText, _pointAdditionParent);
+        }
+
         if (_explodeOnTouch)
         {
-            Explode(contact.point);
+            Explode(collision.gameObject.layer, contact.point);
         }
         else if (_collisions >= _maxCollisions)
         {
-            Explode(contact.point); // Pass the contact point
+            Explode(collision.gameObject.layer, contact.point); // Pass the contact point
         }
     }
 
