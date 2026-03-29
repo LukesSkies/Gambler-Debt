@@ -75,30 +75,30 @@ public class Bullet : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         _collisions++;
-
         ContactPoint contact = collision.contacts[0];
         ExplosionNormal = contact.normal;
 
-        //Enemy Hit
-        if(collision.gameObject.layer == 11)
+        // Walk up hierarchy to find the enemy layer
+        Transform hitTransform = collision.transform;
+        while (hitTransform != null)
         {
-            ImpactEffect impact = collision.gameObject.GetComponent<ImpactEffect>();
-            if(impact != null)
+            if (hitTransform.gameObject.layer == 11)
             {
-                impact.SpawnBloodEffect(transform.position, contact.normal);
+                ImpactEffect impact = hitTransform.GetComponent<ImpactEffect>();
+                if (impact != null)
+                    impact.SpawnBloodEffect(transform.position, contact.normal);
+
+                PointsScript.Money += GameManager.Instance.HitPoints;
+                Instantiate(GameManager.Instance.PointsAdditionText, _pointAdditionParent);
+                break;
             }
-            PointsScript.Money += GameManager.Instance.HitPoints;
-            Instantiate(GameManager.Instance.PointsAdditionText, _pointAdditionParent);
+            hitTransform = hitTransform.parent;
         }
 
         if (_explodeOnTouch)
-        {
             Explode(collision.gameObject.layer, contact.point);
-        }
         else if (_collisions >= _maxCollisions)
-        {
-            Explode(collision.gameObject.layer, contact.point); // Pass the contact point
-        }
+            Explode(collision.gameObject.layer, contact.point);
     }
 
     private void OnDrawGizmosSelected()

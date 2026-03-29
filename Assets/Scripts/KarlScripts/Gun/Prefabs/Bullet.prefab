@@ -135,6 +135,7 @@ MonoBehaviour:
   _maxLifetime: 5
   _explodeOnTouch: 1
   ExplosionNormal: {x: 0, y: 0, z: 0}
+  PointsScript: {fileID: 0}
 --- !u!96 &1544571137109683238
 TrailRenderer:
   serializedVersion: 3
