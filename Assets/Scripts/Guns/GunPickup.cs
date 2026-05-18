@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class GunPickup : MonoBehaviour, IInteractable
+public class GunPickup : MonoBehaviour
 {
     // DATA
     private GunData gunData;               // Gun this pickup will give the player

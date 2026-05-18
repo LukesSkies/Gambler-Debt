@@ -6,7 +6,7 @@ public class PlayerCurrentGun : MonoBehaviour
     public GameObject CurrentGun;
     public GameObject NextGun;
 
-    private Transform _gunHolder;
+    public Transform GunHolder;
     private List<GameObject> _gunList = new List<GameObject>();
 
     private string _primaryGun;
@@ -20,13 +20,13 @@ public class PlayerCurrentGun : MonoBehaviour
 
     private void Awake()
     {
-        _gunHolder = transform.Find("CameraHolder").transform.Find("CameraRecoil").
+        GunHolder = transform.Find("CameraHolder").transform.Find("CameraRecoil").
             transform.Find("GunCamera").transform.Find("WeaponHolder");
     }
 
     private void Start()
     {
-        foreach (Transform child in _gunHolder)
+        foreach (Transform child in GunHolder)
         {
             _gunList.Add(child.gameObject);
         }
@@ -59,7 +59,7 @@ public class PlayerCurrentGun : MonoBehaviour
 
     private void Update()
     {
-        if(_secondaryGun != null)
+        if(NextGun != null)
         {
             if (Input.GetKeyDown(KeyCode.Alpha2) && CurrentGun.name != _secondaryGun && !GunSwitching)
             {
@@ -76,6 +76,7 @@ public class PlayerCurrentGun : MonoBehaviour
                 _gunAnimator.SetTrigger("PutAway");
                 GunSwitching = true;
             }
+
         }
     }
 

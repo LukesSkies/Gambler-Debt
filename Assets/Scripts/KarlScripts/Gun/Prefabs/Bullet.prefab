@@ -14,8 +14,8 @@ GameObject:
   - component: {fileID: 4332829557584661659}
   - component: {fileID: 8603212157574995917}
   - component: {fileID: 1544571137109683238}
-  - component: {fileID: 2153955120691705749}
-  m_Layer: 0
+  - component: {fileID: 4820442843607923236}
+  m_Layer: 13
   m_Name: Bullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -126,7 +126,7 @@ MonoBehaviour:
   _metalSparks: {fileID: 8799125985890215030, guid: 6d01214b10078e2419ed79d84bdceb73, type: 3}
   _enemyLayer:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 2048
   _bounciness: 0
   _useGravity: 1
   BulletDamage: 5
@@ -252,7 +252,7 @@ TrailRenderer:
   m_Autodestruct: 0
   m_Emitting: 1
   m_ApplyActiveColorSpace: 1
---- !u!54 &2153955120691705749
+--- !u!54 &4820442843607923236
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -278,4 +278,4 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 2

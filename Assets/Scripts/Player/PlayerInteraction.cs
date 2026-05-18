@@ -105,6 +105,6 @@ public class PlayerInteraction : MonoBehaviour
     // Attempts to interact with the currently targeted object.
     void TryInteract()
     {
-        currentInteractable?.Interact();
+        //currentInteractable?.Interact();
     }
 }

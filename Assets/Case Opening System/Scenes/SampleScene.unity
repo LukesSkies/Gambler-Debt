@@ -563,7 +563,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: -150}
-  m_SizeDelta: {x: 0, y: 300}
+  m_SizeDelta: {x: 10, y: 300}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &166093360
 MonoBehaviour:
@@ -902,7 +902,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &266247648
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1772,7 +1772,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9cbb1b8f2c866a14f86242fdc068a2b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cellCount: 40
+  _cellCount: 10
   _winningCellOffset: 4
   _rollerPanel: {fileID: 266247647}
   _rollerContent: {fileID: 166093359}
@@ -1801,8 +1801,8 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  _rollDuration: 5
-  _snapDuration: 1
+  _rollDuration: 4
+  _snapDuration: 0.5
 --- !u!1 &762361033
 GameObject:
   m_ObjectHideFlags: 0

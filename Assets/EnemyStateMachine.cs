@@ -121,6 +121,32 @@ public class EnemyStateMachine : MonoBehaviour
             transition => EnemyInSpawner != true && _enemyAnimation.Animator.GetBool("isRunning") != false
             );
 
+        _zombieFSM.AddTransition(
+            "WalkToPlayer",
+            "HitPlayer",
+            transition => DistanceToPlayer() <= _agent.stoppingDistance
+        );
+
+        _zombieFSM.AddTransition(
+            "RunToPlayer",
+            "HitPlayer",
+            transition => DistanceToPlayer() <= _agent.stoppingDistance
+        );
+
+        _zombieFSM.AddTransition(
+            "HitPlayer",
+            "WalkToPlayer",
+            transition => DistanceToPlayer() > _agent.stoppingDistance
+                       && !_enemyAnimation.Animator.GetBool("isRunning")
+        );
+
+        _zombieFSM.AddTransition(
+            "HitPlayer",
+            "RunToPlayer",
+            transition => DistanceToPlayer() > _agent.stoppingDistance
+                       && _enemyAnimation.Animator.GetBool("isRunning")
+        );
+
         _zombieFSM.SetStartState("Spawn");
         _zombieFSM.Init();
 
@@ -189,5 +215,10 @@ public class EnemyStateMachine : MonoBehaviour
         {
             EnemyInSpawner = false;
         }
+    }
+
+    private float DistanceToPlayer()
+    {
+        return Vector3.Distance(transform.position, _player.transform.position);
     }
 }

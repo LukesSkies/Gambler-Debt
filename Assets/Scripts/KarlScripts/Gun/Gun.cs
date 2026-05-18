@@ -54,7 +54,7 @@ public class Gun : MonoBehaviour
 
         _playerCollider = transform.root.Find("PlayerMesh").GetComponent<Collider>();
 
-        _gunRecoil = transform.root.Find("CameraHolder").GetChild(0).GetComponent<GunRecoil>();
+        _gunRecoil = transform.root.Find("CameraHolder").transform.Find("CameraRecoil").GetComponent<GunRecoil>();
         _playerMove = transform.root.GetComponent<PlayerMove>();
 
         _weaponHolder = transform.parent;

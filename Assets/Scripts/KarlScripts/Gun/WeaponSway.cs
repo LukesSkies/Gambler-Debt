@@ -42,7 +42,6 @@ public class WeaponSway : MonoBehaviour
     private float _swayTime;
     private Vector3 _swayPosition;
     private Vector3 _targetPos;
-    private Transform _weaponMesh;
 
     private Vector3 _newWeaponRotation;
     private Vector3 _newWeaponRotationVelocity;
@@ -63,8 +62,6 @@ public class WeaponSway : MonoBehaviour
     private void Awake()
     {
         _gun = GetComponent<Gun>();
-
-        _weaponMesh = transform.Find("WeaponMesh");
 
         _playerMove = transform.root.GetComponent<PlayerMove>();
         _rb = transform.root.GetComponent<Rigidbody>();

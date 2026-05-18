@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -21,6 +22,12 @@ public class GameManager : MonoBehaviour
     public int EndHeadshotPoints;
     public int EndKnifePoints;
 
+    [Header("Health Values")]
+    public int ZombieHealth;
+    public int PlayerHealth = 90;
+    public int PlayerJugHealth = 150;
+    public int PlayerHealthRegen = 40;
+
     [Header("Game Values")]
     public int Round;
     public float ZombieCount;
@@ -29,7 +36,15 @@ public class GameManager : MonoBehaviour
     private int[] _duoLowRound = { 7, 9, 15, 21, 27, 31, 32, 33, 34, 42, 45, 49, 54, 59, 64, 70, 76, 82, 89 };
     private int[] _trioLowRound = { 11, 14, 23, 32, 41, 47, 48, 50, 51, 62, 68, 74, 81, 89, 97, 105, 114, 123, 133 };
     private int[] _squadLowRound = { 14, 18, 30, 42, 54, 62, 64, 66, 68, 83, 91, 99, 108, 118, 129, 140, 152, 164, 178 };
+    public List<GameObject> GunGameObjects = new List<GameObject>();
+
+    [Header("UI")]
     public GameObject PointsAdditionText;
+    public GameObject SlotItemPrefab;
+    public List<Sprite> SlotMachineGunSprites = new List<Sprite>();
+
+    [Header("SlotMachine")]
+    public List<GameObject> SlotMachineGuns = new List<GameObject>();
 
     private float GetZombieCount(int playerCount, int round)
     {
@@ -80,6 +95,18 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private int GetZombieHealth(int round)
+    {
+        if(round < 10)
+        {
+            return 50 + (100*round);
+        }
+        else
+        {
+            return Mathf.RoundToInt(ZombieHealth * 1.1f);
+        }
+    }
+
     void Awake()
     {
         _instance = this;
@@ -90,6 +117,7 @@ public class GameManager : MonoBehaviour
         Round = 1;
         PlayerCount = 1;
         ZombieCount = GetZombieCount(1, Round);
+        ZombieHealth = GetZombieHealth(Round);
     }
 
     private void Update()
@@ -98,6 +126,7 @@ public class GameManager : MonoBehaviour
         {
             Round++;
             ZombieCount = GetZombieCount(1, Round);
+            ZombieHealth = GetZombieHealth(Round);
         }
     }
 }
