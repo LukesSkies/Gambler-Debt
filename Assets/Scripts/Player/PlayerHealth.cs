@@ -50,7 +50,7 @@ public class PlayerHealth : MonoBehaviour
     {
         // Initialize input and bind revive action
         controls = new PlayerControls();
-        controls.Player.Revive.performed += _ => OnRevivePress();
+        controls.OldPlayer.Revive.performed += _ => OnRevivePress();
     }
 
     void OnEnable() => controls.Enable();

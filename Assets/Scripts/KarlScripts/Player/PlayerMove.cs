@@ -1,13 +1,13 @@
 using System.Collections;
 using UnityEngine;
-
-
 public class PlayerMove : MonoBehaviour
 {
     [Header("Movement")]
     [SerializeField] private float _walkSpeed;
     [SerializeField] private float _sprintSpeed;
     [SerializeField] private float _groundDrag;
+    [SerializeField] private float _walkSpeedSmoothness = 12;
+    [SerializeField] private float _sprintSpeedSmoothness = 6;
 
     [Header("Jumping")]
     [SerializeField] private float _jumpForce;
@@ -19,17 +19,21 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private float _crouchHeight;
     [SerializeField] private float _crouchYScale;
     [SerializeField] private float _crouchLerpDuration;
+    [SerializeField] private float _crouchScaleSmoothness = 8f;
 
     [Header("Sliding")]
     [SerializeField] private float _maxSlideTime;
     [SerializeField] private float _slideJumpForce;
     [SerializeField] private float _lerpGunTime;
+    [SerializeField] private float _slideDirSmoothness = 5f;
+    [SerializeField] private float _slideJumpDelay = 0.2f;
 
     private float _slideTimer;
     private float _startHeight;
     private float _startYScale;
     private bool _readyToJump;
     private float _moveSpeed;
+    private float _slideJumpTimer;
 
     [Header("Ground Check")]
     [SerializeField] private float _playerHeight;
@@ -43,17 +47,21 @@ public class PlayerMove : MonoBehaviour
 
     [Header("Keybinds")]
     [SerializeField] private KeyCode _jumpKey = KeyCode.Space;
-    [SerializeField] private KeyCode _sprintKey = KeyCode.LeftShift;
     [SerializeField] private KeyCode _crouchKey = KeyCode.LeftControl;
     [SerializeField] private KeyCode _slideKey = KeyCode.C;
 
     [Header("PlayerStates")]
     public MovementState State;
+    public bool CanJump;
+    public bool IsSprinting;
+    public bool SlidingQueued;
+    public bool JumpQueued;
 
-    private float _horizontalInput;
-    private float _verticalInput;
+    [Header("PlayerInput")]
+    public Vector2 PlayerDir;
 
     private Vector3 _moveDir;
+    private Vector3 _smoothMoveDir;
 
     private Rigidbody _rb;
 
@@ -67,9 +75,12 @@ public class PlayerMove : MonoBehaviour
     private Transform _playerMesh;
 
     private Vector2 _slideDir;
+    private Vector2 _smoothSlideDir;
 
     private Transform _weaponHolder;
+
     private Coroutine _gunRotationCoroutine;
+    private Coroutine _scaleCoroutine;
 
     [HideInInspector]public enum MovementState 
     {
@@ -95,7 +106,7 @@ public class PlayerMove : MonoBehaviour
         _rb = GetComponent<Rigidbody>();
         _rb.freezeRotation = true;
         _readyToJump = true;
-
+        CanJump = true;
         _startYScale = _playerMesh.localScale.y;
     }
 
@@ -108,6 +119,7 @@ public class PlayerMove : MonoBehaviour
         else if(JumpSlide)
         {
             OutSide();
+            MovePlayer();
 
             if (_slideJumpToggle)
             {
@@ -127,6 +139,15 @@ public class PlayerMove : MonoBehaviour
         SpeedControl();
         StateHandler();
 
+        if (IsSliding)
+        {
+            _slideJumpTimer += Time.deltaTime;
+        }
+        else
+        {
+            _slideJumpTimer = 0f;
+        }
+
         if (GroundCheck())
         {
             _rb.linearDamping = _groundDrag;
@@ -139,43 +160,37 @@ public class PlayerMove : MonoBehaviour
 
     private void PlayerInput()
     {
-        if (!IsSliding)
+        if (JumpQueued)
         {
-            _horizontalInput = Input.GetAxisRaw("Horizontal");
-        }
-        _verticalInput = Input.GetAxisRaw("Vertical");
-
-        if (Input.GetKeyDown(_jumpKey) && _readyToJump && GroundCheck() && !_isCrouching)
-        {
-            _readyToJump = false;
-            Jump();
-
-            if (IsSliding)
+            JumpQueued = false;
+            if (CanJump && GroundCheck() && _readyToJump && !_isCrouching)
             {
-                IsSliding = false;
-                _slideJump = true;
-                JumpSlide = true;
-                _slideJumpToggle = true;
-                UnCrouch();
+                //Block jump if player hasnt been sliding long enough
+                if (IsSliding && _slideJumpTimer < _slideJumpDelay) return;
+
+                _readyToJump = false;
+
+                bool wasSliding = IsSliding;
+
+                if (wasSliding)
+                {
+                    IsSliding = false;
+                    _slideJump = true;
+                    JumpSlide = true;
+                    _slideJumpToggle = true;
+
+                    if (_scaleCoroutine != null)
+                    {
+                        StopCoroutine(_scaleCoroutine);
+                        _scaleCoroutine = null;
+                    }
+
+                    UnCrouch();
+                }
+
+                Jump(wasSliding);
+                Invoke(nameof(ResetJump), _jumpCooldown);
             }
-
-            Invoke(nameof(ResetJump), _jumpCooldown);
-        }
-
-        if (Input.GetKeyDown(_slideKey) && _verticalInput > 0 && !_isCrouching && !IsSliding && State == MovementState.sprinting)
-        {
-            _slideDir = new Vector2(_horizontalInput, _verticalInput);
-            Crouch(true);
-        }
-
-        if (Input.GetKeyDown(_crouchKey) && !IsSliding)
-        {
-            Crouch(false);
-        }
-
-        if (Input.GetKeyUp(_crouchKey) && !IsSliding)
-        {
-            UnCrouch();
         }
     }
 
@@ -195,12 +210,12 @@ public class PlayerMove : MonoBehaviour
             State = MovementState.crouching;
             _moveSpeed = _crouchSpeed;
         }
-        else if(GroundCheck() && Input.GetKey(_sprintKey) && Input.GetKey(KeyCode.W))
+        else if(GroundCheck() && IsSprinting && PlayerDir.y > 0)
         {
             State = MovementState.sprinting;
             _moveSpeed = _sprintSpeed;
         }
-        else if (GroundCheck() && Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
+        else if (GroundCheck() && PlayerDir != Vector2.zero)
         {
             State = MovementState.walking;
             _moveSpeed = _walkSpeed;
@@ -217,43 +232,53 @@ public class PlayerMove : MonoBehaviour
 
     private void MovePlayer()
     {
-        _moveDir = transform.forward * _verticalInput + transform.right * _horizontalInput;
+        float horizontalScale = (State == MovementState.sprinting) ? 0.5f : 1f;
+        _moveDir = transform.forward * PlayerDir.y + transform.right * (PlayerDir.x * horizontalScale);
 
-        if (OnSlope() && !_exitingSlope)
+        float lerpSpeed;
+        if (State == MovementState.idle && OnSlope())
+            lerpSpeed = _walkSpeedSmoothness * 3f;
+        else
+            lerpSpeed = (State == MovementState.sprinting) ? _sprintSpeedSmoothness : _walkSpeedSmoothness;
+
+        _smoothMoveDir = Vector3.Lerp(_smoothMoveDir, _moveDir, Time.fixedDeltaTime * lerpSpeed);
+        Vector3 clampedDir = Vector3.ClampMagnitude(_smoothMoveDir, 1f);
+
+        if (OnSlope())
         {
-            _rb.AddForce(GetSlopeMoveDir(_moveDir) * _moveSpeed * 20f, ForceMode.Force);
+            _rb.AddForce(GetSlopeMoveDir(clampedDir) * _moveSpeed * 20f, ForceMode.Force);
 
             if(_rb.linearVelocity.y > 0)
             {
                 _rb.AddForce(Vector3.down * 40f, ForceMode.Force);
             }
+
+            Vector3 gravityCounterForce = -Physics.gravity * (1f - Vector3.Dot(Vector3.up, _slopeHit.normal));
+            _rb.AddForce(gravityCounterForce, ForceMode.Force);
         }
         else if (GroundCheck())
         {
-            _rb.AddForce(_moveDir.normalized * _moveSpeed * 10f, ForceMode.Force);
+            _rb.AddForce(clampedDir * _moveSpeed * 10f, ForceMode.Force);
         }
         else
         {
-            _rb.AddForce(_moveDir.normalized * _moveSpeed * 10f * _airMultiplier, ForceMode.Force);
+            _rb.AddForce(clampedDir * _moveSpeed * 10f * _airMultiplier, ForceMode.Force);
         }
 
-        _rb.useGravity = !OnSlope();
+        _rb.useGravity = true;
     }
 
     private void OutSide()
     {
-        Vector3 inputDir = transform.forward * _verticalInput + transform.right * _horizontalInput;
-
-        _rb.AddForce(inputDir.normalized * _sprintSpeed * 10f, ForceMode.Force);
-
         _rb.useGravity = true;
 
         if (GroundCheck() && !_slideJump)
         {
-            if (Input.GetKey(_slideKey) && _verticalInput > 0)
+            if (SlidingQueued && PlayerDir.y > 0)
             {
                 JumpSlide = false;
-                _slideDir = new Vector2(_horizontalInput, _verticalInput);
+                SlidingQueued = false;
+                _slideDir = PlayerDir;
                 Crouch(true);
             }
             else
@@ -284,13 +309,15 @@ public class PlayerMove : MonoBehaviour
         }
     }
 
-    private void Jump()
+    private void Jump(bool wasSliding = false)
     {
         _exitingSlope = true;
 
         _rb.linearVelocity = new Vector3(_rb.linearVelocity.x, 0, _rb.linearVelocity.z);
 
-        _rb.AddForce(transform.up * (IsSliding ? _slideJumpForce : _jumpForce), ForceMode.Impulse);
+        bool reducedJump = GoingDownSlope() && OnSlope() && !GroundCheck() == false;
+
+        _rb.AddForce(transform.up * (reducedJump ? _jumpForce : (wasSliding ? _slideJumpForce : _jumpForce)), ForceMode.Impulse);
     }
 
     private void ResetJump()
@@ -315,6 +342,16 @@ public class PlayerMove : MonoBehaviour
         return false;
     }
 
+    public bool GoingDownSlope()
+    {
+        if (!OnSlope()) return false;
+
+        Vector3 flatVel = new Vector3(_rb.linearVelocity.x, 0, _rb.linearVelocity.z);
+        if (flatVel.magnitude < 0.1f) return false;
+
+        return GetSlopeMoveDir(flatVel.normalized).y < -0.05f;
+    }
+
     public Vector3 GetSlopeMoveDir(Vector3 dir)
     {
         return Vector3.ProjectOnPlane(dir, _slopeHit.normal).normalized;
@@ -322,7 +359,9 @@ public class PlayerMove : MonoBehaviour
 
     private void SlidingMovement()
     {
-        Vector3 inputDir = transform.forward * _slideDir.y + transform.right * _slideDir.x;
+        _smoothSlideDir = Vector2.Lerp(_smoothSlideDir, _slideDir, Time.fixedDeltaTime * _slideDirSmoothness);
+
+        Vector3 inputDir = transform.forward * _smoothSlideDir.y + transform.right * _smoothSlideDir.x;
 
         if (OnSlope() || _rb.linearVelocity.y > -0.1f)
         {
@@ -333,36 +372,60 @@ public class PlayerMove : MonoBehaviour
             _rb.AddForce(GetSlopeMoveDir(inputDir) * _moveSpeed * 10f, ForceMode.Force);
         }
 
-        _slideTimer -= Time.deltaTime;
-
-        if (_slideTimer <= 0)
+        if (_slideTimer <= 0 || _rb.linearVelocity.magnitude < 1.5f)
         {
             UnCrouch();
         }
+
+        _slideTimer -= Time.deltaTime;
     }
 
-    private void Crouch(bool sliding)
+    public void Crouch(bool sliding)
     {
         if (sliding)
         {
             IsSliding = true;
             _slideTimer = _maxSlideTime;
+
             SetGunRotation(new Vector3(0, 0, 30));
+
+            _slideDir = PlayerDir;
+
+            Vector3 flatVel = new Vector3(_rb.linearVelocity.x, 0, _rb.linearVelocity.z).normalized;
+            Vector3 localVel = transform.InverseTransformDirection(flatVel);
+            _smoothSlideDir = new Vector2(localVel.x, localVel.z);
         }
         else
         {
             _isCrouching = true;
         }
-        _playerMesh.localScale = new Vector3(_playerMesh.localScale.x, _crouchYScale, _playerMesh.localScale.z);
+        if (_scaleCoroutine != null) StopCoroutine(_scaleCoroutine);
+        _scaleCoroutine = StartCoroutine(LerpPlayerScale(_crouchYScale));
         _rb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
     }
 
-    private void UnCrouch()
+    public void UnCrouch()
     {
         IsSliding = false;
         _isCrouching = false;
-        _playerMesh.localScale = new Vector3(_playerMesh.localScale.x, _startYScale, _playerMesh.localScale.z);
+        if (_scaleCoroutine != null) StopCoroutine(_scaleCoroutine);
+        _scaleCoroutine = StartCoroutine(LerpPlayerScale(_startYScale));
         SetGunRotation(Vector3.zero);
+    }
+
+    public void TrySlide()
+    {
+        if (_isCrouching) return;
+
+        if (State == MovementState.outSliding)
+        {
+            SlidingQueued = true;
+        }
+        else if (GroundCheck() && State == MovementState.sprinting && PlayerDir.y > 0)
+        {
+            _slideDir = PlayerDir;
+            Crouch(true);
+        }
     }
 
     IEnumerator DelayJumping()
@@ -371,24 +434,22 @@ public class PlayerMove : MonoBehaviour
         _slideJump = false;
     }
 
-    IEnumerator LerpHeight(float endHeight)
-    {
-        float elapsedTime = 0;
-
-        while (elapsedTime < _crouchLerpDuration)
-        {
-            _playerCollider.height = Mathf.Lerp(_playerCollider.height, endHeight, elapsedTime / _crouchLerpDuration);
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-        _playerCollider.height = endHeight;
-    }
-
     private void SetGunRotation(Vector3 gunRot)
     {
         if (_gunRotationCoroutine != null)
             StopCoroutine(_gunRotationCoroutine);
         _gunRotationCoroutine = StartCoroutine(LerpGunRotation(gunRot));
+    }
+
+    IEnumerator LerpPlayerScale(float targetYScale)
+    {
+        while (Mathf.Abs(_playerMesh.localScale.y - targetYScale) > 0.001f)
+        {
+            float newY = Mathf.Lerp(_playerMesh.localScale.y, targetYScale, Time.deltaTime * _crouchScaleSmoothness);
+            _playerMesh.localScale = new Vector3(_playerMesh.localScale.x, newY, _playerMesh.localScale.z);
+            yield return null;
+        }
+        _playerMesh.localScale = new Vector3(_playerMesh.localScale.x, targetYScale, _playerMesh.localScale.z);
     }
 
     IEnumerator LerpGunRotation(Vector3 gunRot)

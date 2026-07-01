@@ -10,6 +10,7 @@ public class Gun : MonoBehaviour
     [SerializeField] private float _timeToAim;
     public bool Aiming;
     public bool UpdateHUD;
+    public bool ReloadQueued;
 
     [Header("Graphics")]
     public GameObject _muzzleFlash;
@@ -38,6 +39,7 @@ public class Gun : MonoBehaviour
 
     private GunRecoil _gunRecoil;
     private PlayerMove _playerMove;
+    private PlayerCurrentGun _playerCurrentGun;
 
     private Points _points;
 
@@ -56,6 +58,7 @@ public class Gun : MonoBehaviour
 
         _gunRecoil = transform.root.Find("CameraHolder").transform.Find("CameraRecoil").GetComponent<GunRecoil>();
         _playerMove = transform.root.GetComponent<PlayerMove>();
+        _playerCurrentGun = transform.root.GetComponent<PlayerCurrentGun>();
 
         _weaponHolder = transform.parent;
 
@@ -101,7 +104,7 @@ public class Gun : MonoBehaviour
         if (UpdateHUD)
         {
             _gunName.text = _gunSettings.GunName;
-            _gunAmmo.text = _bulletsLeft.ToString() + "/" + _reserveAmmo;
+            _gunAmmo.text = _bulletsLeft + "/" + _reserveAmmo;
         }
     }
 
@@ -118,13 +121,19 @@ public class Gun : MonoBehaviour
 
         Aiming = Input.GetMouseButton(1);
 
-        if(Input.GetKeyDown(KeyCode.R) && _bulletsLeft < _gunSettings.MagazineSize && !_reloading && _reserveAmmo > 0)
+        if(ReloadQueued)
         {
-            _reloading = true;
-            _canAim = false;
-            _gunAnimator.SetTrigger("Reloading");
+            if (_bulletsLeft < _gunSettings.MagazineSize && !_reloading && _reserveAmmo > 0)
+            {
+                _reloading = true;
+                _canAim = false;
+                _gunAnimator.SetTrigger("Reloading");
+            }
+
+            ReloadQueued = false;
         }
-        else if(_readyToShoot && _shooting && !_reloading && _bulletsLeft <= 0 && _reserveAmmo > 0)
+
+        if(!_reloading && _bulletsLeft <= 0 && _reserveAmmo > 0)
         {
             _reloading = true;
             _canAim = false;
@@ -155,7 +164,7 @@ public class Gun : MonoBehaviour
             _canAim = true;
         }
 
-        if (_readyToShoot && _shooting && !_reloading && _bulletsLeft > 0)
+        if (_readyToShoot && _shooting && !_reloading && _bulletsLeft > 0 && _playerCurrentGun.CanShoot)
         {
             _bulletsShot = 0;
 
@@ -192,10 +201,18 @@ public class Gun : MonoBehaviour
         Vector3 directionWithSpread = (targetPoint - _attackPoint.position).normalized;
 
         GameObject currentBullet = Instantiate(_gunSettings.Bullet, _attackPoint.position, Quaternion.identity);
+
         currentBullet.transform.forward = directionWithSpread.normalized;
+
         currentBullet.GetComponent<Rigidbody>().AddForce(directionWithSpread.normalized * _gunSettings.ShootForce, ForceMode.Impulse);
         currentBullet.GetComponent<Rigidbody>().AddForce(_mainCam.transform.up * _gunSettings.UpwardForce, ForceMode.Impulse);
+
         currentBullet.GetComponent<Bullet>().PointsScript = _points;
+        currentBullet.GetComponent<Bullet>().BulletDamage = _gunSettings.BulletDamage;
+        currentBullet.GetComponent<Bullet>().HeadDamageMultiplier = _gunSettings.HeadDamageMultiplier;
+        currentBullet.GetComponent<Bullet>().ChestDamageMultiplier = _gunSettings.ChestDamageMultiplier;
+        currentBullet.GetComponent<Bullet>().AbdomenDamageMultiplier = _gunSettings.AbdomenDamageMultiplier;
+
         Physics.IgnoreCollision(_playerCollider, currentBullet.GetComponent<Collider>());
 
         _gunRecoil.RecoilFire();

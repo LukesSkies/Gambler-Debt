@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: TommyGun
   m_EditorClassIdentifier: 
   GunName: M1928
+  GunRange: 10
   TimeBetweenShooting: 0.1
   Spread: 0
   ReloadTime: 1
@@ -24,17 +25,20 @@ MonoBehaviour:
   Bullet: {fileID: 2573404913163577411, guid: 2f179690cadb8a64d9546ef39eadec39, type: 3}
   ShootForce: 300
   UpwardForce: 0
-  BulletDamage: 70
+  BulletDamage: 60
+  HeadDamageMultiplier: 3
+  ChestDamageMultiplier: 1
+  AbdomenDamageMultiplier: 1
   BulletRange: 0.01
   MaxCollisions: 1
   Bounciness: 0
   UseGravity: 1
   ExplodeOnTouch: 1
-  HipfireRecoilX: -1.5
-  HipfireRecoilY: 1.5
-  HipfireRecoilZ: 0.35
-  AimRecoilX: -1
-  AimRecoilY: 1
-  AimRecoilZ: 0.2
-  Snappiness: 6
-  ReturnSpeed: 2
+  HipfireRecoilX: -0.75
+  HipfireRecoilY: 0.75
+  HipfireRecoilZ: 0.15
+  AimRecoilX: -0.5
+  AimRecoilY: 0.5
+  AimRecoilZ: 0.1
+  Snappiness: 10
+  ReturnSpeed: 3

@@ -30,7 +30,6 @@ public class WeaponSway : MonoBehaviour
     [SerializeField] private Vector3 _bobLimit = Vector3.one * 0.01f;
     private Vector3 _bobPosition;
     private float _bobWeight;
-    private float _bobWeightVelocity;
     private Vector3 _smoothedBobPosition;
     private Vector3 _smoothedBobVelocity;
 
@@ -56,12 +55,23 @@ public class WeaponSway : MonoBehaviour
     private Vector3 _targetWeaponMovementRotationVelocity;
 
     private Gun _gun;
+    private RaycastGun _raycastGun;
     private PlayerMove _playerMove;
     private Rigidbody _rb;
+    private bool _raycastGunBool;
 
     private void Awake()
     {
-        _gun = GetComponent<Gun>();
+        if (GetComponent<RaycastGun>())
+        {
+            _raycastGun = GetComponent<RaycastGun>();
+            _raycastGunBool = true;
+        }
+        else
+        {
+            _gun = GetComponent<Gun>();
+            _raycastGunBool = false;
+        }
 
         _playerMove = transform.root.GetComponent<PlayerMove>();
         _rb = transform.root.GetComponent<Rigidbody>();
@@ -81,7 +91,14 @@ public class WeaponSway : MonoBehaviour
 
     private Vector3 WeaponBreathingSway()
     {
-        _targetPos = LissajousCurve(_swayTime, _gun.Aiming ? _swayAmountA / 2 : _swayAmountA, _swayAmountB) / _swayScale;
+        if (!_raycastGunBool)
+        {
+            _targetPos = LissajousCurve(_swayTime, _gun.Aiming ? _swayAmountA / 2 : _swayAmountA, _swayAmountB) / _swayScale;
+        }
+        else
+        {
+            _targetPos = LissajousCurve(_swayTime, _raycastGun.Aiming ? _swayAmountA / 2 : _swayAmountA, _swayAmountB) / _swayScale;
+        }
 
         _swayPosition = Vector3.Lerp(_swayPosition, _targetPos, Time.smoothDeltaTime * _swayLerpSpeed);
         _swayTime += Time.deltaTime;
@@ -96,34 +113,63 @@ public class WeaponSway : MonoBehaviour
 
     private Vector3 WeaponMovementBobbing()
     {
-        float enabled = _gun.Aiming ? 0.2f : 1;
+        if (!_raycastGunBool)
+        {
+            _bobWeight = _gun.Aiming ? 0.2f : 1;
+        }
+        else
+        {
+            _bobWeight = _raycastGun.Aiming ? 0.2f : 1;
+        }
 
         _speedCurve += Time.deltaTime * (_playerMove.GroundCheck() ? _rb.linearVelocity.magnitude : 1f) + 0.01f;
-        _bobPosition.x = (_curveCos * _bobLimit.x * (_playerMove.GroundCheck() ? 1 : 0f)) - (Input.GetAxisRaw("Vertical") * _travelLimit.x);
+        _bobPosition.x = (_curveCos * _bobLimit.x * (_playerMove.GroundCheck() ? 1 : 0f)) - _travelLimit.x;
         _bobPosition.y = (_curveSin * _bobLimit.y) - (_rb.linearVelocity.y * _travelLimit.y);
-        _bobPosition.z = -(Input.GetAxisRaw("Horizontal") * _travelLimit.z);
+        _bobPosition.z = -_travelLimit.z;
 
         _smoothedBobPosition = Vector3.SmoothDamp(_smoothedBobPosition, _bobPosition, ref _smoothedBobVelocity, _bobPositionSmoothing);
-        return _smoothedBobPosition * enabled;
+        return _smoothedBobPosition * _bobWeight;
     }
 
     private Vector3 WeaponAimSway()
     {
-        if (_gun.Aiming)
+        if (!_raycastGunBool)
         {
-            _targetWeaponRotation.y += _swayAimAmount * Input.GetAxis("Mouse X") * Time.deltaTime;
-            _targetWeaponRotation.x += _swayAimAmount * (_swayInverted ? -Input.GetAxis("Mouse Y") : Input.GetAxis("Mouse Y")) * Time.deltaTime;
+            if (_gun.Aiming)
+            {
+                _targetWeaponRotation.y += _swayAimAmount * Input.GetAxis("Mouse X") * Time.deltaTime;
+                _targetWeaponRotation.x += _swayAimAmount * (_swayInverted ? -Input.GetAxis("Mouse Y") : Input.GetAxis("Mouse Y")) * Time.deltaTime;
 
-            _targetWeaponRotation.x = Mathf.Clamp(_targetWeaponRotation.x, -_swayAimClampX, _swayAimClampX);
-            _targetWeaponRotation.y = Mathf.Clamp(_targetWeaponRotation.y, -_swayAimClampY, _swayAimClampY);
+                _targetWeaponRotation.x = Mathf.Clamp(_targetWeaponRotation.x, -_swayAimClampX, _swayAimClampX);
+                _targetWeaponRotation.y = Mathf.Clamp(_targetWeaponRotation.y, -_swayAimClampY, _swayAimClampY);
+            }
+            else
+            {
+                _targetWeaponRotation.y += _swayAmount * Input.GetAxis("Mouse X") * Time.deltaTime;
+                _targetWeaponRotation.x += _swayAmount * (_swayInverted ? -Input.GetAxis("Mouse Y") : Input.GetAxis("Mouse Y")) * Time.deltaTime;
+
+                _targetWeaponRotation.x = Mathf.Clamp(_targetWeaponRotation.x, -_swayClampX, _swayClampX);
+                _targetWeaponRotation.y = Mathf.Clamp(_targetWeaponRotation.y, -_swayClampY, _swayClampY);
+            }
         }
         else
         {
-            _targetWeaponRotation.y += _swayAmount * Input.GetAxis("Mouse X") * Time.deltaTime;
-            _targetWeaponRotation.x += _swayAmount * (_swayInverted ? -Input.GetAxis("Mouse Y") : Input.GetAxis("Mouse Y")) * Time.deltaTime;
+            if (_raycastGun.Aiming)
+            {
+                _targetWeaponRotation.y += _swayAimAmount * Input.GetAxis("Mouse X") * Time.deltaTime;
+                _targetWeaponRotation.x += _swayAimAmount * (_swayInverted ? -Input.GetAxis("Mouse Y") : Input.GetAxis("Mouse Y")) * Time.deltaTime;
 
-            _targetWeaponRotation.x = Mathf.Clamp(_targetWeaponRotation.x, -_swayClampX, _swayClampX);
-            _targetWeaponRotation.y = Mathf.Clamp(_targetWeaponRotation.y, -_swayClampY, _swayClampY);
+                _targetWeaponRotation.x = Mathf.Clamp(_targetWeaponRotation.x, -_swayAimClampX, _swayAimClampX);
+                _targetWeaponRotation.y = Mathf.Clamp(_targetWeaponRotation.y, -_swayAimClampY, _swayAimClampY);
+            }
+            else
+            {
+                _targetWeaponRotation.y += _swayAmount * Input.GetAxis("Mouse X") * Time.deltaTime;
+                _targetWeaponRotation.x += _swayAmount * (_swayInverted ? -Input.GetAxis("Mouse Y") : Input.GetAxis("Mouse Y")) * Time.deltaTime;
+
+                _targetWeaponRotation.x = Mathf.Clamp(_targetWeaponRotation.x, -_swayClampX, _swayClampX);
+                _targetWeaponRotation.y = Mathf.Clamp(_targetWeaponRotation.y, -_swayClampY, _swayClampY);
+            }
         }
 
         _targetWeaponRotation.z = _targetWeaponRotation.y;
@@ -136,15 +182,31 @@ public class WeaponSway : MonoBehaviour
 
     private Vector3 WeaponMovementSway()
     {
-        if (_gun.Aiming)
+        if (!_raycastGunBool)
         {
-            _targetWeaponMovementRotation.z = _aimMovementSwayX * Input.GetAxisRaw("Horizontal") * Time.deltaTime;
-            _targetWeaponMovementRotation.x = _aimMovementSwayY * Input.GetAxisRaw("Vertical") * Time.deltaTime;
+            if (_gun.Aiming)
+            {
+                _targetWeaponMovementRotation.z = _aimMovementSwayX * Input.GetAxisRaw("Horizontal") * Time.deltaTime;
+                _targetWeaponMovementRotation.x = _aimMovementSwayY * Input.GetAxisRaw("Vertical") * Time.deltaTime;
+            }
+            else
+            {
+                _targetWeaponMovementRotation.z = _movementSwayX * Input.GetAxisRaw("Horizontal") * Time.deltaTime;
+                _targetWeaponMovementRotation.x = _movementSwayY * Input.GetAxisRaw("Vertical") * Time.deltaTime;
+            }
         }
         else
         {
-            _targetWeaponMovementRotation.z = _movementSwayX * Input.GetAxisRaw("Horizontal") * Time.deltaTime;
-            _targetWeaponMovementRotation.x = _movementSwayY * Input.GetAxisRaw("Vertical") * Time.deltaTime;
+            if (_raycastGun.Aiming)
+            {
+                _targetWeaponMovementRotation.z = _aimMovementSwayX * Input.GetAxisRaw("Horizontal") * Time.deltaTime;
+                _targetWeaponMovementRotation.x = _aimMovementSwayY * Input.GetAxisRaw("Vertical") * Time.deltaTime;
+            }
+            else
+            {
+                _targetWeaponMovementRotation.z = _movementSwayX * Input.GetAxisRaw("Horizontal") * Time.deltaTime;
+                _targetWeaponMovementRotation.x = _movementSwayY * Input.GetAxisRaw("Vertical") * Time.deltaTime;
+            }
         }
 
         _targetWeaponMovementRotation = Vector3.SmoothDamp(_targetWeaponMovementRotation, Vector3.zero, ref _targetWeaponMovementRotationVelocity, _movementSwaySmoothing);

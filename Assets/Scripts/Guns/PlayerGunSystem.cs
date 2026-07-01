@@ -34,11 +34,11 @@ public class PlayerGunSystem : MonoBehaviour
         // Initialize input actions
         controls = new PlayerControls();
 
-        controls.Player.Shoot.performed += _ => StartShooting();
-        controls.Player.Shoot.canceled += _ => StopShooting();
+        controls.OldPlayer.Shoot.performed += _ => StartShooting();
+        controls.OldPlayer.Shoot.canceled += _ => StopShooting();
 
         // Reload is repurposed as a risk/reward gamble mechanic
-        controls.Player.Reload.performed += _ => GambleAmmo();
+        controls.OldPlayer.Reload.performed += _ => GambleAmmo();
     }
 
     void OnEnable() => controls.Enable();

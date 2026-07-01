@@ -15,6 +15,7 @@ public class GunSettings : ScriptableObject
         SemiAutomaticRifle,
         Special
     }
+    public float GunRange; //How far the range of the gun is per shot
     public float TimeBetweenShooting; //Fire Rate
     public float Spread; //Mainly for shotguns
     public float ReloadTime; //Time for the gun to reload
@@ -29,6 +30,9 @@ public class GunSettings : ScriptableObject
     public float ShootForce; //How far does the bullet go
     public float UpwardForce; //How far up does the bullet go
     public float BulletDamage; //How much damage does each bullet do (base damage)
+    public float HeadDamageMultiplier; //Multiplier for if the bullet collides with the head
+    public float ChestDamageMultiplier; //Multiplier for if the bullet collides with the chest
+    public float AbdomenDamageMultiplier; //Multiplier for if the bullet collides with the abdomen
     public float BulletRange; //How big is the collision (0.01 for normal weapons, usually used for explosions)
     public int MaxCollisions; //How many collisions the bullet can have before it is destroyed
     [Range(0, 1)] public float Bounciness;

@@ -1,0 +1,9 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI%20Toolkit/MainMenuStyle.uss?fileID=7433441132597879392&amp;guid=76fd90323860efb48997d3c78d1ba795&amp;type=3#MainMenuStyle" />
+    <ui:VisualElement style="flex-grow: 1; background-color: rgba(0, 0, 0, 0.8);">
+        <ui:Label text="PAUSED" name="Title" double-click-selects-word="false" class="header" style="position: relative; white-space: pre; -unity-text-align: upper-center; height: 97px;" />
+        <ui:Button text="Resume" name="Resume" binding-path="Resume" selectable="false" focusable="true" class="button" />
+        <ui:Button text="Settings" name="Settings" class="button" />
+        <ui:Button text="Quit" name="Quit" class="button" />
+    </ui:VisualElement>
+</ui:UXML>

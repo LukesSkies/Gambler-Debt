@@ -34,7 +34,7 @@ public class PlayerInteraction : MonoBehaviour
     {
         // Initialize input and bind interact action
         controls = new PlayerControls();
-        controls.Player.Interact.performed += _ => TryInteract();
+        controls.OldPlayer.Interact.performed += _ => TryInteract();
     }
 
     void OnEnable() => controls.Enable();

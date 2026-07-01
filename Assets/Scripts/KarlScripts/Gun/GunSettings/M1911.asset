@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: M1911
   m_EditorClassIdentifier: 
   GunName: M1911
+  GunRange: 10
   TimeBetweenShooting: 0.1
   Spread: 0
   ReloadTime: 1
@@ -25,16 +26,19 @@ MonoBehaviour:
   ShootForce: 300
   UpwardForce: 0
   BulletDamage: 20
+  HeadDamageMultiplier: 3.5
+  ChestDamageMultiplier: 1
+  AbdomenDamageMultiplier: 0.8
   BulletRange: 0.01
   MaxCollisions: 1
   Bounciness: 0
   UseGravity: 1
   ExplodeOnTouch: 1
-  HipfireRecoilX: -1.5
-  HipfireRecoilY: 1.5
-  HipfireRecoilZ: 0.35
-  AimRecoilX: -1
-  AimRecoilY: 1
-  AimRecoilZ: 0.2
-  Snappiness: 6
-  ReturnSpeed: 2
+  HipfireRecoilX: -1
+  HipfireRecoilY: 1
+  HipfireRecoilZ: 0.2
+  AimRecoilX: -0.5
+  AimRecoilY: 0.5
+  AimRecoilZ: 0.1
+  Snappiness: 10
+  ReturnSpeed: 3

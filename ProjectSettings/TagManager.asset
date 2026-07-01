@@ -8,6 +8,7 @@ TagManager:
   - SlotMachine
   - Barrier
   - EnemySpawn
+  - EnemyBase
   layers:
   - Default
   - TransparentFX
@@ -23,7 +24,7 @@ TagManager:
   - Enemy
   - PostProcessing
   - Bullet
-  - 
+  - Wall
   - 
   - 
   - 

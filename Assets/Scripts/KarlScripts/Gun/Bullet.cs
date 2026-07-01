@@ -1,23 +1,27 @@
 using UnityEngine;
 using Biostart.Impact;
-using Biostart.Blood;
 
 public class Bullet : MonoBehaviour
 {
     private Rigidbody _rb;
 
     [SerializeField] private GameObject _metalSparks;
+    [SerializeField] private GameObject _bulletHole;
     [SerializeField] private LayerMask _enemyLayer;
 
     [SerializeField][Range(0,1)] private float _bounciness;
     [SerializeField] private bool _useGravity;
 
     public float BulletDamage;
+    public float HeadDamageMultiplier;
+    public float ChestDamageMultiplier;
+    public float AbdomenDamageMultiplier;
     [SerializeField] private float _explosionRange;
 
     [SerializeField] private int _maxCollisions;
     [SerializeField] private float _maxLifetime;
     [SerializeField] private bool _explodeOnTouch = true;
+    [SerializeField] private float _bulletHoleDelay;
 
     private int _collisions;
     private PhysicsMaterial _physicsMaterial;
@@ -41,6 +45,11 @@ public class Bullet : MonoBehaviour
         _physicsMaterial.frictionCombine = PhysicsMaterialCombine.Minimum;
         _physicsMaterial.bounceCombine = PhysicsMaterialCombine.Maximum;
 
+        foreach(GameObject zombieBarriers in GameManager.Instance.ZombieSpawnBarriers)
+        {
+            Physics.IgnoreCollision(zombieBarriers.GetComponent<Collider>(), GetComponent<Collider>());
+        }
+
         GetComponent<SphereCollider>().material = _physicsMaterial;
 
         _rb.useGravity = _useGravity;
@@ -62,11 +71,34 @@ public class Bullet : MonoBehaviour
             explosion.transform.forward = ExplosionNormal;
         }
 
+        if(_bulletHole != null && layer != 11)
+        {
+            GameObject bulletHole = Instantiate(_bulletHole, spawnPosition, Quaternion.identity);
+            bulletHole.transform.rotation = Quaternion.LookRotation(-ExplosionNormal)
+            * Quaternion.Euler(0, 0, Random.Range(0f, 360f));
+
+            Destroy(bulletHole, _bulletHoleDelay);
+        }
+
         Collider[] enemies = Physics.OverlapSphere(spawnPosition, _explosionRange, _enemyLayer);
 
         for (int i = 0; i < enemies.Length; i++)
         {
-            //enemies[i].GetComponent<EnemyHealth>().TakeHealth(BulletDamage);
+            if (enemies[i].GetComponent<EnemyTakeDamage>())
+            {
+                if (enemies[i].GetComponent<EnemyTakeDamage>().BulletBodyType == EnemyTakeDamage.BodyType.Head)
+                {
+                    enemies[i].GetComponent<EnemyTakeDamage>().EnemyHealth.TakeDamage(BulletDamage, HeadDamageMultiplier);
+                }
+                else if (enemies[i].GetComponent<EnemyTakeDamage>().BulletBodyType == EnemyTakeDamage.BodyType.Chest)
+                {
+                    enemies[i].GetComponent<EnemyTakeDamage>().EnemyHealth.TakeDamage(BulletDamage, ChestDamageMultiplier);
+                }
+                else
+                {
+                    enemies[i].GetComponent<EnemyTakeDamage>().EnemyHealth.TakeDamage(BulletDamage, AbdomenDamageMultiplier);
+                }
+            }
         }
 
         Destroy(gameObject);
