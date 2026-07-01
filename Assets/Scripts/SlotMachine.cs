@@ -2,7 +2,7 @@
 using TMPro;
 using System.Collections;
 
-public class SlotMachine : MonoBehaviour, IInteractable, IDamageable
+public class SlotMachine : MonoBehaviour, OldIDamageable
 {
     // GENERAL SETTINGS
     [Header("Settings")]

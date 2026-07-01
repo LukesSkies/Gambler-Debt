@@ -49,17 +49,17 @@ public class PlayerMovement : MonoBehaviour
         controls = new PlayerControls();
 
         // Movement input
-        controls.Player.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
-        controls.Player.Move.canceled += ctx => moveInput = Vector2.zero;
+        controls.OldPlayer.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
+        controls.OldPlayer.Move.canceled += ctx => moveInput = Vector2.zero;
 
         // Jump input
-        controls.Player.Jump.performed += ctx =>
+        controls.OldPlayer.Jump.performed += ctx =>
         {
             jumpHeld = true;
             jumpPressedThisFrame = true;
             lastJumpPressedTime = Time.time;
         };
-        controls.Player.Jump.canceled += ctx => jumpHeld = false;
+        controls.OldPlayer.Jump.canceled += ctx => jumpHeld = false;
     }
 
     void OnEnable() => controls.Enable();

@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c727532b0bbd2940a3897f00f23c81e, type: 3}
+  m_Name: Driver Gloves King Snake
+  m_EditorClassIdentifier: 
+  Name: King Snake
+  Icon: {fileID: 21300000, guid: d413f06033da7524fa3a964edc9144f5, type: 3}
+  Id: 19
+  ItemType: 0
+  Weapon: 57
+  SkinRarity: 6
+  SkinType: 2
+  SkinWear: 0
+  Float: 0
+  StatTrak: 0

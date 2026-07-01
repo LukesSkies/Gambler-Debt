@@ -64,11 +64,11 @@ public class PlayerCameraController : MonoBehaviour
         controls = new PlayerControls();
 
         // Cache input values
-        controls.Player.Look.performed += ctx => lookInput = ctx.ReadValue<Vector2>();
-        controls.Player.Look.canceled += _ => lookInput = Vector2.zero;
+        controls.OldPlayer.Look.performed += ctx => lookInput = ctx.ReadValue<Vector2>();
+        controls.OldPlayer.Look.canceled += _ => lookInput = Vector2.zero;
 
-        controls.Player.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
-        controls.Player.Move.canceled += _ => moveInput = Vector2.zero;
+        controls.OldPlayer.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
+        controls.OldPlayer.Move.canceled += _ => moveInput = Vector2.zero;
 
         cam = GetComponent<Camera>();
     }

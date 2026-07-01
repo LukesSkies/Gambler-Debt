@@ -50,7 +50,7 @@ public class PlayerMelee : MonoBehaviour
     {
         // Initialize input system and bind melee action
         controls = new PlayerControls();
-        controls.Player.Melee.performed += _ => TryMelee();
+        controls.OldPlayer.Melee.performed += _ => TryMelee();
     }
 
     void OnEnable() => controls.Enable();

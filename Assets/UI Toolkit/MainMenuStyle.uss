@@ -1,0 +1,68 @@
+.header {
+    font-size: 80px;
+    -unity-font-style: bold;
+    color: rgb(255, 255, 255);
+    margin-top: 190px;
+    -unity-text-align: middle-center;
+    white-space: normal;
+    -unity-font-definition: url("project://database/Assets/TextMesh%20Pro/Examples%20&%20Extras/Fonts/Roboto-Bold.ttf?fileID=12800000&guid=4beb055f07aaff244873dec698d0363e&type=3#Roboto-Bold");
+}
+
+.button {
+    top: 189px;
+    right: auto;
+    align-items: auto;
+    justify-content: flex-end;
+    align-content: center;
+    align-self: center;
+    width: 412px;
+    height: 107px;
+    margin-top: 26px;
+    margin-right: 26px;
+    margin-bottom: 26px;
+    margin-left: 26px;
+    font-size: 80px;
+    -unity-font-definition: resource('FlatSkin/Font/Roboto-Black');
+    -unity-font-style: bold;
+    -unity-text-outline-width: 3px;
+    -unity-text-outline-color: rgb(0, 0, 0);
+    color: rgb(202, 179, 71);
+    -unity-text-align: middle-center;
+    white-space: normal;
+    border-top-width: -57px;
+    border-right-width: -57px;
+    border-bottom-width: -57px;
+    border-left-width: -57px;
+    border-top-left-radius: 42px;
+    border-top-right-radius: 42px;
+    border-bottom-right-radius: 42px;
+    border-bottom-left-radius: 42px;
+    -unity-background-image-tint-color: rgb(255, 255, 255);
+    transition-property: all;
+    transition-duration: 0s;
+    transition-timing-function: ease;
+    transition-delay: 0s;
+    background-repeat: space space;
+    -unity-slice-scale: 0;
+    -unity-slice-type: sliced;
+    opacity: 1;
+    background-color: rgb(140, 140, 140);
+}
+
+.button:hover {
+    background-color: rgb(255, 255, 255);
+    transition-property: all;
+    transition-duration: 0.1s;
+    transition-timing-function: ease-in-sine;
+    transition-delay: 0s;
+    color: rgb(238, 211, 84);
+    border-left-color: rgb(255, 0, 0);
+    border-right-color: rgb(255, 0, 0);
+    border-top-color: rgb(255, 0, 0);
+    border-bottom-color: rgb(255, 0, 0);
+    width: 420px;
+    height: 120px;
+    display: flex;
+    visibility: visible;
+    opacity: 1;
+}

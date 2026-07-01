@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d457d375df1464d4fb4523a09e4b0af6, type: 3}
+  m_Name: P90
+  m_EditorClassIdentifier: 
+  GunName: P90
+  GunRange: 10
+  TimeBetweenShooting: 0.08
+  Spread: 0
+  ReloadTime: 1
+  TimeBetweenShots: 0
+  MagazineSize: 25
+  ReserveAmmo: 125
+  BulletsPerTap: 1
+  AllowButtonHold: 1
+  Bullet: {fileID: 2573404913163577411, guid: 2f179690cadb8a64d9546ef39eadec39, type: 3}
+  ShootForce: 300
+  UpwardForce: 0
+  BulletDamage: 45
+  HeadDamageMultiplier: 4
+  ChestDamageMultiplier: 1
+  AbdomenDamageMultiplier: 1
+  BulletRange: 0.01
+  MaxCollisions: 1
+  Bounciness: 0
+  UseGravity: 1
+  ExplodeOnTouch: 1
+  HipfireRecoilX: -0.75
+  HipfireRecoilY: 0.75
+  HipfireRecoilZ: 0.15
+  AimRecoilX: -0.5
+  AimRecoilY: 0.5
+  AimRecoilZ: 0.1
+  Snappiness: 10
+  ReturnSpeed: 3

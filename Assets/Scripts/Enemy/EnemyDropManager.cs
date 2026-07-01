@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class EnemyDropSpawner : MonoBehaviour, IDamageable
+public class EnemyDropSpawner : MonoBehaviour, OldIDamageable
 {
     [Header("Health Settings")]
     public float maxHealth = 100f;

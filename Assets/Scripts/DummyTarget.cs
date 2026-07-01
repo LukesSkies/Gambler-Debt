@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class DummyTarget : MonoBehaviour, IDamageable
+public class DummyTarget : MonoBehaviour, OldIDamageable
 {
     [Header("Stats")]
     public float maxHealth = 100f;

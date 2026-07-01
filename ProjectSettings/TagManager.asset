@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Enemy
   - SlotMachine
+  - Barrier
+  - EnemySpawn
+  - EnemyBase
   layers:
   - Default
   - TransparentFX
@@ -16,12 +19,12 @@ TagManager:
   - Weapon
   - Enimes
   - Interactions
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Player
+  - Ground
+  - Enemy
+  - PostProcessing
+  - Bullet
+  - Wall
   - 
   - 
   - 
