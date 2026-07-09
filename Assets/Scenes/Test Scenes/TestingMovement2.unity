@@ -9993,8 +9993,8 @@ MonoBehaviour:
   _walkSpeed: 4
   _sprintSpeed: 5.5
   _groundDrag: 7
-  _walkSpeedSmoothness: 12
-  _sprintSpeedSmoothness: 6
+  _walkSpeedSmoothness: 120
+  _sprintSpeedSmoothness: 60
   _jumpForce: 5
   _jumpCooldown: 0.25
   _airMultiplier: 0
@@ -10004,7 +10004,7 @@ MonoBehaviour:
   _crouchLerpDuration: 0.01
   _crouchScaleSmoothness: 15
   _maxSlideTime: 0.6
-  _slideJumpForce: 9.5
+  _slideJumpForce: 9.2
   _lerpGunTime: 0.3
   _slideDirSmoothness: 150
   _slideJumpDelay: 0.07
