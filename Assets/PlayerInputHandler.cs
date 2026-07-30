@@ -11,6 +11,8 @@ public class PlayerInputHandler : MonoBehaviour
     private NewPlayerInteraction _newPlayerInteraction;
 
     [SerializeField] private PlayerInput _playerInput;
+    private InputAction _menuNavigationAction;
+    public Vector2 NavigationInput;
 
     [SerializeField] private float _controllerTimeToInteract;
 
@@ -27,6 +29,11 @@ public class PlayerInputHandler : MonoBehaviour
     private bool _toggleCrouchController;
     private bool _toggleCrouchKeyboard;
 
+    private void Awake()
+    {
+        _menuNavigationAction = _playerInput.actions["Navigate"];
+    }
+
     private void Start()
     {
         _gameplayMenus = GameObject.Find("Menus").GetComponent<GameplayMenus>();
@@ -38,6 +45,8 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void Update()
     {
+        NavigationInput = _menuNavigationAction.ReadValue<Vector2>();
+
         GameManager.Instance.Player0IsUsingKeyboardOrMouse = _playerInput.currentControlScheme == "Keyboard&Mouse";
 
         RaycastGun gun = _playerCurrentGun.CurrentGun.GetComponent<RaycastGun>();
