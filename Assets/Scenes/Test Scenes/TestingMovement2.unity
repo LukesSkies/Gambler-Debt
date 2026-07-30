@@ -9995,6 +9995,9 @@ MonoBehaviour:
   _groundDrag: 7
   _walkSpeedSmoothness: 120
   _sprintSpeedSmoothness: 60
+  _maxSprintStamina: 4
+  _timeToDrainStamina: 4
+  _timeToRefilStamina: 4
   _jumpForce: 5
   _jumpCooldown: 0.25
   _airMultiplier: 0
@@ -10013,17 +10016,19 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1024
   _maxSlopeAngle: 40
-  _jumpKey: 32
-  _crouchKey: 306
-  _slideKey: 99
   State: 6
   CanJump: 0
-  IsSprinting: 0
+  CanSprint: 0
+  SprintQueued: 0
   SlidingQueued: 0
   JumpQueued: 0
   PlayerDir: {x: 0, y: 0}
+  _sprintStamina: 4
+  _sprintTimer: 0
   IsSliding: 0
   JumpSlide: 0
+  _inStaminaDrainCoroutine: 0
+  _inStaminaRefilCoroutine: 0
 --- !u!114 &1195438585
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -54,7 +54,7 @@ public class PlayerInputHandler : MonoBehaviour
             _isSprinting = false;
         }
 
-        _playerMove.IsSprinting = _isSprinting;
+        _playerMove.SprintQueued = _isSprinting;
 
         //Controller logic to check if the player wants to reload or interact
         if (_startControllerInteractTimer)
@@ -192,10 +192,7 @@ public class PlayerInputHandler : MonoBehaviour
 
     public void OnMove(CallbackContext ctx)
     {
-        if (!_playerMove.IsSliding)
-        {
-            _playerMove.PlayerDir = ctx.ReadValue<Vector2>();
-        }
+        _playerMove.PlayerDir = ctx.ReadValue<Vector2>();
     }
 
     public void OnLook(CallbackContext ctx)
