@@ -1961,7 +1961,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 67a216855ebc604479a935beaf0c685c, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4772,7 +4772,6 @@ GameObject:
   - component: {fileID: 556414008}
   - component: {fileID: 556414010}
   - component: {fileID: 556414009}
-  - component: {fileID: 556414011}
   m_Layer: 5
   m_Name: PauseMenu
   m_TagString: Untagged
@@ -4839,24 +4838,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 556414007}
   m_CullTransparentMesh: 1
---- !u!114 &556414011
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 556414007}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 251f1b256c4480849a81f5d145249a6a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Buttons:
-  - {fileID: 986270299}
-  - {fileID: 1548059508}
-  - {fileID: 1091928654}
-  LastSelectedButton: {fileID: 0}
-  LastSelectedIndex: 0
 --- !u!1 &584992039
 GameObject:
   m_ObjectHideFlags: 0
@@ -5064,7 +5045,7 @@ MonoBehaviour:
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 1920, y: 1080}
-  m_ScreenMatchMode: 1
+  m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
@@ -7826,7 +7807,6 @@ GameObject:
   - component: {fileID: 986270303}
   - component: {fileID: 986270302}
   - component: {fileID: 986270301}
-  - component: {fileID: 986270304}
   m_Layer: 5
   m_Name: Resume
   m_TagString: Untagged
@@ -7948,19 +7928,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 986270299}
   m_CullTransparentMesh: 1
---- !u!114 &986270304
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 986270299}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d4ffb9ddbcad2b7418dde930b0d43165, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _handleMenuUI: {fileID: 556414011}
 --- !u!1 &987473675
 GameObject:
   m_ObjectHideFlags: 0
@@ -8781,7 +8748,6 @@ GameObject:
   - component: {fileID: 1091928658}
   - component: {fileID: 1091928657}
   - component: {fileID: 1091928656}
-  - component: {fileID: 1091928659}
   m_Layer: 5
   m_Name: Quit
   m_TagString: Untagged
@@ -8903,19 +8869,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1091928654}
   m_CullTransparentMesh: 1
---- !u!114 &1091928659
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1091928654}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d4ffb9ddbcad2b7418dde930b0d43165, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _handleMenuUI: {fileID: 556414011}
 --- !u!1 &1095276953
 GameObject:
   m_ObjectHideFlags: 0
@@ -10042,6 +9995,9 @@ MonoBehaviour:
   _groundDrag: 7
   _walkSpeedSmoothness: 120
   _sprintSpeedSmoothness: 60
+  _maxSprintStamina: 4
+  _timeToDrainStamina: 4
+  _timeToRefilStamina: 4
   _jumpForce: 5
   _jumpCooldown: 0.25
   _airMultiplier: 0
@@ -10060,17 +10016,19 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1024
   _maxSlopeAngle: 40
-  _jumpKey: 32
-  _crouchKey: 306
-  _slideKey: 99
   State: 6
   CanJump: 0
-  IsSprinting: 0
+  CanSprint: 0
+  SprintQueued: 0
   SlidingQueued: 0
   JumpQueued: 0
   PlayerDir: {x: 0, y: 0}
+  _sprintStamina: 4
+  _sprintTimer: 0
   IsSliding: 0
   JumpSlide: 0
+  _inStaminaDrainCoroutine: 0
+  _inStaminaRefilCoroutine: 0
 --- !u!114 &1195438585
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10505,7 +10463,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _playerInput: {fileID: 1195438589}
-  NavigationInput: {x: 0, y: 0}
   _controllerTimeToInteract: 0.2
   _controllerTimerToInteract: 0
 --- !u!1 &1212962940
@@ -12121,7 +12078,6 @@ GameObject:
   - component: {fileID: 1548059512}
   - component: {fileID: 1548059511}
   - component: {fileID: 1548059510}
-  - component: {fileID: 1548059513}
   m_Layer: 5
   m_Name: Settings
   m_TagString: Untagged
@@ -12243,19 +12199,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1548059508}
   m_CullTransparentMesh: 1
---- !u!114 &1548059513
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1548059508}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d4ffb9ddbcad2b7418dde930b0d43165, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _handleMenuUI: {fileID: 556414011}
 --- !u!1 &1580600356
 GameObject:
   m_ObjectHideFlags: 0
@@ -12480,7 +12423,7 @@ MonoBehaviour:
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 1920, y: 1080}
-  m_ScreenMatchMode: 1
+  m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
