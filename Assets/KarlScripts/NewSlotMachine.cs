@@ -195,14 +195,11 @@ public class NewSlotMachine : MonoBehaviour, IInteractable
 
             Destroy(_newGun);
 
-            if (playerCurrentGun.NextGun != null)
-            {
-                Destroy(playerCurrentGun.NextGun);
-            }
+            Destroy(playerCurrentGun.CurrentGun);
 
-            playerCurrentGun.NextGun = _newPlayerGunReferance;
-            _newPlayerGunReferance.SetActive(false);
-            playerCurrentGun.SwitchGun();
+            playerCurrentGun.CurrentGun = _newPlayerGunReferance;
+            _newPlayerGunReferance.SetActive(true);
+            playerCurrentGun.GunAnimator = playerCurrentGun.CurrentGun.transform.Find("WeaponMesh").GetComponent<Animator>();
 
             _itemSpawned = false;
 

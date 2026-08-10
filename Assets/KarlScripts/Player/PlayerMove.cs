@@ -11,6 +11,12 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private float _maxSprintStamina = 4;
     [SerializeField] private float _timePlayerSprintEnabled = 1.5f;
 
+    [Header("Player Step Height")]
+    [SerializeField] private float _stepHeight = 0.3f;
+    [SerializeField] private float _stepSmooth = 0.1f;
+    private GameObject _stepRayLower;
+    private GameObject _stepRayHigher;
+
     [Header("Jumping")]
     [SerializeField] private float _jumpForce;
     [SerializeField] private float _jumpCooldown;
@@ -31,17 +37,14 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private float _slideJumpDelay = 0.2f;
 
     private float _slideTimer;
-    private float _startHeight;
     private float _startYScale;
     private bool _readyToJump;
     private float _moveSpeed;
     private float _slideJumpTimer;
-    private float _sprintStaminaLerp;
 
     [Header("Ground Check")]
     [SerializeField] private float _playerHeight;
     [SerializeField] private LayerMask _groundMask;
-    private bool _grounded;
 
     [Header("Slope Handling")]
     [SerializeField] private float _maxSlopeAngle;
@@ -72,9 +75,7 @@ public class PlayerMove : MonoBehaviour
     [HideInInspector] public bool JumpSlide;
     private bool _slideJump;
     private bool _slideJumpToggle;
-    private bool _sprintTimerCheck;
 
-    private CapsuleCollider _playerCollider;
     private Transform _playerMesh;
 
     private Vector2 _slideDir;
@@ -102,6 +103,9 @@ public class PlayerMove : MonoBehaviour
             transform.Find("GunCamera").transform.Find("WeaponHolder");
         
         _playerMesh = transform.Find("PlayerMesh");
+
+        _stepRayLower = transform.Find("StepRayLower").gameObject;
+        _stepRayHigher = transform.Find("StepRayHigher").gameObject;
     }
 
     void Start()
@@ -111,6 +115,7 @@ public class PlayerMove : MonoBehaviour
         _readyToJump = true;
         CanJump = true;
         _startYScale = _playerMesh.localScale.y;
+        _stepRayHigher.transform.localPosition = new Vector3(_stepRayHigher.transform.localPosition.x, _stepHeight, _stepRayHigher.transform.localPosition.z);
     }
 
     void FixedUpdate()
@@ -134,6 +139,8 @@ public class PlayerMove : MonoBehaviour
         {
             MovePlayer();
         }
+
+        StepClimb();
     }
 
     void Update()
@@ -305,6 +312,39 @@ public class PlayerMove : MonoBehaviour
         }
 
         _rb.useGravity = true;
+    }
+
+    private void StepClimb()
+    {
+        RaycastHit hitLower;
+        if(Physics.Raycast(_stepRayLower.transform.position, transform.TransformDirection(Vector3.forward), out hitLower, 0.1f))
+        {
+            RaycastHit hitHigher;
+            if (!Physics.Raycast(_stepRayHigher.transform.position, transform.TransformDirection(Vector3.forward), out hitHigher, 0.2f))
+            {
+                _rb.position -= new Vector3(0, -_stepSmooth, 0);
+            }
+        }
+
+        RaycastHit hitLower45;
+        if (Physics.Raycast(_stepRayLower.transform.position, transform.TransformDirection(1.5f,0,1f), out hitLower45, 0.1f))
+        {
+            RaycastHit hitHigher45;
+            if (!Physics.Raycast(_stepRayHigher.transform.position, transform.TransformDirection(1.5f, 0, 1f), out hitHigher45, 0.2f))
+            {
+                _rb.position -= new Vector3(0, -_stepSmooth, 0);
+            }
+        }
+
+        RaycastHit hitLowerMinus45;
+        if (Physics.Raycast(_stepRayLower.transform.position, transform.TransformDirection(-1.5f, 0, 1f), out hitLowerMinus45, 0.1f))
+        {
+            RaycastHit hitHigherMinus45;
+            if (!Physics.Raycast(_stepRayHigher.transform.position, transform.TransformDirection(-1.5f, 0, 1f), out hitHigherMinus45, 0.2f))
+            {
+                _rb.position -= new Vector3(0, -_stepSmooth, 0);
+            }
+        }
     }
 
     private void OutSide()

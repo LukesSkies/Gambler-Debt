@@ -12,7 +12,7 @@ public class PlayerCurrentGun : MonoBehaviour
     private string _primaryGun;
     private string _secondaryGun;
 
-    private Animator _gunAnimator;
+    [HideInInspector] public Animator GunAnimator;
 
     public bool GunSwitching;
     public bool CanShoot;
@@ -53,7 +53,7 @@ public class PlayerCurrentGun : MonoBehaviour
             _secondaryGun = NextGun.name;
         }
 
-        _gunAnimator = CurrentGun.transform.Find("WeaponMesh").GetComponent<Animator>();
+        GunAnimator = CurrentGun.transform.Find("WeaponMesh").GetComponent<Animator>();
 
         GunSwitching = false;
     }
@@ -64,25 +64,25 @@ public class PlayerCurrentGun : MonoBehaviour
         {
             if (SwitchToSecondGun && !GunSwitching)
             {
-                _gunAnimator.SetTrigger("PutAway");
+                GunAnimator.SetTrigger("PutAway");
                 GunSwitching = true;
                 SwitchToSecondGun = false;
             }
             else if (SwitchToPrimaryGun && !GunSwitching)
             {
-                _gunAnimator.SetTrigger("PutAway");
+                GunAnimator.SetTrigger("PutAway");
                 GunSwitching = true;
                 SwitchToPrimaryGun = false;
             }
             else if (SwitchToAnyGunController)
             {
-                _gunAnimator.SetTrigger("PutAway");
+                GunAnimator.SetTrigger("PutAway");
                 GunSwitching = true;
                 SwitchToAnyGunController = false;
             }
             else if (SwitchToAnyGunMouse && !GunSwitching)
             {
-                _gunAnimator.SetTrigger("PutAway");
+                GunAnimator.SetTrigger("PutAway");
                 GunSwitching = true;
             }
         }
@@ -110,7 +110,7 @@ public class PlayerCurrentGun : MonoBehaviour
         {
             CurrentGun.GetComponent<RaycastGun>().UpdateHUD();
         }
-        _gunAnimator = CurrentGun.transform.Find("WeaponMesh").GetComponent<Animator>();
+        GunAnimator = CurrentGun.transform.Find("WeaponMesh").GetComponent<Animator>();
         GunSwitching = false;
     }
 }
