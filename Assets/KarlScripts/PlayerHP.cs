@@ -9,11 +9,14 @@ public class PlayerHP : MonoBehaviour, IDamageable
     public float MaxHealth;
     [SerializeField] private Animation _redFlash;
 
+    private PlayerMove _playerMove;
+
     void Start()
     {
         Health = GameManager.Instance.PlayerHealth;
         MaxHealth = GameManager.Instance.PlayerHealth;
         _gameplayMenus = GameObject.Find("Menus").GetComponent<GameplayMenus>();
+        _playerMove = GetComponent<PlayerMove>();
     }
 
     private void Update()
@@ -47,9 +50,8 @@ public class PlayerHP : MonoBehaviour, IDamageable
 
     private void Death()
     {
-        GameManager.Instance.Paused = true;
-        GameManager.Instance.EndGame = true;
         _gameplayMenus.DeathMenu.SetActive(true);
-        _gameplayMenus.PlayerCurrentGun.CanShoot = false;
+        GameManager.Instance.PlayerDead = true;
+        _gameplayMenus.PlayerCurrentGun.CurrentGun.SetActive(false);
     }
 }

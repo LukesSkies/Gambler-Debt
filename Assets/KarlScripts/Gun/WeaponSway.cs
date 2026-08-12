@@ -84,9 +84,12 @@ public class WeaponSway : MonoBehaviour
 
     void Update()
     {
-        transform.localPosition = WeaponBreathingSway() + WeaponMovementBobbing();
+        if (!GameManager.Instance.PlayerDead)
+        {
+            transform.localPosition = WeaponBreathingSway() + WeaponMovementBobbing();
 
-        transform.localRotation = Quaternion.Euler(WeaponAimSway() + WeaponMovementSway());
+            transform.localRotation = Quaternion.Euler(WeaponAimSway() + WeaponMovementSway());
+        }
     }
 
     private Vector3 WeaponBreathingSway()

@@ -67,11 +67,11 @@ public class GameplayMenus : MonoBehaviour
 
     public void Pause()
     {
-        if (_pauseMenu.activeSelf && !GameManager.Instance.EndGame)
+        if (_pauseMenu.activeSelf)
         {
             Resume();
         }
-        else if (!_pauseMenu.activeSelf && !GameManager.Instance.EndGame)
+        else if (!_pauseMenu.activeSelf)
         {
             SettingsBack();
             if (!GameManager.Instance.Player0IsUsingKeyboardOrMouse)
@@ -86,7 +86,7 @@ public class GameplayMenus : MonoBehaviour
             PlayerCurrentGun.CanShoot = false;
             PlayerMove.CanJump = false;
         }
-        else if (_settingsMenu.activeSelf && !GameManager.Instance.EndGame)
+        else if (_settingsMenu.activeSelf)
         {
             SettingsBack();
         }
@@ -95,6 +95,9 @@ public class GameplayMenus : MonoBehaviour
     private IEnumerator ReEnableJump()
     {
         yield return new WaitForSeconds(0.1f);
-        PlayerMove.CanJump = true;
+        if (!GameManager.Instance.PlayerDead)
+        {
+            PlayerMove.CanJump = true;
+        }
     }
 }

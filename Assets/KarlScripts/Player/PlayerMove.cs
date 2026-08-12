@@ -53,6 +53,7 @@ public class PlayerMove : MonoBehaviour
 
     [Header("PlayerStates")]
     public MovementState State;
+    public bool CanMove;
     public bool CanJump;
     public bool CanSprint;
     public bool SprintQueued;
@@ -113,39 +114,57 @@ public class PlayerMove : MonoBehaviour
         _rb = GetComponent<Rigidbody>();
         _rb.freezeRotation = true;
         _readyToJump = true;
-        CanJump = true;
+        CanJump = false;
+        CanSprint = false;
+        CanMove = false;
         _startYScale = _playerMesh.localScale.y;
         _stepRayHigher.transform.localPosition = new Vector3(_stepRayHigher.transform.localPosition.x, _stepHeight, _stepRayHigher.transform.localPosition.z);
     }
 
     void FixedUpdate()
     {
-        if (IsSliding)
+        if (CanMove)
         {
-            SlidingMovement();
-        }
-        else if(JumpSlide)
-        {
-            OutSide();
-            MovePlayer();
-
-            if (_slideJumpToggle)
+            if (IsSliding)
             {
-                _slideJumpToggle = false;
-                StartCoroutine(DelayJumping());
+                SlidingMovement();
             }
-        }
-        else
-        {
-            MovePlayer();
-        }
+            else if (JumpSlide)
+            {
+                OutSide();
+                MovePlayer();
 
-        StepClimb();
+                if (_slideJumpToggle)
+                {
+                    _slideJumpToggle = false;
+                    StartCoroutine(DelayJumping());
+                }
+            }
+            else
+            {
+                MovePlayer();
+            }
+
+            StepClimb();
+        }
     }
 
     void Update()
     {
-        PlayerInput();
+        if (GameManager.Instance.PlayerDead)
+        {
+            CanMove = false;
+            CanSprint = false;
+            CanJump = false;
+        }
+        else
+        {
+            CanMove = true;
+            CanSprint = true;
+            CanJump = true;
+        }
+
+        JumpInput();
         SpeedControl();
         StateHandler();
         StaminaHandler();
@@ -169,7 +188,7 @@ public class PlayerMove : MonoBehaviour
         }
     }
 
-    private void PlayerInput()
+    private void JumpInput()
     {
         if (JumpQueued)
         {
@@ -245,7 +264,7 @@ public class PlayerMove : MonoBehaviour
 
     private void StaminaHandler()
     {
-        if(_sprintStamina >= _timePlayerSprintEnabled)
+        if(_sprintStamina >= _timePlayerSprintEnabled && GameManager.Instance.PlayerDead != true)
         {
             CanSprint = true;
         }

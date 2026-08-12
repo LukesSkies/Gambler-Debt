@@ -30,7 +30,7 @@ public class GameManager : MonoBehaviour
 
     [Header("Game Values")]
     public bool Paused;
-    public bool EndGame;
+    public bool PlayerDead;
     public int Round;
     public float ZombieCount;
     public int PlayerCount;
@@ -135,7 +135,7 @@ public class GameManager : MonoBehaviour
             ZombieHealth = GetZombieHealth(Round);
         }
 
-        if (Paused || EndGame)
+        if (Paused)
         {
             Time.timeScale = 0;
             Cursor.lockState = CursorLockMode.Confined;

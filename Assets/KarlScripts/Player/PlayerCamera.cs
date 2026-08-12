@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 public class PlayerCamera : MonoBehaviour
 {
@@ -82,10 +81,16 @@ public class PlayerCamera : MonoBehaviour
 
     void LateUpdate()
     {
-        if (GameManager.Instance.Player0IsUsingKeyboardOrMouse)
+        if (GameManager.Instance.PlayerDead)
+        {
+            _cameraLook = Vector2.zero;
+        }
+
+        else if (GameManager.Instance.Player0IsUsingKeyboardOrMouse)
         {
             _cameraLook = PlayerLookVector * Time.deltaTime * (_playerCurrentGun.CurrentGun.GetComponent<RaycastGun>().Aiming ? MouseAimSensitivity : MouseSensitivity);
         }
+
         else
         {
             _cameraLook = PlayerLookVector * Time.deltaTime * (_playerCurrentGun.CurrentGun.GetComponent<RaycastGun>().Aiming ? ControllerAimSensitivity : ControllerSensitivity);
