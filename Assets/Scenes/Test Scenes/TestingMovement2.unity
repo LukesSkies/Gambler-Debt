@@ -1958,11 +1958,11 @@ MonoBehaviour:
   EndHeadshotPoints: 100
   EndKnifePoints: 130
   ZombieHealth: 0
-  PlayerHealth: 150
-  PlayerJugHealth: 250
+  PlayerHealth: 90
   PlayerHealthRegen: 40
+  PlayerExtraHealth: 150
   Paused: 0
-  PlayerDead: 1
+  PlayerDead: 0
   Round: 0
   ZombieCount: 0
   PlayerCount: 0
@@ -1978,7 +1978,7 @@ MonoBehaviour:
   SlotMachineGuns:
   - {fileID: 5091103823711062999, guid: 27f38aba5adbff643b327263df28c0a8, type: 3}
   - {fileID: 6766275538875864500, guid: 0938e9af146e4694ca7b9e63c7e7a4c0, type: 3}
-  Player0IsUsingKeyboardOrMouse: 0
+  Player0IsUsingKeyboardOrMouse: 1
 --- !u!4 &231823409
 Transform:
   m_ObjectHideFlags: 0
@@ -10984,6 +10984,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1195438583}
   - component: {fileID: 1195438587}
+  - component: {fileID: 1195438591}
   - component: {fileID: 1195438585}
   - component: {fileID: 1195438584}
   - component: {fileID: 1195438586}
@@ -11142,8 +11143,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _debugCurrentHealth: 0
-  MaxHealth: 150
+  MaxHealth: 90
+  WaitUntilRegen: 2.2
   _redFlash: {fileID: 1113510566}
+  WaitForHealthRegen: 0
 --- !u!114 &1195438588
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11534,6 +11537,19 @@ MonoBehaviour:
   NavigationInput: {x: 0, y: 0}
   _controllerTimeToInteract: 0.2
   _controllerTimerToInteract: 0
+--- !u!114 &1195438591
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1195438581}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9115e9b39d75a7459a55126c760bc4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ExtraHealth: 0
 --- !u!1 &1212962940
 GameObject:
   m_ObjectHideFlags: 0
@@ -12034,7 +12050,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1270764249
 RectTransform:
   m_ObjectHideFlags: 0
@@ -14453,7 +14469,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d161613afd1b6840839f82209b6fa49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _zombieDamage: 50
+  _zombieDamage: 30
   _redFlash: {fileID: 1113510566}
 --- !u!1 &1698792714
 GameObject:
@@ -14876,7 +14892,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d161613afd1b6840839f82209b6fa49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _zombieDamage: 50
+  _zombieDamage: 30
   _redFlash: {fileID: 1113510566}
 --- !u!1 &1776925120
 GameObject:

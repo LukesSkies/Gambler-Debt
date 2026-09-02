@@ -25,8 +25,14 @@ public class GameManager : MonoBehaviour
     [Header("Health Values")]
     public int ZombieHealth;
     public int PlayerHealth = 90;
-    public int PlayerJugHealth = 150;
     public int PlayerHealthRegen = 40;
+
+    [Header("Player Values")]
+    public int PlayerStamina = 4;
+
+    [Header("Perk Values")]
+    public int PlayerExtraHealth = 150;
+    public int PlayerExtraStamina = 8;
 
     [Header("Game Values")]
     public bool Paused;

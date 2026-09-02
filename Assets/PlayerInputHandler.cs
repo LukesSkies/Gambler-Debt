@@ -36,7 +36,7 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void Start()
     {
-        _gameplayMenus = GameObject.Find("Menus").GetComponent<GameplayMenus>();
+        _gameplayMenus = GameObject.Find("Menus&QTE").GetComponent<GameplayMenus>();
         _playerMove = GetComponent<PlayerMove>();
         _playerCamera = transform.Find("CameraHolder").GetComponent<PlayerCamera>();
         _playerCurrentGun = GetComponent<PlayerCurrentGun>();

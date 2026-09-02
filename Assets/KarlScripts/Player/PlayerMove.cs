@@ -8,7 +8,7 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private float _groundDrag;
     [SerializeField] private float _walkSpeedSmoothness = 12;
     [SerializeField] private float _sprintSpeedSmoothness = 6;
-    [SerializeField] private float _maxSprintStamina = 4;
+    public float MaxSprintStamina = 4;
     [SerializeField] private float _timePlayerSprintEnabled = 1.5f;
 
     [Header("Player Step Height")]
@@ -64,7 +64,7 @@ public class PlayerMove : MonoBehaviour
     public Vector2 PlayerDir;
 
     [Header("Player Live Values")]
-    [SerializeField] private float _sprintStamina = 4;
+    public float CurrentSprintStamina = 4;
 
     private Vector3 _moveDir;
     private Vector3 _smoothMoveDir;
@@ -160,7 +160,6 @@ public class PlayerMove : MonoBehaviour
         else
         {
             CanMove = true;
-            CanSprint = true;
             CanJump = true;
         }
 
@@ -264,34 +263,34 @@ public class PlayerMove : MonoBehaviour
 
     private void StaminaHandler()
     {
-        if(_sprintStamina >= _timePlayerSprintEnabled && GameManager.Instance.PlayerDead != true)
+        if(CurrentSprintStamina >= _timePlayerSprintEnabled && GameManager.Instance.PlayerDead != true)
         {
             CanSprint = true;
         }
 
-        else if(_sprintStamina == 0)
+        else if(CurrentSprintStamina == 0)
         {
             CanSprint = false;
         }
 
-        else if (_sprintStamina < 0)
+        else if (CurrentSprintStamina < 0)
         {
-            _sprintStamina = 0;
+            CurrentSprintStamina = 0;
         }
 
-        else if (_sprintStamina > _maxSprintStamina)
+        else if (CurrentSprintStamina > MaxSprintStamina)
         {
-            _sprintStamina = _maxSprintStamina;
+            CurrentSprintStamina = MaxSprintStamina;
         }
 
-        if (State == MovementState.sprinting && _sprintStamina > 0)
+        if (State == MovementState.sprinting && CurrentSprintStamina > 0)
         {
-            _sprintStamina -= Time.deltaTime;
+            CurrentSprintStamina -= Time.deltaTime;
         }
 
-        else if (State != MovementState.sprinting && _sprintStamina < 4)
+        else if (State != MovementState.sprinting && CurrentSprintStamina < MaxSprintStamina)
         {
-            _sprintStamina += Time.deltaTime;
+            CurrentSprintStamina += Time.deltaTime;
         }
     }
 
