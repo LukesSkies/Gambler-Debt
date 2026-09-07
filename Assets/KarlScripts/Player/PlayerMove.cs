@@ -59,6 +59,7 @@ public class PlayerMove : MonoBehaviour
     public bool SprintQueued;
     public bool SlidingQueued;
     public bool JumpQueued;
+    public bool IsJumping;
 
     [Header("PlayerInput")]
     public Vector2 PlayerDir;
@@ -144,7 +145,6 @@ public class PlayerMove : MonoBehaviour
             {
                 MovePlayer();
             }
-
             StepClimb();
         }
     }
@@ -184,6 +184,11 @@ public class PlayerMove : MonoBehaviour
         else
         {
             _rb.linearDamping = 0;
+        }
+
+        if (IsJumping && GroundCheck() && _rb.linearVelocity.y <= 0.01f)
+        {
+            IsJumping = false;
         }
     }
 
@@ -301,7 +306,7 @@ public class PlayerMove : MonoBehaviour
 
         float lerpSpeed;
         if (State == MovementState.idle && OnSlope())
-            lerpSpeed = _walkSpeedSmoothness * 3f;
+            lerpSpeed = _walkSpeedSmoothness * 2f;
         else
             lerpSpeed = (State == MovementState.sprinting) ? _sprintSpeedSmoothness : _walkSpeedSmoothness;
 
@@ -312,7 +317,7 @@ public class PlayerMove : MonoBehaviour
         {
             _rb.AddForce(GetSlopeMoveDir(clampedDir) * _moveSpeed * 20f, ForceMode.Force);
 
-            if(_rb.linearVelocity.y > 0)
+            if(_rb.linearVelocity.y > 0 && State == MovementState.outSliding)
             {
                 _rb.AddForce(Vector3.down * 40f, ForceMode.Force);
             }
@@ -335,33 +340,13 @@ public class PlayerMove : MonoBehaviour
     private void StepClimb()
     {
         RaycastHit hitLower;
-        if(Physics.Raycast(_stepRayLower.transform.position, transform.TransformDirection(Vector3.forward), out hitLower, 0.1f))
+        Debug.DrawRay(_stepRayLower.transform.position, transform.TransformDirection(Vector3.forward * 0.05f), Color.green);
+        if (Physics.Raycast(_stepRayLower.transform.position, transform.TransformDirection(Vector3.forward), out hitLower, 0.05f, LayerMask.GetMask("Ledge")))
         {
-            RaycastHit hitHigher;
-            if (!Physics.Raycast(_stepRayHigher.transform.position, transform.TransformDirection(Vector3.forward), out hitHigher, 0.2f))
-            {
-                _rb.position -= new Vector3(0, -_stepSmooth, 0);
-            }
-        }
-
-        RaycastHit hitLower45;
-        if (Physics.Raycast(_stepRayLower.transform.position, transform.TransformDirection(1.5f,0,1f), out hitLower45, 0.1f))
-        {
-            RaycastHit hitHigher45;
-            if (!Physics.Raycast(_stepRayHigher.transform.position, transform.TransformDirection(1.5f, 0, 1f), out hitHigher45, 0.2f))
-            {
-                _rb.position -= new Vector3(0, -_stepSmooth, 0);
-            }
-        }
-
-        RaycastHit hitLowerMinus45;
-        if (Physics.Raycast(_stepRayLower.transform.position, transform.TransformDirection(-1.5f, 0, 1f), out hitLowerMinus45, 0.1f))
-        {
-            RaycastHit hitHigherMinus45;
-            if (!Physics.Raycast(_stepRayHigher.transform.position, transform.TransformDirection(-1.5f, 0, 1f), out hitHigherMinus45, 0.2f))
-            {
-                _rb.position -= new Vector3(0, -_stepSmooth, 0);
-            }
+            Debug.Log("Ledge Hit");
+            Vector3 targetpos = new Vector3(_rb.position.x, hitLower.point.y, _rb.position.z);
+            _rb.position = Vector3.Lerp(_rb.position, targetpos, Time.deltaTime / 0.1f);
+            _rb.linearVelocity = new Vector3(_rb.linearVelocity.x, 0, _rb.linearVelocity.z);
         }
     }
 
@@ -408,7 +393,9 @@ public class PlayerMove : MonoBehaviour
 
         _rb.linearVelocity = new Vector3(_rb.linearVelocity.x, 0, _rb.linearVelocity.z);
 
-        bool reducedJump = GoingDownSlope() && OnSlope() && !GroundCheck() == false;
+        bool reducedJump = GoingDownSlope() && OnSlope() && GroundCheck();
+
+        IsJumping = true;
 
         _rb.AddForce(transform.up * (reducedJump ? _jumpForce : (wasSliding ? _slideJumpForce : _jumpForce)), ForceMode.Impulse);
     }
