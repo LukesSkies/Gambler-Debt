@@ -59,7 +59,6 @@ public class PlayerMove : MonoBehaviour
     public bool SprintQueued;
     public bool SlidingQueued;
     public bool JumpQueued;
-    public bool IsJumping;
 
     [Header("PlayerInput")]
     public Vector2 PlayerDir;
@@ -184,11 +183,6 @@ public class PlayerMove : MonoBehaviour
         else
         {
             _rb.linearDamping = 0;
-        }
-
-        if (IsJumping && GroundCheck() && _rb.linearVelocity.y <= 0.01f)
-        {
-            IsJumping = false;
         }
     }
 
@@ -394,8 +388,6 @@ public class PlayerMove : MonoBehaviour
         _rb.linearVelocity = new Vector3(_rb.linearVelocity.x, 0, _rb.linearVelocity.z);
 
         bool reducedJump = GoingDownSlope() && OnSlope() && GroundCheck();
-
-        IsJumping = true;
 
         _rb.AddForce(transform.up * (reducedJump ? _jumpForce : (wasSliding ? _slideJumpForce : _jumpForce)), ForceMode.Impulse);
     }

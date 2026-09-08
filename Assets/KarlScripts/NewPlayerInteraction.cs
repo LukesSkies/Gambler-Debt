@@ -24,7 +24,7 @@ public class NewPlayerInteraction : MonoBehaviour
         if(InteractionTest(out IInteractable interactable))
         {
             CanInteract = true;
-            if (interactable.CanInteract(InteractText))
+            if (interactable.CanInteract(InteractText, this))
             {
                 InteractText.gameObject.SetActive(true);
 

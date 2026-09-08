@@ -51,7 +51,7 @@ public class DoorTest : MonoBehaviour, IInteractable
 
     #region Interaction
 
-    public bool CanInteract(TextMeshProUGUI interactText)
+    public bool CanInteract(TextMeshProUGUI interactText, NewPlayerInteraction playerInteraction)
     {
         if (_opened || _isOpening)
         {

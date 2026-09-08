@@ -145,10 +145,10 @@ public class NewSlotMachine : MonoBehaviour, IInteractable
         _itemSpawned = true;
     }
 
-    public bool CanInteract(TextMeshProUGUI interactText)
+    public bool CanInteract(TextMeshProUGUI interactText, NewPlayerInteraction playerInteraction)
     {
         //If the slot machine isnt spinning and there is an item spawned
-        if(!_isSpinning && _itemSpawned)
+        if (!_isSpinning && _itemSpawned)
         {
             interactText.text = "Press F to Pickup Item";
             interactText.gameObject.SetActive(true);

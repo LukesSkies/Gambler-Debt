@@ -24,7 +24,8 @@ public class RaycastGun : MonoBehaviour
     private Vector3 _debugDirection;
     public bool InputShooting;
     public bool CanAim;
-    [SerializeField] private int _bulletsLeft, _bulletsShot, _reserveAmmo;
+    public int ReserveAmmo;
+    [SerializeField] private int _bulletsLeft, _bulletsShot;
     [SerializeField] private bool _shooting, _readyToShoot, _reloading;
 
     private TextMeshProUGUI _gunName;
@@ -85,7 +86,7 @@ public class RaycastGun : MonoBehaviour
         _readyToShoot = true;
         CanAim = true;
 
-        _reserveAmmo = GunSettings.ReserveAmmo;
+        ReserveAmmo = GunSettings.ReserveAmmo;
 
         _gunRecoil.GunSettings = GunSettings;
 
@@ -106,7 +107,7 @@ public class RaycastGun : MonoBehaviour
 
         if (ReloadQueued)
         {
-            if (_bulletsLeft < GunSettings.MagazineSize && !_reloading && _reserveAmmo > 0)
+            if (_bulletsLeft < GunSettings.MagazineSize && !_reloading && ReserveAmmo > 0)
             {
                 _reloading = true;
                 CanAim = false;
@@ -116,7 +117,7 @@ public class RaycastGun : MonoBehaviour
             ReloadQueued = false;
         }
 
-        if (!_reloading && _bulletsLeft <= 0 && _reserveAmmo > 0)
+        if (!_reloading && _bulletsLeft <= 0 && ReserveAmmo > 0)
         {
             _reloading = true;
             CanAim = false;
@@ -273,10 +274,10 @@ public class RaycastGun : MonoBehaviour
     public void Reload()
     {
         int bulletsNeeded = GunSettings.MagazineSize - _bulletsLeft;
-        int bulletsToReload = Mathf.Min(bulletsNeeded, _reserveAmmo);
+        int bulletsToReload = Mathf.Min(bulletsNeeded, ReserveAmmo);
 
         _bulletsLeft += bulletsToReload;
-        _reserveAmmo -= bulletsToReload;
+        ReserveAmmo -= bulletsToReload;
 
         _reloading = false;
 
@@ -297,6 +298,6 @@ public class RaycastGun : MonoBehaviour
     public void UpdateHUD()
     {
         _gunName.text = GunSettings.GunName;
-        _gunAmmo.text = _bulletsLeft + "/" + _reserveAmmo;
+        _gunAmmo.text = _bulletsLeft + "/" + ReserveAmmo;
     }
 }

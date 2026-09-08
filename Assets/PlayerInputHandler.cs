@@ -77,7 +77,7 @@ public class PlayerInputHandler : MonoBehaviour
 
                 if (_newPlayerInteraction.InteractionTest(out IInteractable interactable))
                 {
-                    if (interactable.CanInteract(_newPlayerInteraction.InteractText))
+                    if (interactable.CanInteract(_newPlayerInteraction.InteractText, _playerMove.GetComponent<NewPlayerInteraction>()))
                     {
                         _newPlayerInteraction.InteractQueued = true;
                     }
@@ -191,7 +191,7 @@ public class PlayerInputHandler : MonoBehaviour
         {
             if(_newPlayerInteraction.InteractionTest(out IInteractable interactable))
                 {
-                    if (interactable.CanInteract(_newPlayerInteraction.InteractText))
+                    if (interactable.CanInteract(_newPlayerInteraction.InteractText, _playerMove.GetComponent<NewPlayerInteraction>()))
                     {
                         _newPlayerInteraction.InteractQueued = true;
                     }

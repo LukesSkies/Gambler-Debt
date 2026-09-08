@@ -113,4 +113,17 @@ public class PlayerCurrentGun : MonoBehaviour
         GunAnimator = CurrentGun.transform.Find("WeaponMesh").GetComponent<Animator>();
         GunSwitching = false;
     }
+
+    public void WallBuyAmmo(bool mainGun)
+    {
+        if (mainGun)
+        {
+            CurrentGun.GetComponent<RaycastGun>().ReserveAmmo = CurrentGun.GetComponent<RaycastGun>().GunSettings.ReserveAmmo;
+            CurrentGun.GetComponent<RaycastGun>().UpdateHUD();
+        }
+        else
+        {
+            NextGun.GetComponent<RaycastGun>().ReserveAmmo = NextGun.GetComponent<RaycastGun>().GunSettings.ReserveAmmo;
+        }
+    }
 }
