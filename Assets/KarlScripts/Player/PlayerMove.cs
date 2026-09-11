@@ -8,6 +8,8 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private float _groundDrag;
     [SerializeField] private float _walkSpeedSmoothness = 12;
     [SerializeField] private float _sprintSpeedSmoothness = 6;
+    [SerializeField] private float _maxSprintStamina = 4;
+    [SerializeField] private float _timePlayerSprintEnabled = 1.5f;
 
     [Header("Jumping")]
     [SerializeField] private float _jumpForce;
@@ -34,6 +36,7 @@ public class PlayerMove : MonoBehaviour
     private bool _readyToJump;
     private float _moveSpeed;
     private float _slideJumpTimer;
+    private float _sprintStaminaLerp;
 
     [Header("Ground Check")]
     [SerializeField] private float _playerHeight;
@@ -45,20 +48,19 @@ public class PlayerMove : MonoBehaviour
     private RaycastHit _slopeHit;
     private bool _exitingSlope;
 
-    [Header("Keybinds")]
-    [SerializeField] private KeyCode _jumpKey = KeyCode.Space;
-    [SerializeField] private KeyCode _crouchKey = KeyCode.LeftControl;
-    [SerializeField] private KeyCode _slideKey = KeyCode.C;
-
     [Header("PlayerStates")]
     public MovementState State;
     public bool CanJump;
-    public bool IsSprinting;
+    public bool CanSprint;
+    public bool SprintQueued;
     public bool SlidingQueued;
     public bool JumpQueued;
 
     [Header("PlayerInput")]
     public Vector2 PlayerDir;
+
+    [Header("Player Live Values")]
+    [SerializeField] private float _sprintStamina = 4;
 
     private Vector3 _moveDir;
     private Vector3 _smoothMoveDir;
@@ -70,6 +72,7 @@ public class PlayerMove : MonoBehaviour
     [HideInInspector] public bool JumpSlide;
     private bool _slideJump;
     private bool _slideJumpToggle;
+    private bool _sprintTimerCheck;
 
     private CapsuleCollider _playerCollider;
     private Transform _playerMesh;
@@ -138,6 +141,7 @@ public class PlayerMove : MonoBehaviour
         PlayerInput();
         SpeedControl();
         StateHandler();
+        StaminaHandler();
 
         if (IsSliding)
         {
@@ -210,11 +214,13 @@ public class PlayerMove : MonoBehaviour
             State = MovementState.crouching;
             _moveSpeed = _crouchSpeed;
         }
-        else if(GroundCheck() && IsSprinting && PlayerDir.y > 0)
+
+        else if(GroundCheck() && SprintQueued && PlayerDir.y > 0 && CanSprint)
         {
             State = MovementState.sprinting;
             _moveSpeed = _sprintSpeed;
         }
+
         else if (GroundCheck() && PlayerDir != Vector2.zero)
         {
             State = MovementState.walking;
@@ -227,6 +233,39 @@ public class PlayerMove : MonoBehaviour
         else
         {
             State = MovementState.air;
+        }
+    }
+
+    private void StaminaHandler()
+    {
+        if(_sprintStamina >= _timePlayerSprintEnabled)
+        {
+            CanSprint = true;
+        }
+
+        else if(_sprintStamina == 0)
+        {
+            CanSprint = false;
+        }
+
+        else if (_sprintStamina < 0)
+        {
+            _sprintStamina = 0;
+        }
+
+        else if (_sprintStamina > _maxSprintStamina)
+        {
+            _sprintStamina = _maxSprintStamina;
+        }
+
+        if (State == MovementState.sprinting && _sprintStamina > 0)
+        {
+            _sprintStamina -= Time.deltaTime;
+        }
+
+        else if (State != MovementState.sprinting && _sprintStamina < 4)
+        {
+            _sprintStamina += Time.deltaTime;
         }
     }
 
@@ -274,16 +313,12 @@ public class PlayerMove : MonoBehaviour
 
         if (GroundCheck() && !_slideJump)
         {
+            JumpSlide = false;
             if (SlidingQueued && PlayerDir.y > 0)
             {
-                JumpSlide = false;
                 SlidingQueued = false;
                 _slideDir = PlayerDir;
                 Crouch(true);
-            }
-            else
-            {
-                JumpSlide = false;
             }
         }
     }
