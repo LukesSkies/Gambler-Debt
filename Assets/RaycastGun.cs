@@ -35,7 +35,6 @@ public class RaycastGun : MonoBehaviour
     private Camera _weaponCamera;
     private Transform _attackPoint;
     private Transform _weaponHolder;
-    private Transform _pointAdditionParent;
 
     private float _aimTimer = 0f;
 
@@ -74,8 +73,6 @@ public class RaycastGun : MonoBehaviour
 
         _bulletCasings = transform.Find("WeaponMesh").transform.Find("CasingSpawnPoint").transform.Find("BulletCasings").GetComponent<ParticleSystem>();
         _gunAnimator = transform.Find("WeaponMesh").GetComponent<Animator>();
-
-        _pointAdditionParent = GameObject.Find("HUD").transform.Find("Points").transform.Find("Player0").transform.Find("PointAdditionParent");
     }
 
     void Start()
@@ -217,9 +214,6 @@ public class RaycastGun : MonoBehaviour
                 ImpactEffect impact = hit.collider.GetComponent<ImpactEffect>();
                 if (impact != null)
                     impact.SpawnBloodEffect(hitPoint, hitNormal);
-
-                _points.Money += GameManager.Instance.HitPoints;
-                Instantiate(GameManager.Instance.PointsAdditionText, _pointAdditionParent);
             }
             else
             {
@@ -250,6 +244,7 @@ public class RaycastGun : MonoBehaviour
                     _ => 1f
                 };
                 enemyTakeDamage.EnemyHealth.TakeDamage(GunSettings.BulletDamage, damageMultiplier);
+                _points.AddPoints(GameManager.Instance.HitPoints);
             }
 
             break;

@@ -3,15 +3,22 @@ using UnityEngine;
 
 public class WallBuy : MonoBehaviour, IInteractable
 {
-    [SerializeField] private float _pointCostBuy;
-    [SerializeField] private float _pointCostAmmo;
+    [SerializeField] private int _pointCostBuy;
+    [SerializeField] private int _pointCostAmmo;
     [SerializeField] private string _gunName;
 
     [Header("Referances")]
-    private GameObject _newPlayerGunReferance;
     [SerializeField] private GameObject _activatedGun;
-
+    private Animation _wallbuyGunAnim;
     private bool _wallbuyActive;
+
+    private void Awake()
+    {
+        if(_activatedGun != null)
+        {
+            _wallbuyGunAnim = _activatedGun.GetComponent<Animation>();
+        }
+    }
 
     void Start()
     {
@@ -24,6 +31,7 @@ public class WallBuy : MonoBehaviour, IInteractable
         if(_wallbuyActive == true && !_activatedGun.activeSelf)
         {
             _activatedGun.SetActive(true);
+            _wallbuyGunAnim.Play();
         }
     }
 
@@ -42,7 +50,7 @@ public class WallBuy : MonoBehaviour, IInteractable
         //If the player already has the wall buy gun
         else if (currentGun == _gunName + "(Clone)" || secondGun == _gunName + "(Clone)")
         {
-            interactText.text = "Press F to Buy Ammo [Cost: " + _pointCostBuy + "]";
+            interactText.text = "Press F to Buy Ammo [Cost: " + _pointCostAmmo + "]";
             interactText.gameObject.SetActive(true);
             return true;
         }
@@ -63,11 +71,11 @@ public class WallBuy : MonoBehaviour, IInteractable
         {
             if(currentGun == _gunName + "(Clone)")
             {
-                playerInteraction.GetComponent<PlayerCurrentGun>().WallBuyAmmo(true);
+                playerInteraction.GetComponent<PlayerCurrentGun>().WallBuyAmmo(true, _pointCostAmmo);
             }
             else
             {
-                playerInteraction.GetComponent<PlayerCurrentGun>().WallBuyAmmo(false);
+                playerInteraction.GetComponent<PlayerCurrentGun>().WallBuyAmmo(false, _pointCostAmmo);
             }
             return true;
         }
@@ -78,17 +86,24 @@ public class WallBuy : MonoBehaviour, IInteractable
 
             Transform playerGunSpawn = playerCurrentGun.GunHolder;
 
+            GameObject wallBuyGun;
+
             switch (_gunName)
             {
                 case "P90":
-                    _newPlayerGunReferance = Instantiate(GameManager.Instance.GunGameObjects[1], playerGunSpawn);
+                    wallBuyGun = Instantiate(GameManager.Instance.GunGameObjects[1], playerGunSpawn);
+                    break;
+                default:
+                    wallBuyGun = Instantiate(GameManager.Instance.GunGameObjects[1], playerGunSpawn);
                     break;
             }
 
+            playerPoints.RemovePoints(_pointCostBuy);
+
             Destroy(playerCurrentGun.CurrentGun);
 
-            playerCurrentGun.CurrentGun = _newPlayerGunReferance;
-            _newPlayerGunReferance.SetActive(true);
+            playerCurrentGun.CurrentGun = wallBuyGun;
+            wallBuyGun.SetActive(true);
             playerCurrentGun.GunAnimator = playerCurrentGun.CurrentGun.transform.Find("WeaponMesh").GetComponent<Animator>();
 
             _wallbuyActive = true;

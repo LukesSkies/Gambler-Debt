@@ -21,10 +21,14 @@ public class PlayerCurrentGun : MonoBehaviour
     public bool SwitchToAnyGunController;
     public bool SwitchToAnyGunMouse;
 
+    private Points _playerPoints;
+
     private void Awake()
     {
         GunHolder = transform.Find("CameraHolder").transform.Find("CameraRecoil").
             transform.Find("GunCamera").transform.Find("WeaponHolder");
+
+        _playerPoints = GetComponent<Points>();
     }
 
     private void Start()
@@ -114,16 +118,24 @@ public class PlayerCurrentGun : MonoBehaviour
         GunSwitching = false;
     }
 
-    public void WallBuyAmmo(bool mainGun)
+    public void WallBuyAmmo(bool mainGun, int pointCost)
     {
         if (mainGun)
         {
-            CurrentGun.GetComponent<RaycastGun>().ReserveAmmo = CurrentGun.GetComponent<RaycastGun>().GunSettings.ReserveAmmo;
-            CurrentGun.GetComponent<RaycastGun>().UpdateHUD();
+            if(CurrentGun.GetComponent<RaycastGun>().ReserveAmmo < CurrentGun.GetComponent<RaycastGun>().GunSettings.ReserveAmmo)
+            {
+                CurrentGun.GetComponent<RaycastGun>().ReserveAmmo = CurrentGun.GetComponent<RaycastGun>().GunSettings.ReserveAmmo;
+                CurrentGun.GetComponent<RaycastGun>().UpdateHUD();
+                _playerPoints.RemovePoints(pointCost);
+            }
         }
         else
         {
-            NextGun.GetComponent<RaycastGun>().ReserveAmmo = NextGun.GetComponent<RaycastGun>().GunSettings.ReserveAmmo;
+            if(NextGun.GetComponent<RaycastGun>().ReserveAmmo < NextGun.GetComponent<RaycastGun>().GunSettings.ReserveAmmo)
+            {
+                NextGun.GetComponent<RaycastGun>().ReserveAmmo = NextGun.GetComponent<RaycastGun>().GunSettings.ReserveAmmo;
+                _playerPoints.RemovePoints(pointCost);
+            }
         }
     }
 }

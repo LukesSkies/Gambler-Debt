@@ -172,7 +172,7 @@ public class NewSlotMachine : MonoBehaviour, IInteractable
         //If the slot machine isnt spinning and there isnt an item spawned
         if (!_isSpinning && !_itemSpawned && playerPoints.Money >= _pointCost)
         {
-            playerPoints.Money -= _pointCost;
+            playerPoints.RemovePoints(_pointCost);
             StartCoroutine(SpinAnimation());
         }
         //If the slot machine isnt spinning and there is an item spawned

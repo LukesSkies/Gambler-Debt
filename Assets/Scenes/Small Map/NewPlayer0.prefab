@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 123373559807585930}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.89699996, z: 0.5}
+  m_LocalPosition: {x: 0, y: -0.983, z: 0.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -135,7 +135,7 @@ Camera:
   m_Depth: 1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 19871
+    m_Bits: 52639
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -569,12 +569,9 @@ MonoBehaviour:
   _timePlayerSprintEnabled: 1.5
   _stepHeight: 0.5
   _stepSmooth: 0.1
-  _ledgeMask:
-    serializedVersion: 2
-    m_Bits: 32768
   _jumpForce: 5
   _jumpCooldown: 0.25
-  _airMultiplier: 0
+  _airMultiplier: 0.25
   _crouchSpeed: 2
   _crouchHeight: 1
   _crouchYScale: 0.5

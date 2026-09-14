@@ -2,7 +2,7 @@ using System.Collections;
 using TMPro;
 using UnityEngine;
 
-public class PointAdditionMovement : MonoBehaviour
+public class PointTextMovement : MonoBehaviour
 {
     [SerializeField] private Vector2 _upperLimit;
     [SerializeField] private Vector2 _lowerLimit;

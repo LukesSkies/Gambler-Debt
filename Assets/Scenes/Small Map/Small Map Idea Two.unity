@@ -63929,8 +63929,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e62f6ffcbbae8642800f36c52ac3044, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startHeight: -0.75
-  startScale: {x: 0, y: 0, z: 0}
+  startHeight: 0
+  startScale: {x: 0.25, y: 0.25, z: 0.25}
   introDuration: 1
   bobHeight: 0.025
   bobSpeed: 1

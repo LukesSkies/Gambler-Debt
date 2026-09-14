@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2036775319507791579}
   - component: {fileID: 2775891387747661319}
   m_Layer: 5
-  m_Name: PointsAdditionTextGlow
+  m_Name: PointsTextGlow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -74,8 +74,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 2483091967
-  m_fontColor: {r: 1, g: 0.97738194, b: 0, a: 0.5803922}
+    rgba: 2483093503
+  m_fontColor: {r: 1, g: 1, b: 0, a: 0.5803922}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -150,7 +150,7 @@ GameObject:
   - component: {fileID: 5939342083190942177}
   - component: {fileID: 27055655546711560}
   m_Layer: 5
-  m_Name: PointsAdditionText
+  m_Name: PointTextMovement
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -258,8 +258,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278254079
-  m_fontColor: {r: 1, g: 0.97738194, b: 0, a: 1}
+    rgba: 4278255615
+  m_fontColor: {r: 1, g: 1, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
