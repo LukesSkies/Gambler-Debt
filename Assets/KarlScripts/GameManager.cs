@@ -141,13 +141,13 @@ public class GameManager : MonoBehaviour
             ZombieHealth = GetZombieHealth(Round);
         }
 
-        if (Paused)
+        if (Paused && !PlayerDead)
         {
             Time.timeScale = 0;
             Cursor.lockState = CursorLockMode.Confined;
             Cursor.visible = true;
         }
-        else
+        else if(!Paused && !PlayerDead)
         {
             Time.timeScale = 1;
             Cursor.lockState = CursorLockMode.Locked;

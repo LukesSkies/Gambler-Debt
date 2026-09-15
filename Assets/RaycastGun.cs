@@ -21,29 +21,23 @@ public class RaycastGun : MonoBehaviour
     [Header("Debug")]
     [SerializeField] private bool _allowInvoke = true;
     [SerializeField] private bool _allowRaycastShown = true;
-    private Vector3 _debugDirection;
     public bool InputShooting;
     public bool CanAim;
     public int ReserveAmmo;
-    [SerializeField] private int _bulletsLeft, _bulletsShot;
+    [SerializeField] private int _bulletsLeft;
     [SerializeField] private bool _shooting, _readyToShoot, _reloading;
 
     private TextMeshProUGUI _gunName;
     private TextMeshProUGUI _gunAmmo;
 
     private Camera _mainCam;
-    private Camera _weaponCamera;
-    private Transform _attackPoint;
     private Transform _weaponHolder;
 
     private float _aimTimer = 0f;
 
-    private Collider _playerCollider;
-
     private GunRecoil _gunRecoil;
     private PlayerMove _playerMove;
     private PlayerCurrentGun _playerCurrentGun;
-    private PlayerCamera _playerCamera;
 
     private Points _points;
 
@@ -51,14 +45,11 @@ public class RaycastGun : MonoBehaviour
 
     private Animator _gunAnimator;
 
+    private PlayerPerks _playerPerks;
+
     private void Awake()
     {
         _mainCam = Camera.main;
-        _weaponCamera = _mainCam.transform.parent.transform.Find("GunCamera").GetComponent<Camera>();
-
-        _attackPoint = transform.Find("WeaponMesh").transform.Find("AttackPoint");
-
-        _playerCollider = transform.root.Find("PlayerMesh").GetComponent<Collider>();
 
         _gunRecoil = transform.root.Find("CameraHolder").transform.Find("CameraRecoil").GetComponent<GunRecoil>();
         _playerMove = transform.root.GetComponent<PlayerMove>();
@@ -73,6 +64,8 @@ public class RaycastGun : MonoBehaviour
 
         _bulletCasings = transform.Find("WeaponMesh").transform.Find("CasingSpawnPoint").transform.Find("BulletCasings").GetComponent<ParticleSystem>();
         _gunAnimator = transform.Find("WeaponMesh").GetComponent<Animator>();
+
+        _playerPerks = transform.root.GetComponent<PlayerPerks>();
     }
 
     void Start()
@@ -109,6 +102,14 @@ public class RaycastGun : MonoBehaviour
                 _reloading = true;
                 CanAim = false;
                 _gunAnimator.SetTrigger("Reloading");
+                if (_playerPerks.TypeOfPerks[2].Active)
+                {
+                    _gunAnimator.speed = 2;
+                }
+                else
+                {
+                    _gunAnimator.speed = 1;
+                }
             }
 
             ReloadQueued = false;
@@ -147,8 +148,6 @@ public class RaycastGun : MonoBehaviour
 
         if (_readyToShoot && _shooting && !_reloading && _bulletsLeft > 0 && _playerCurrentGun.CanShoot)
         {
-            _bulletsShot = 0;
-
             Shoot();
         }
     }
@@ -169,7 +168,6 @@ public class RaycastGun : MonoBehaviour
             _muzzleFlash.GetComponent<ParticleSystem>().Play();
 
         _bulletsLeft--;
-        _bulletsShot++;
 
         UpdateHUD();
 
@@ -189,8 +187,6 @@ public class RaycastGun : MonoBehaviour
         Vector3 direction = _mainCam.transform.forward
             + _mainCam.transform.right * x
             + _mainCam.transform.up * y;
-
-        _debugDirection = direction;
 
         direction.Normalize();
 

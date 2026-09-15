@@ -109,7 +109,7 @@ public class PlayerInputHandler : MonoBehaviour
 
     public void OnPause(CallbackContext ctx)
     {
-        if (ctx.started)
+        if (ctx.started && !GameManager.Instance.PlayerDead)
         {
             Debug.Log("Paused");
             GameManager.Instance.Player0IsUsingKeyboardOrMouse = _playerInput.currentControlScheme == "Keyboard&Mouse";

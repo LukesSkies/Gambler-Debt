@@ -14,7 +14,8 @@ public class GameplayMenus : MonoBehaviour
 
     private EventSystem _eventSystem;
 
-    [HideInInspector] public GameObject DeathMenu;
+    [HideInInspector] public GameObject GameOverMenu;
+    [HideInInspector] public GameObject ReviveQTE;
 
     void Awake()
     {
@@ -26,13 +27,14 @@ public class GameplayMenus : MonoBehaviour
         PlayerCurrentGun = GameObject.Find("NewPlayer0").GetComponent<PlayerCurrentGun>();
         PlayerMove = GameObject.Find("NewPlayer0").GetComponent<PlayerMove>();
         _eventSystem = GameObject.Find("EventSystem").GetComponent<EventSystem>();
-        DeathMenu = transform.Find("DeathMenu").gameObject;
+        GameOverMenu = transform.Find("DeathMenu").gameObject;
+        ReviveQTE = transform.Find("ReviveQTE").gameObject;
     }
 
     private void Start()
     {
         _pauseMenu.SetActive(false);
-        DeathMenu.SetActive(false);
+        GameOverMenu.SetActive(false);
     }
 
     public void Resume()

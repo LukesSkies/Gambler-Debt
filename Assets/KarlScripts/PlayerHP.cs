@@ -16,6 +16,7 @@ public class PlayerHP : MonoBehaviour, IDamageable
 
     [Header("Debug")]
     [SerializeField] private bool WaitForHealthRegen;
+    private bool _deathToggle;
 
     void Start()
     {
@@ -35,6 +36,20 @@ public class PlayerHP : MonoBehaviour, IDamageable
         {
             _regenHealth = StartCoroutine(RegenHealth());
         }
+
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            Health = 0;
+        }
+
+        if (Health <= 0 && !_deathToggle)
+        {
+            _deathToggle = true;
+            Health = 0;
+            _redFlash.Stop();
+            _redFlash.Rewind();
+            Death();
+        }
     }
 
     public void TakeDamage(float amount, float damageMultiplier = 1)
@@ -46,14 +61,6 @@ public class PlayerHP : MonoBehaviour, IDamageable
         {
             StopCoroutine(_regenHealth);
             _regenHealth = null;
-        }
-
-        if (Health <= 0)
-        {
-            Health = 0;
-            _redFlash.Stop();
-            _redFlash.Rewind();
-            Death();
         }
     }
 
@@ -68,8 +75,10 @@ public class PlayerHP : MonoBehaviour, IDamageable
 
     private void Death()
     {
-        _gameplayMenus.DeathMenu.SetActive(true);
+        _gameplayMenus.ReviveQTE.SetActive(true);
         GameManager.Instance.PlayerDead = true;
+        Cursor.lockState = CursorLockMode.Confined;
+        Cursor.visible = true;
         _gameplayMenus.PlayerCurrentGun.CurrentGun.SetActive(false);
     }
 
