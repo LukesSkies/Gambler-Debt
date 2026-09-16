@@ -311,4 +311,12 @@ public class PlayerInputHandler : MonoBehaviour
             _playerCurrentGun.SwitchToAnyGunMouse = false;
         }
     }
+
+    public void OnReviveActivate(CallbackContext ctx)
+    {
+        if (ctx.started && GameManager.Instance.PlayerDead && !_gameplayMenus.ReviveQTE.GetComponent<ReviveQTE>().InputQueued)
+        {
+            _gameplayMenus.ReviveQTE.GetComponent<ReviveQTE>().InputQueued = true;
+        }
+    }
 }

@@ -10,13 +10,15 @@ public class PlayerHP : MonoBehaviour, IDamageable
     public float MaxHealth;
     public float WaitUntilRegen;
 
+    public int AmountOfDowns;
+
     [SerializeField] private Animation _redFlash;
 
     private Coroutine _regenHealth;
 
     [Header("Debug")]
     [SerializeField] private bool WaitForHealthRegen;
-    private bool _deathToggle;
+    public bool DeathToggle;
 
     void Start()
     {
@@ -42,9 +44,9 @@ public class PlayerHP : MonoBehaviour, IDamageable
             Health = 0;
         }
 
-        if (Health <= 0 && !_deathToggle)
+        if (Health <= 0 && !DeathToggle)
         {
-            _deathToggle = true;
+            DeathToggle = true;
             Health = 0;
             _redFlash.Stop();
             _redFlash.Rewind();
@@ -76,9 +78,8 @@ public class PlayerHP : MonoBehaviour, IDamageable
     private void Death()
     {
         _gameplayMenus.ReviveQTE.SetActive(true);
+        _gameplayMenus.ReviveQTE.GetComponent<ReviveQTE>().ResetMinigame();
         GameManager.Instance.PlayerDead = true;
-        Cursor.lockState = CursorLockMode.Confined;
-        Cursor.visible = true;
         _gameplayMenus.PlayerCurrentGun.CurrentGun.SetActive(false);
     }
 

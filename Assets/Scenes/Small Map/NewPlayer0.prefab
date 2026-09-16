@@ -1024,6 +1024,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 7cd0833d-c3cd-4b9e-afc7-5aed81715907
     m_ActionName: Player/CrouchController
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1824963520764420622}
+        m_TargetAssemblyTypeName: PlayerInputHandler, Assembly-CSharp
+        m_MethodName: OnReviveActivate
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 134873ea-1d02-4c41-9f4b-9452003795fa
+    m_ActionName: 'Player/ReviveActivate[/Keyboard/space,/XInputControllerWindows/buttonSouth]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -1449,7 +1465,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7895509035022002616, guid: 5ac939d750ba4424b8c090f014032748, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1475,7 +1491,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3027694567548991553, guid: e165ef9928836ec488501099b8a0d378, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3752698977840158311, guid: e165ef9928836ec488501099b8a0d378, type: 3}
       propertyPath: m_LocalPosition.x
