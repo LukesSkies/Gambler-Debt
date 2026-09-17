@@ -77,6 +77,7 @@ public class PlayerHP : MonoBehaviour, IDamageable
 
     private void Death()
     {
+        AmountOfDowns++;
         _gameplayMenus.ReviveQTE.SetActive(true);
         _gameplayMenus.ReviveQTE.GetComponent<ReviveQTE>().ResetMinigame();
         GameManager.Instance.PlayerDead = true;

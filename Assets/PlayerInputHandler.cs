@@ -31,16 +31,18 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void Awake()
     {
-        _menuNavigationAction = _playerInput.actions["Navigate"];
-    }
-
-    private void Start()
-    {
         _gameplayMenus = GameObject.Find("Menus&QTE").GetComponent<GameplayMenus>();
         _playerMove = GetComponent<PlayerMove>();
         _playerCamera = transform.Find("CameraHolder").GetComponent<PlayerCamera>();
         _playerCurrentGun = GetComponent<PlayerCurrentGun>();
         _newPlayerInteraction = GetComponent<NewPlayerInteraction>();
+        _playerInput = GetComponent<PlayerInput>();
+        _menuNavigationAction = _playerInput.actions["Navigate"];
+    }
+
+    private void Start()
+    {
+        _menuNavigationAction = _playerInput.actions["Navigate"];
     }
 
     private void Update()
@@ -317,6 +319,19 @@ public class PlayerInputHandler : MonoBehaviour
         if (ctx.started && GameManager.Instance.PlayerDead && !_gameplayMenus.ReviveQTE.GetComponent<ReviveQTE>().InputQueued)
         {
             _gameplayMenus.ReviveQTE.GetComponent<ReviveQTE>().InputQueued = true;
+        }
+    }
+
+    public void OnGrenade(CallbackContext ctx)
+    {
+        if(ctx.started && !_playerCurrentGun.GrenadeActive)
+        {
+            _playerCurrentGun.GrenadeActive = true;
+            _playerCurrentGun.GrenadePull();
+        }
+        else if(ctx.canceled && _playerCurrentGun.GrenadeActive)
+        {
+            _playerCurrentGun.GrenadeActive = true;
         }
     }
 }

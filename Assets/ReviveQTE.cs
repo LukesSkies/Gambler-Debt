@@ -1,5 +1,4 @@
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class ReviveQTE : MonoBehaviour
@@ -76,7 +75,18 @@ public class ReviveQTE : MonoBehaviour
         if (!InReviveQTE)
         {
             InReviveQTE = true;
-            _currentAttempts = _startingAttempts;
+            if(_playerHP.AmountOfDowns <= 4)
+            {
+                _currentAttempts = _startingAttempts - _playerHP.AmountOfDowns + 1;
+            }
+            else
+            {
+                _currentAttempts = 1;
+            }
+            if(_playerHP.AmountOfDowns > 1)
+            {
+                _moveSpeed = _moveSpeed + (5 * _playerHP.AmountOfDowns);
+            }
         }
 
         int random = Random.Range(0, 2);

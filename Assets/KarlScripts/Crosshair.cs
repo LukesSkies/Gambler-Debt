@@ -11,10 +11,13 @@ public class Crosshair : MonoBehaviour
 
     private PlayerMove _playerMove;
 
+    private PlayerCurrentGun _playerCurrentGun;
+
     void Awake()
     {
         _reticalLines = transform.Find("ReticalLines").GetComponent<RectTransform>();
         _playerMove = GameObject.Find("NewPlayer0").GetComponent<PlayerMove>();
+        _playerCurrentGun = _playerMove.GetComponent<PlayerCurrentGun>();
     }
 
     void Start()
@@ -36,13 +39,20 @@ public class Crosshair : MonoBehaviour
             _reticalTimer -= Time.deltaTime;
         }
 
-        if (IsAiming())
+        if (_playerCurrentGun.GrenadeActive)
         {
-            transform.GetChild(0).gameObject.SetActive(false);
+            transform.GetChild(0).gameObject.SetActive(true);
         }
         else
         {
-            transform.GetChild(0).gameObject.SetActive(true);
+            if (IsAiming())
+            {
+                transform.GetChild(0).gameObject.SetActive(false);
+            }
+            else
+            {
+                transform.GetChild(0).gameObject.SetActive(true);
+            }
         }
 
         UpdateRectial();
