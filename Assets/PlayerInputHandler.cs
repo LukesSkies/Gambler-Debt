@@ -331,7 +331,8 @@ public class PlayerInputHandler : MonoBehaviour
         }
         else if(ctx.canceled && _playerCurrentGun.GrenadeActive)
         {
-            _playerCurrentGun.GrenadeActive = true;
+            _playerCurrentGun.GrenadeActive = false;
+            _playerCurrentGun.GrenadeScript.ThrowGrenade = true;
         }
     }
 }

@@ -6,10 +6,10 @@ public class PlayerCurrentGun : MonoBehaviour
     public GameObject CurrentGun;
     public GameObject NextGun;
     public GameObject Grenade;
+    private List<GameObject> _gunList = new List<GameObject>();
 
     public Transform GunHolder;
     public Transform GrenadeHolder;
-    private List<GameObject> _gunList = new List<GameObject>();
 
     private string _primaryGun;
     private string _secondaryGun;
@@ -27,6 +27,7 @@ public class PlayerCurrentGun : MonoBehaviour
     public bool GrenadeActive;
 
     private Points _playerPoints;
+    public Grenade GrenadeScript;
 
     private void Awake()
     {
@@ -63,7 +64,8 @@ public class PlayerCurrentGun : MonoBehaviour
 
         GrenadeHolder = transform.Find("CameraHolder").transform.Find("CameraRecoil").transform.Find("GunCamera").transform.Find("GrenadeHolder");
         Grenade = GrenadeHolder.transform.Find("Grenade").gameObject;
-        GrenadeAnimator = Grenade.transform.GetChild(0).GetComponent<Animator>();
+        GrenadeAnimator = Grenade.transform.Find("GrenadeMesh").GetComponent<Animator>();
+        GrenadeScript = Grenade.GetComponent<Grenade>();
     }
 
     private void Start()
@@ -165,5 +167,13 @@ public class PlayerCurrentGun : MonoBehaviour
         CurrentGun.SetActive(false);
         Grenade.SetActive(true);
         GrenadeAnimator.SetBool("GrenadePull", true);
+    }
+
+    public void GrenadeGunReset()
+    {
+        GrenadeActive = false;
+        CanSwitchGuns = true;
+        CurrentGun.SetActive(true);
+        Grenade.SetActive(false);
     }
 }
