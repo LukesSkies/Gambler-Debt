@@ -24,12 +24,9 @@ public class PlayerCamera : MonoBehaviour
 
     [Header("FOV Debug")]
     public float DefaultFOV;
-    public float DefaultGunFOV;
     public float SprintFOV;
     public float AimingFOV;
-    public float AimingGunFOV;
     private Camera _mainCamera;
-    private Camera _gunCamera;
     private float _aimTimer = 0f;
     private float _sprintTimer = 0f;
     private float _sprintTime;
@@ -59,16 +56,12 @@ public class PlayerCamera : MonoBehaviour
         _startPos = transform.localPosition;
 
         _mainCamera = Camera.main;
-        _gunCamera = _mainCamera.transform.parent.transform.Find("GunCamera").GetComponent<Camera>();
 
         DefaultFOV = PlayerPrefs.GetFloat("PlayerFieldOfView", 80);
-        DefaultGunFOV = PlayerPrefs.GetFloat("GunFieldOfView", 90);
 
         _mainCamera.fieldOfView = HFOVToVFOV(DefaultFOV);
-        _gunCamera.fieldOfView = HFOVToVFOV(DefaultGunFOV);
 
         AimingFOV = DefaultFOV + FOVAimingChange;
-        AimingGunFOV = DefaultGunFOV + FOVAimingChange;
 
         SprintFOV = DefaultFOV + FOVSprintSpeedChange;
     }
@@ -172,7 +165,6 @@ public class PlayerCamera : MonoBehaviour
         float targetMainFOV = Mathf.Lerp(DefaultFOV, SprintFOV, _sprintTime);
 
         _mainCamera.fieldOfView = HFOVToVFOV(Mathf.Lerp(targetMainFOV, AimingFOV, aimTime));
-        _gunCamera.fieldOfView = HFOVToVFOV(Mathf.Lerp(DefaultGunFOV, AimingGunFOV, aimTime));
     }
 
     private void CheckMotion()

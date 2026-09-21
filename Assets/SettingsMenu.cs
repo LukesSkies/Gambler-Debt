@@ -53,16 +53,12 @@ public class SettingsMenu : MonoBehaviour
     public void ApplySettings()
     {
         PlayerPrefs.SetFloat("PlayerFieldOfView", _playerFieldOfView.value);
-        PlayerPrefs.SetFloat("GunFieldOfView", _gunFieldOfView.value);
 
         _playerCamera.DefaultFOV = PlayerPrefs.GetFloat("PlayerFieldOfView");
-        _playerCamera.DefaultGunFOV = PlayerPrefs.GetFloat("GunFieldOfView");
         _playerCamera.SprintFOV = _playerCamera.DefaultFOV + _playerCamera.FOVSprintSpeedChange;
         _playerCamera.AimingFOV = _playerCamera.DefaultFOV + _playerCamera.FOVAimingChange;
-        _playerCamera.AimingGunFOV = _playerCamera.DefaultGunFOV + _playerCamera.FOVAimingChange;
 
-        Debug.Log(HorizontalToVertical(PlayerPrefs.GetFloat("PlayerFieldOfView")));
-        Debug.Log(HorizontalToVertical(PlayerPrefs.GetFloat("GunFieldOfView")));
+        Debug.Log(HorizontalToVertical(PlayerPrefs.GetFloat("PlayerFieldOfView")));;
     }
 
     public void UpdateText()

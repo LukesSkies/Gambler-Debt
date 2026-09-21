@@ -60,6 +60,7 @@ public class PerkInteraction : MonoBehaviour, IInteractable
                 playerPoints.RemovePoints(_perkCost);
                 playerPerks.TypeOfPerks[i].Active = true;
                 playerPerks.AddPerkUI(_activePerkName);
+                playerPerks.ActivePerkList.Add(_activePerkName);
             }
         }
 

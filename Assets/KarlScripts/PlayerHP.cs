@@ -20,11 +20,14 @@ public class PlayerHP : MonoBehaviour, IDamageable
     [SerializeField] private bool WaitForHealthRegen;
     public bool DeathToggle;
 
+    private PlayerPerks _playerPerks;
+
     void Start()
     {
         Health = GameManager.Instance.PlayerHealth;
         MaxHealth = GameManager.Instance.PlayerHealth;
         _gameplayMenus = GameObject.Find("Menus&QTE").GetComponent<GameplayMenus>();
+        _playerPerks = GetComponent<PlayerPerks>();
     }
 
     private void Update()
@@ -78,6 +81,7 @@ public class PlayerHP : MonoBehaviour, IDamageable
     private void Death()
     {
         AmountOfDowns++;
+        _playerPerks.RemovePerksDeath();
         _gameplayMenus.ReviveQTE.SetActive(true);
         _gameplayMenus.ReviveQTE.GetComponent<ReviveQTE>().ResetMinigame();
         GameManager.Instance.PlayerDead = true;

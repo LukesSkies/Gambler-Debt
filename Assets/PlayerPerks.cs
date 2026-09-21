@@ -14,11 +14,8 @@ public class PlayerPerks : MonoBehaviour
     [SerializeField] public List<traitClass> TypeOfPerks;
     [SerializeField] private List<Sprite> _perkIcons;
 
-    [SerializeField] private string _perkName0;
-    [SerializeField] private string _perkName1;
-    [SerializeField] private string _perkName2;
-    [SerializeField] private string _perkName3;
-    [SerializeField] private string _perkName4;
+    public List<string> ActivePerkList = new List<string>();
+    public List<GameObject> ActivePerkListIcons = new List<GameObject>();
 
     private PlayerHP _playerHP;
     private PlayerMove _playerMove;
@@ -73,6 +70,8 @@ public class PlayerPerks : MonoBehaviour
             if (!_perkSlotParent.GetChild(i).gameObject.activeSelf)
             {
                 GameObject currentPerkIcon = _perkSlotParent.GetChild(i).gameObject;
+                ActivePerkListIcons.Add(currentPerkIcon);
+                currentPerkIcon.name = perkName;
                 Image perkIconImage = currentPerkIcon.GetComponent<Image>();
                 currentPerkIcon.SetActive(true);
                 switch (perkName)
@@ -90,6 +89,80 @@ public class PlayerPerks : MonoBehaviour
                         break;
                 }
                 break;
+            }
+        }
+    }
+
+    public void RemovePerksDeath()
+    {
+        //If the player does not have any perks
+        if(ActivePerkList.Count == 0)
+        {
+            return;
+        }
+
+        //If the player only has one perk
+        else if(ActivePerkList.Count == 1)
+        {
+            RemovePerk(ActivePerkList[0]);
+            ActivePerkList.Remove(ActivePerkList[0]);
+            return;
+        }
+
+        //If the player only has two perks
+        if (ActivePerkList.Count == 2)
+        {
+            RemovePerk(ActivePerkList[0]);
+            ActivePerkList.Remove(ActivePerkList[0]);
+            RemovePerk(ActivePerkList[0]);
+            ActivePerkList.Remove(ActivePerkList[0]);
+            return;
+        }
+
+        //If the player has 3 or more perks
+        else
+        {
+            int perk1 = Random.Range(0, ActivePerkList.Count - 1);
+            RemovePerk(ActivePerkList[perk1]);
+            ActivePerkList.Remove(ActivePerkList[perk1]);
+            int perk2 = Random.Range(0, ActivePerkList.Count - 1);
+            RemovePerk(ActivePerkList[perk2]);
+            ActivePerkList.Remove(ActivePerkList[perk2]);
+        }
+    }
+
+    private void RemovePerk(string perkName)
+    {
+        switch (perkName)
+        {
+            case "Extra Health":
+                TypeOfPerks[0].Active = false;
+                RemovePerkIcon("Extra Health");
+                break;
+            case "Extra Stamina":
+                TypeOfPerks[1].Active = false;
+                RemovePerkIcon("Extra Stamina");
+                break;
+            case "Quick Reload":
+                TypeOfPerks[2].Active = false;
+                RemovePerkIcon("Quick Reload");
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void RemovePerkIcon(string perkName)
+    {
+        for (int i = 0; i < ActivePerkListIcons.Count; i++)
+        {
+            if (ActivePerkListIcons[i].name == perkName)
+            {
+                ActivePerkListIcons[i].name = "PerkImage" + i;
+                Image perkIconImage = ActivePerkListIcons[i].GetComponent<Image>();
+                perkIconImage.sprite = null;
+                ActivePerkListIcons[i].SetActive(false);
+                ActivePerkListIcons.Remove(ActivePerkListIcons[i]);
             }
         }
     }
