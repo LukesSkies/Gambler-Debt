@@ -8,6 +8,7 @@ public class EnemySpawner : MonoBehaviour
     private Material _barrierMaterial;
     public List<Transform> ZombiesInSpawner;
     public bool BarriersEnabled;
+    public bool OpenSpawn;
 
     public int BarrierHealth = 5;
     private int _maxBarrierHealth;
@@ -17,11 +18,11 @@ public class EnemySpawner : MonoBehaviour
         Barrier = transform.Find("Mesh").transform.Find("Barrier").gameObject;
         _barrierCollider = Barrier.GetComponent<Collider>();
         _barrierMaterial = Barrier.GetComponent<MeshRenderer>().material;
-        GameManager.Instance.ZombieSpawnBarriers.Add(Barrier);
     }
 
     void Start()
     {
+        GameManager.Instance.ZombieSpawnBarriers.Add(Barrier);
         _maxBarrierHealth = 5;
         BarriersEnabled = true;
     }

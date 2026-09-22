@@ -1,0 +1,1926 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3687209848429498672
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 979443479068199241}
+  - component: {fileID: 442822531160885259}
+  - component: {fileID: 752430406342889825}
+  m_Layer: 11
+  m_Name: AttackCollider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &979443479068199241
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3687209848429498672}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.225, z: 0.858}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8976420538315916287}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!136 &442822531160885259
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3687209848429498672}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.38
+  m_Height: 1.6
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &752430406342889825
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3687209848429498672}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d161613afd1b6840839f82209b6fa49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _zombieDamage: 30
+  _redFlash: {fileID: 0}
+--- !u!1 &3843171908507042558
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6556559663233657477}
+  - component: {fileID: 6718803396482829996}
+  - component: {fileID: 1991981842489383373}
+  - component: {fileID: 8409654595962199944}
+  - component: {fileID: 1031459169419395520}
+  - component: {fileID: 4898241869554890495}
+  - component: {fileID: 75004881588730362}
+  m_Layer: 11
+  m_Name: Enemy
+  m_TagString: EnemyBase
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6556559663233657477
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3843171908507042558}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 8976420538315916287}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6718803396482829996
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3843171908507042558}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aba6efc4eef35ac469ce6c7ba2c0f915, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _health: 150
+--- !u!114 &1991981842489383373
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3843171908507042558}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62e90b6b070d86f478cad5b2b162a901, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FinishedSpawning: 0
+  EnemyInSpawner: 0
+  CanRun: 0
+  EnemySpawner: {fileID: 0}
+  _debugAnimator: {fileID: 4898241869554890495}
+  EnemyColliders: []
+--- !u!195 &8409654595962199944
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3843171908507042558}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.35
+  m_Speed: 1.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 0
+  m_AutoRepath: 1
+  m_Height: 1.6
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
+--- !u!54 &1031459169419395520
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3843171908507042558}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 126
+  m_CollisionDetection: 1
+--- !u!95 &4898241869554890495
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3843171908507042558}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: a83d261d663310a4e89302bd18cbd846, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!136 &75004881588730362
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3843171908507042558}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.36182404
+  m_Height: 1.6842737
+  m_Direction: 1
+  m_Center: {x: -0.011915207, y: 0.7923527, z: 0}
+--- !u!1001 &8869874198876136468
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 6556559663233657477}
+    m_Modifications:
+    - target: {fileID: -9070493210130169274, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -9070493210130169274, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8374313281747188165, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -8183481454299698827, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -8006009767450596044, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -7657966619581158213, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -7657966619581158213, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: -7360747449169001873, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -7121769801107515815, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -6896945220662006798, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -6621945745981909287, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -6370085079684087283, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -6370085079684087283, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: -6234591296559379751, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -6170625038081293824, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -6170625038081293824, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: -6056541330796499132, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -5857696854640597626, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -5561550452697079657, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -5416439068330192632, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -5416439068330192632, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: -5195048882033904264, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -5195048882033904264, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: -4999088201633142198, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -4728426434207774260, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -4728426434207774260, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: -4501530691011011137, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -4332706925441422008, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -4332706925441422008, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: -4278032810995721380, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -4020390418855135517, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -4020390418855135517, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: -3799395697873186154, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -3542885339558904099, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -3542885339558904099, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: -3478013746326755454, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -3214267034143217929, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -3086436065929644917, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -3086436065929644917, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: -2084811680363313996, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -2084811680363313996, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: -1781356600409242780, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -1781356600409242780, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: -1703473491307067327, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -1425791611860619382, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -1268151995469589007, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -1200856079203341021, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -799392243407967859, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -799392243407967859, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: -751476226918971245, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -751476226918971245, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: -552831747908440785, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -290750445479886849, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -290750445479886849, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: -203856693384778745, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -203856693384778745, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: -76546954072915012, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 9171100556185337, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 9171100556185337, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 414117464747255840, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Name
+      value: Warzombie F Pedroso
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 1082271958561512970, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 1082271958561512970, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1082271958561512970, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 1339101018200438765, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 1711505207429034123, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 1974243983493711947, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 1581363952229550673, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+    - target: {fileID: 1974243983493711947, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1974243983493711947, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Quality
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1974243983493711947, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_CastShadows
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1974243983493711947, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_LightProbeUsage
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1974243983493711947, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_UpdateWhenOffscreen
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2158975759703390516, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 2334541885690575373, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 2586065998465600510, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 2715566404302941441, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 2715566404302941441, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 2898355158428612036, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 3047284246813455858, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 3135921509060577837, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 3135921509060577837, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 3588849560313704984, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 3614653200513675785, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 3882815353823017779, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 3948933247560734027, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 3948933247560734027, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 3974016661214395164, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 4114030615378554161, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 4237274458221626025, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 4441848305933595309, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 4549111882529890269, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 5120724536234783804, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 5465940246521907071, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5465940246521907071, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5465940246521907071, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5567237881422871782, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 080896a27516a534b8ffbe30ea941f51, type: 2}
+    - target: {fileID: 5866666021909216657, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6240733294840144465, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 6514210125699187276, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 7010941440852138251, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 7363479242261063072, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 7542137907003004905, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 7732535366517880319, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 7776229726456038893, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 8817898888258712963, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 8817898888258712963, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 8953972740105248388, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 9037727976738196030, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 979443479068199241}
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7296102515318538359}
+    - targetCorrespondingSourceObject: {fileID: 1082271958561512970, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 975892626783803646}
+    - targetCorrespondingSourceObject: {fileID: 1082271958561512970, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6442025352984663674}
+    - targetCorrespondingSourceObject: {fileID: 1082271958561512970, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5017123444378026242}
+    - targetCorrespondingSourceObject: {fileID: 3135921509060577837, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6276248305890745559}
+    - targetCorrespondingSourceObject: {fileID: 3135921509060577837, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7591766697417699573}
+    - targetCorrespondingSourceObject: {fileID: 3135921509060577837, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8452788734251681563}
+    - targetCorrespondingSourceObject: {fileID: -6170625038081293824, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7001629904559061324}
+    - targetCorrespondingSourceObject: {fileID: -6170625038081293824, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 930006122119644027}
+    - targetCorrespondingSourceObject: {fileID: -6170625038081293824, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8824675008589244257}
+    - targetCorrespondingSourceObject: {fileID: -2084811680363313996, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4797496933768815374}
+    - targetCorrespondingSourceObject: {fileID: -2084811680363313996, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4634812328707863330}
+    - targetCorrespondingSourceObject: {fileID: -2084811680363313996, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1737635421239071803}
+    - targetCorrespondingSourceObject: {fileID: -3086436065929644917, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7353804219440170329}
+    - targetCorrespondingSourceObject: {fileID: -3086436065929644917, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6234149725769723769}
+    - targetCorrespondingSourceObject: {fileID: -3086436065929644917, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1040595805585299605}
+    - targetCorrespondingSourceObject: {fileID: -4332706925441422008, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4372189330553453169}
+    - targetCorrespondingSourceObject: {fileID: -4332706925441422008, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7566486716235034193}
+    - targetCorrespondingSourceObject: {fileID: -4332706925441422008, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5568554873396570588}
+    - targetCorrespondingSourceObject: {fileID: -751476226918971245, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4238576866417264024}
+    - targetCorrespondingSourceObject: {fileID: -751476226918971245, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 652624118906324856}
+    - targetCorrespondingSourceObject: {fileID: -751476226918971245, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5539492452964087832}
+    - targetCorrespondingSourceObject: {fileID: -3542885339558904099, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3661988577644399114}
+    - targetCorrespondingSourceObject: {fileID: -3542885339558904099, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 970116964512980655}
+    - targetCorrespondingSourceObject: {fileID: -3542885339558904099, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4013868903783049974}
+    - targetCorrespondingSourceObject: {fileID: -6370085079684087283, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9090718544320180690}
+    - targetCorrespondingSourceObject: {fileID: -6370085079684087283, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1589303185100569118}
+    - targetCorrespondingSourceObject: {fileID: -6370085079684087283, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8773144548427387943}
+    - targetCorrespondingSourceObject: {fileID: 8817898888258712963, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1077049478579685939}
+    - targetCorrespondingSourceObject: {fileID: 8817898888258712963, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4257429367487342890}
+    - targetCorrespondingSourceObject: {fileID: 8817898888258712963, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2476540157533960796}
+    - targetCorrespondingSourceObject: {fileID: -4728426434207774260, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5207651072993329481}
+    - targetCorrespondingSourceObject: {fileID: -4728426434207774260, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6100527003752142873}
+    - targetCorrespondingSourceObject: {fileID: -4728426434207774260, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5002693031014585587}
+    - targetCorrespondingSourceObject: {fileID: -5195048882033904264, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4544943876864079949}
+    - targetCorrespondingSourceObject: {fileID: -5195048882033904264, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2679727784566774638}
+    - targetCorrespondingSourceObject: {fileID: -5195048882033904264, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 229733706470076605}
+    - targetCorrespondingSourceObject: {fileID: -1781356600409242780, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2355625317091867990}
+    - targetCorrespondingSourceObject: {fileID: -1781356600409242780, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6279695852031052554}
+    - targetCorrespondingSourceObject: {fileID: -1781356600409242780, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5043045187251118676}
+    - targetCorrespondingSourceObject: {fileID: 9171100556185337, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 943731475172195467}
+    - targetCorrespondingSourceObject: {fileID: 9171100556185337, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5800755612652675713}
+    - targetCorrespondingSourceObject: {fileID: 9171100556185337, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8998372754558569467}
+    - targetCorrespondingSourceObject: {fileID: -9070493210130169274, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7068629774026350568}
+    - targetCorrespondingSourceObject: {fileID: -9070493210130169274, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5042105208973359020}
+    - targetCorrespondingSourceObject: {fileID: -9070493210130169274, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5185640884912257329}
+    - targetCorrespondingSourceObject: {fileID: 2715566404302941441, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1336402109950168531}
+    - targetCorrespondingSourceObject: {fileID: 2715566404302941441, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4333417023107678891}
+    - targetCorrespondingSourceObject: {fileID: 2715566404302941441, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4009683291046107927}
+  m_SourcePrefab: {fileID: 100100000, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+--- !u!1 &92156421941154199 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8817898888258712963, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+  m_PrefabInstance: {fileID: 8869874198876136468}
+  m_PrefabAsset: {fileID: 0}
+--- !u!136 &1077049478579685939
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 92156421941154199}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.06
+  m_Height: 0.51
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.09, z: 0}
+--- !u!114 &4257429367487342890
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 92156421941154199}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01e530bc4c3e2ea4580e29cb9358b11f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bloodEffectPrefabs:
+  - {fileID: 90265961347704072, guid: 3b4757f247f7c12479bd6a029451c86f, type: 3}
+  bloodEffectPrefabsDestroy: 5
+  otherBloodEffectsData: []
+  destroy: 0
+  disabled: 0
+  disabledObjects: []
+--- !u!114 &2476540157533960796
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 92156421941154199}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7745c106bf073b428ab64945ff20ae1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EnemyHealth: {fileID: 6718803396482829996}
+  EnemyStateMachine: {fileID: 1991981842489383373}
+  DamageMultiplier: 0
+  BulletBodyType: 1
+--- !u!1 &1047693623651609735 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -751476226918971245, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+  m_PrefabInstance: {fileID: 8869874198876136468}
+  m_PrefabAsset: {fileID: 0}
+--- !u!136 &4238576866417264024
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1047693623651609735}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.05
+  m_Height: 0.37
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.08, z: 0}
+--- !u!114 &652624118906324856
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1047693623651609735}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01e530bc4c3e2ea4580e29cb9358b11f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bloodEffectPrefabs:
+  - {fileID: 90265961347704072, guid: 3b4757f247f7c12479bd6a029451c86f, type: 3}
+  bloodEffectPrefabsDestroy: 5
+  otherBloodEffectsData: []
+  destroy: 0
+  disabled: 0
+  disabledObjects: []
+--- !u!114 &5539492452964087832
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1047693623651609735}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7745c106bf073b428ab64945ff20ae1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EnemyHealth: {fileID: 6718803396482829996}
+  EnemyStateMachine: {fileID: 1991981842489383373}
+  DamageMultiplier: 0
+  BulletBodyType: 2
+--- !u!1 &1732018079584886944 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -2084811680363313996, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+  m_PrefabInstance: {fileID: 8869874198876136468}
+  m_PrefabAsset: {fileID: 0}
+--- !u!136 &4797496933768815374
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1732018079584886944}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.05
+  m_Height: 0.37
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.08, z: 0}
+--- !u!114 &4634812328707863330
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1732018079584886944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01e530bc4c3e2ea4580e29cb9358b11f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bloodEffectPrefabs:
+  - {fileID: 90265961347704072, guid: 3b4757f247f7c12479bd6a029451c86f, type: 3}
+  bloodEffectPrefabsDestroy: 5
+  otherBloodEffectsData: []
+  destroy: 0
+  disabled: 0
+  disabledObjects: []
+--- !u!114 &1737635421239071803
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1732018079584886944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7745c106bf073b428ab64945ff20ae1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EnemyHealth: {fileID: 6718803396482829996}
+  EnemyStateMachine: {fileID: 1991981842489383373}
+  DamageMultiplier: 0
+  BulletBodyType: 2
+--- !u!1 &2044429768843421552 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -1781356600409242780, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+  m_PrefabInstance: {fileID: 8869874198876136468}
+  m_PrefabAsset: {fileID: 0}
+--- !u!135 &2355625317091867990
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2044429768843421552}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.11
+  m_Center: {x: 0, y: 0, z: 0.03}
+--- !u!114 &6279695852031052554
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2044429768843421552}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01e530bc4c3e2ea4580e29cb9358b11f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bloodEffectPrefabs:
+  - {fileID: 90265961347704072, guid: 3b4757f247f7c12479bd6a029451c86f, type: 3}
+  bloodEffectPrefabsDestroy: 5
+  otherBloodEffectsData: []
+  destroy: 0
+  disabled: 0
+  disabledObjects: []
+--- !u!114 &5043045187251118676
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2044429768843421552}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7745c106bf073b428ab64945ff20ae1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EnemyHealth: {fileID: 6718803396482829996}
+  EnemyStateMachine: {fileID: 1991981842489383373}
+  DamageMultiplier: 0
+  BulletBodyType: 0
+--- !u!1 &3328962042100256927 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -3086436065929644917, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+  m_PrefabInstance: {fileID: 8869874198876136468}
+  m_PrefabAsset: {fileID: 0}
+--- !u!136 &7353804219440170329
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3328962042100256927}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.12
+  m_Height: 0.42
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.03, z: 0}
+--- !u!114 &6234149725769723769
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3328962042100256927}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01e530bc4c3e2ea4580e29cb9358b11f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bloodEffectPrefabs:
+  - {fileID: 90265961347704072, guid: 3b4757f247f7c12479bd6a029451c86f, type: 3}
+  bloodEffectPrefabsDestroy: 5
+  otherBloodEffectsData: []
+  destroy: 0
+  disabled: 0
+  disabledObjects: []
+--- !u!114 &1040595805585299605
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3328962042100256927}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7745c106bf073b428ab64945ff20ae1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EnemyHealth: {fileID: 6718803396482829996}
+  EnemyStateMachine: {fileID: 1991981842489383373}
+  DamageMultiplier: 0
+  BulletBodyType: 2
+--- !u!1 &3876819842020203209 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -3542885339558904099, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+  m_PrefabInstance: {fileID: 8869874198876136468}
+  m_PrefabAsset: {fileID: 0}
+--- !u!136 &3661988577644399114
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3876819842020203209}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.2
+  m_Height: 0.57
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &970116964512980655
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3876819842020203209}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01e530bc4c3e2ea4580e29cb9358b11f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bloodEffectPrefabs:
+  - {fileID: 90265961347704072, guid: 3b4757f247f7c12479bd6a029451c86f, type: 3}
+  bloodEffectPrefabsDestroy: 5
+  otherBloodEffectsData: []
+  destroy: 0
+  disabled: 0
+  disabledObjects: []
+--- !u!114 &4013868903783049974
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3876819842020203209}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7745c106bf073b428ab64945ff20ae1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EnemyHealth: {fileID: 6718803396482829996}
+  EnemyStateMachine: {fileID: 1991981842489383373}
+  DamageMultiplier: 0
+  BulletBodyType: 1
+--- !u!1 &4091306505563425116 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -4332706925441422008, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+  m_PrefabInstance: {fileID: 8869874198876136468}
+  m_PrefabAsset: {fileID: 0}
+--- !u!136 &4372189330553453169
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4091306505563425116}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.09
+  m_Height: 0.67
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.12, z: 0}
+--- !u!114 &7566486716235034193
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4091306505563425116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01e530bc4c3e2ea4580e29cb9358b11f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bloodEffectPrefabs:
+  - {fileID: 90265961347704072, guid: 3b4757f247f7c12479bd6a029451c86f, type: 3}
+  bloodEffectPrefabsDestroy: 5
+  otherBloodEffectsData: []
+  destroy: 0
+  disabled: 0
+  disabledObjects: []
+--- !u!114 &5568554873396570588
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4091306505563425116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7745c106bf073b428ab64945ff20ae1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EnemyHealth: {fileID: 6718803396482829996}
+  EnemyStateMachine: {fileID: 1991981842489383373}
+  DamageMultiplier: 0
+  BulletBodyType: 2
+--- !u!1 &5006136514972790232 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -4728426434207774260, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+  m_PrefabInstance: {fileID: 8869874198876136468}
+  m_PrefabAsset: {fileID: 0}
+--- !u!136 &5207651072993329481
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5006136514972790232}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.04
+  m_Height: 0.55
+  m_Direction: 1
+  m_Center: {x: 0, y: -0.06, z: 0}
+--- !u!114 &6100527003752142873
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5006136514972790232}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01e530bc4c3e2ea4580e29cb9358b11f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bloodEffectPrefabs:
+  - {fileID: 90265961347704072, guid: 3b4757f247f7c12479bd6a029451c86f, type: 3}
+  bloodEffectPrefabsDestroy: 5
+  otherBloodEffectsData: []
+  destroy: 0
+  disabled: 0
+  disabledObjects: []
+--- !u!114 &5002693031014585587
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5006136514972790232}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7745c106bf073b428ab64945ff20ae1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EnemyHealth: {fileID: 6718803396482829996}
+  EnemyStateMachine: {fileID: 1991981842489383373}
+  DamageMultiplier: 0
+  BulletBodyType: 1
+--- !u!1 &5548264342958248300 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -5195048882033904264, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+  m_PrefabInstance: {fileID: 8869874198876136468}
+  m_PrefabAsset: {fileID: 0}
+--- !u!135 &4544943876864079949
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5548264342958248300}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.1
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2679727784566774638
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5548264342958248300}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01e530bc4c3e2ea4580e29cb9358b11f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bloodEffectPrefabs:
+  - {fileID: 90265961347704072, guid: 3b4757f247f7c12479bd6a029451c86f, type: 3}
+  bloodEffectPrefabsDestroy: 5
+  otherBloodEffectsData: []
+  destroy: 0
+  disabled: 0
+  disabledObjects: []
+--- !u!114 &229733706470076605
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5548264342958248300}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7745c106bf073b428ab64945ff20ae1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EnemyHealth: {fileID: 6718803396482829996}
+  EnemyStateMachine: {fileID: 1991981842489383373}
+  DamageMultiplier: 0
+  BulletBodyType: 1
+--- !u!1 &5808825936807341625 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3135921509060577837, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+  m_PrefabInstance: {fileID: 8869874198876136468}
+  m_PrefabAsset: {fileID: 0}
+--- !u!136 &6276248305890745559
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5808825936807341625}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.12
+  m_Height: 0.42
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.03, z: 0}
+--- !u!114 &7591766697417699573
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5808825936807341625}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01e530bc4c3e2ea4580e29cb9358b11f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bloodEffectPrefabs:
+  - {fileID: 90265961347704072, guid: 3b4757f247f7c12479bd6a029451c86f, type: 3}
+  bloodEffectPrefabsDestroy: 5
+  otherBloodEffectsData: []
+  destroy: 0
+  disabled: 0
+  disabledObjects: []
+--- !u!114 &8452788734251681563
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5808825936807341625}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7745c106bf073b428ab64945ff20ae1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EnemyHealth: {fileID: 6718803396482829996}
+  EnemyStateMachine: {fileID: 1991981842489383373}
+  DamageMultiplier: 0
+  BulletBodyType: 2
+--- !u!1 &5856252566570182164 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -6170625038081293824, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+  m_PrefabInstance: {fileID: 8869874198876136468}
+  m_PrefabAsset: {fileID: 0}
+--- !u!136 &7001629904559061324
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5856252566570182164}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.09
+  m_Height: 0.67
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.12, z: 0}
+--- !u!114 &930006122119644027
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5856252566570182164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01e530bc4c3e2ea4580e29cb9358b11f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bloodEffectPrefabs:
+  - {fileID: 90265961347704072, guid: 3b4757f247f7c12479bd6a029451c86f, type: 3}
+  bloodEffectPrefabsDestroy: 5
+  otherBloodEffectsData: []
+  destroy: 0
+  disabled: 0
+  disabledObjects: []
+--- !u!114 &8824675008589244257
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5856252566570182164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7745c106bf073b428ab64945ff20ae1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EnemyHealth: {fileID: 6718803396482829996}
+  EnemyStateMachine: {fileID: 1991981842489383373}
+  DamageMultiplier: 0
+  BulletBodyType: 2
+--- !u!1 &6665598787865552409 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -6370085079684087283, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+  m_PrefabInstance: {fileID: 8869874198876136468}
+  m_PrefabAsset: {fileID: 0}
+--- !u!136 &9090718544320180690
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6665598787865552409}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.07
+  m_Height: 0.27
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.06, z: -0.03}
+--- !u!114 &1589303185100569118
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6665598787865552409}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01e530bc4c3e2ea4580e29cb9358b11f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bloodEffectPrefabs:
+  - {fileID: 90265961347704072, guid: 3b4757f247f7c12479bd6a029451c86f, type: 3}
+  bloodEffectPrefabsDestroy: 5
+  otherBloodEffectsData: []
+  destroy: 0
+  disabled: 0
+  disabledObjects: []
+--- !u!114 &8773144548427387943
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6665598787865552409}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7745c106bf073b428ab64945ff20ae1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EnemyHealth: {fileID: 6718803396482829996}
+  EnemyStateMachine: {fileID: 1991981842489383373}
+  DamageMultiplier: 0
+  BulletBodyType: 1
+--- !u!1 &6825133591301458197 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2715566404302941441, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+  m_PrefabInstance: {fileID: 8869874198876136468}
+  m_PrefabAsset: {fileID: 0}
+--- !u!136 &1336402109950168531
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6825133591301458197}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.04
+  m_Height: 0.55
+  m_Direction: 1
+  m_Center: {x: 0, y: -0.06, z: 0}
+--- !u!114 &4333417023107678891
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6825133591301458197}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01e530bc4c3e2ea4580e29cb9358b11f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bloodEffectPrefabs:
+  - {fileID: 90265961347704072, guid: 3b4757f247f7c12479bd6a029451c86f, type: 3}
+  bloodEffectPrefabsDestroy: 5
+  otherBloodEffectsData: []
+  destroy: 0
+  disabled: 0
+  disabledObjects: []
+--- !u!114 &4009683291046107927
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6825133591301458197}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7745c106bf073b428ab64945ff20ae1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EnemyHealth: {fileID: 6718803396482829996}
+  EnemyStateMachine: {fileID: 1991981842489383373}
+  DamageMultiplier: 0
+  BulletBodyType: 1
+--- !u!1 &8366877812179008030 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1082271958561512970, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+  m_PrefabInstance: {fileID: 8869874198876136468}
+  m_PrefabAsset: {fileID: 0}
+--- !u!136 &975892626783803646
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8366877812179008030}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.2
+  m_Height: 0.46
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.04, z: 0}
+--- !u!114 &6442025352984663674
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8366877812179008030}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01e530bc4c3e2ea4580e29cb9358b11f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bloodEffectPrefabs:
+  - {fileID: 90265961347704072, guid: 3b4757f247f7c12479bd6a029451c86f, type: 3}
+  bloodEffectPrefabsDestroy: 5
+  otherBloodEffectsData: []
+  destroy: 0
+  disabled: 0
+  disabledObjects: []
+--- !u!114 &5017123444378026242
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8366877812179008030}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7745c106bf073b428ab64945ff20ae1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EnemyHealth: {fileID: 6718803396482829996}
+  EnemyStateMachine: {fileID: 1991981842489383373}
+  DamageMultiplier: 0
+  BulletBodyType: 2
+--- !u!1 &8636063808821336389 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+  m_PrefabInstance: {fileID: 8869874198876136468}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7296102515318538359
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8636063808821336389}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0ab8a382577a36428b58fd4ac7c0a3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Animator: {fileID: 0}
+  _resetPosDuration: 0.2
+--- !u!1 &8721007293605570130 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -9070493210130169274, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+  m_PrefabInstance: {fileID: 8869874198876136468}
+  m_PrefabAsset: {fileID: 0}
+--- !u!136 &7068629774026350568
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8721007293605570130}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.06
+  m_Height: 0.51
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.09, z: 0}
+--- !u!114 &5042105208973359020
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8721007293605570130}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01e530bc4c3e2ea4580e29cb9358b11f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bloodEffectPrefabs:
+  - {fileID: 90265961347704072, guid: 3b4757f247f7c12479bd6a029451c86f, type: 3}
+  bloodEffectPrefabsDestroy: 5
+  otherBloodEffectsData: []
+  destroy: 0
+  disabled: 0
+  disabledObjects: []
+--- !u!114 &5185640884912257329
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8721007293605570130}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7745c106bf073b428ab64945ff20ae1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EnemyHealth: {fileID: 6718803396482829996}
+  EnemyStateMachine: {fileID: 1991981842489383373}
+  DamageMultiplier: 0
+  BulletBodyType: 1
+--- !u!1 &8878998981623147245 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9171100556185337, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+  m_PrefabInstance: {fileID: 8869874198876136468}
+  m_PrefabAsset: {fileID: 0}
+--- !u!136 &943731475172195467
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8878998981623147245}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.07
+  m_Height: 0.27
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.06, z: -0.03}
+--- !u!114 &5800755612652675713
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8878998981623147245}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01e530bc4c3e2ea4580e29cb9358b11f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bloodEffectPrefabs:
+  - {fileID: 90265961347704072, guid: 3b4757f247f7c12479bd6a029451c86f, type: 3}
+  bloodEffectPrefabsDestroy: 5
+  otherBloodEffectsData: []
+  destroy: 0
+  disabled: 0
+  disabledObjects: []
+--- !u!114 &8998372754558569467
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8878998981623147245}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7745c106bf073b428ab64945ff20ae1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EnemyHealth: {fileID: 6718803396482829996}
+  EnemyStateMachine: {fileID: 1991981842489383373}
+  DamageMultiplier: 0
+  BulletBodyType: 1
+--- !u!4 &8976420538315916287 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: aadde3593a42e3d4b99051e661a41429, type: 3}
+  m_PrefabInstance: {fileID: 8869874198876136468}
+  m_PrefabAsset: {fileID: 0}

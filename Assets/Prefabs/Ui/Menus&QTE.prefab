@@ -1123,10 +1123,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04424de638a284148b097bdb880b6310, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _moveSpeed: 500
+  _moveSpeed: 50
   InputQueued: 0
   InReviveQTE: 0
-  _startingAttempts: 0
+  _startingAttempts: 5
   _currentAttempts: 0
 --- !u!1 &1272266565782898592
 GameObject:
