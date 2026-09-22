@@ -25,12 +25,18 @@ public class GameManager : MonoBehaviour
     [Header("Health Values")]
     public int ZombieHealth;
     public int PlayerHealth = 90;
-    public int PlayerJugHealth = 150;
     public int PlayerHealthRegen = 40;
+
+    [Header("Player Values")]
+    public int PlayerStamina = 4;
+
+    [Header("Perk Values")]
+    public int PlayerExtraHealth = 150;
+    public int PlayerExtraStamina = 8;
 
     [Header("Game Values")]
     public bool Paused;
-    public bool EndGame;
+    public bool PlayerDead;
     public int Round;
     public float ZombieCount;
     public int PlayerCount;
@@ -135,13 +141,13 @@ public class GameManager : MonoBehaviour
             ZombieHealth = GetZombieHealth(Round);
         }
 
-        if (Paused || EndGame)
+        if (Paused && !PlayerDead)
         {
             Time.timeScale = 0;
             Cursor.lockState = CursorLockMode.Confined;
             Cursor.visible = true;
         }
-        else
+        else if(!Paused && !PlayerDead)
         {
             Time.timeScale = 1;
             Cursor.lockState = CursorLockMode.Locked;

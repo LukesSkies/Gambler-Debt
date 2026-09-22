@@ -1169,6 +1169,7 @@ MonoBehaviour:
   _aimingPos: {x: 0.16, y: -0.19, z: 0.534}
   _timeToAim: 0.2
   Aiming: 0
+  ReloadQueued: 0
   _muzzleFlash: {fileID: 4167723585112505649}
   _metalSparks: {fileID: 8799125985890215030, guid: 6d01214b10078e2419ed79d84bdceb73, type: 3}
   _bulletHole: {fileID: 1840760722859414925, guid: dd288a26a0b79a847b485f7ead90a32f, type: 3}

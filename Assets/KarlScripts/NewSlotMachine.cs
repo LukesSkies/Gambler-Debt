@@ -145,10 +145,10 @@ public class NewSlotMachine : MonoBehaviour, IInteractable
         _itemSpawned = true;
     }
 
-    public bool CanInteract(TextMeshProUGUI interactText)
+    public bool CanInteract(TextMeshProUGUI interactText, NewPlayerInteraction playerInteraction)
     {
         //If the slot machine isnt spinning and there is an item spawned
-        if(!_isSpinning && _itemSpawned)
+        if (!_isSpinning && _itemSpawned)
         {
             interactText.text = "Press F to Pickup Item";
             interactText.gameObject.SetActive(true);
@@ -172,7 +172,7 @@ public class NewSlotMachine : MonoBehaviour, IInteractable
         //If the slot machine isnt spinning and there isnt an item spawned
         if (!_isSpinning && !_itemSpawned && playerPoints.Money >= _pointCost)
         {
-            playerPoints.Money -= _pointCost;
+            playerPoints.RemovePoints(_pointCost);
             StartCoroutine(SpinAnimation());
         }
         //If the slot machine isnt spinning and there is an item spawned
@@ -195,14 +195,11 @@ public class NewSlotMachine : MonoBehaviour, IInteractable
 
             Destroy(_newGun);
 
-            if (playerCurrentGun.NextGun != null)
-            {
-                Destroy(playerCurrentGun.NextGun);
-            }
+            Destroy(playerCurrentGun.CurrentGun);
 
-            playerCurrentGun.NextGun = _newPlayerGunReferance;
-            _newPlayerGunReferance.SetActive(false);
-            playerCurrentGun.SwitchGun();
+            playerCurrentGun.CurrentGun = _newPlayerGunReferance;
+            _newPlayerGunReferance.SetActive(true);
+            playerCurrentGun.GunAnimator = playerCurrentGun.CurrentGun.transform.Find("WeaponMesh").GetComponent<Animator>();
 
             _itemSpawned = false;
 

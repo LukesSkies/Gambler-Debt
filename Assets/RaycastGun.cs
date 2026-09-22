@@ -21,29 +21,23 @@ public class RaycastGun : MonoBehaviour
     [Header("Debug")]
     [SerializeField] private bool _allowInvoke = true;
     [SerializeField] private bool _allowRaycastShown = true;
-    private Vector3 _debugDirection;
     public bool InputShooting;
     public bool CanAim;
-    [SerializeField] private int _bulletsLeft, _bulletsShot, _reserveAmmo;
+    public int ReserveAmmo;
+    [SerializeField] private int _bulletsLeft;
     [SerializeField] private bool _shooting, _readyToShoot, _reloading;
 
     private TextMeshProUGUI _gunName;
     private TextMeshProUGUI _gunAmmo;
 
     private Camera _mainCam;
-    private Camera _weaponCamera;
-    private Transform _attackPoint;
     private Transform _weaponHolder;
-    private Transform _pointAdditionParent;
 
     private float _aimTimer = 0f;
-
-    private Collider _playerCollider;
 
     private GunRecoil _gunRecoil;
     private PlayerMove _playerMove;
     private PlayerCurrentGun _playerCurrentGun;
-    private PlayerCamera _playerCamera;
 
     private Points _points;
 
@@ -51,14 +45,11 @@ public class RaycastGun : MonoBehaviour
 
     private Animator _gunAnimator;
 
+    private PlayerPerks _playerPerks;
+
     private void Awake()
     {
         _mainCam = Camera.main;
-        _weaponCamera = _mainCam.transform.parent.transform.Find("GunCamera").GetComponent<Camera>();
-
-        _attackPoint = transform.Find("WeaponMesh").transform.Find("AttackPoint");
-
-        _playerCollider = transform.root.Find("PlayerMesh").GetComponent<Collider>();
 
         _gunRecoil = transform.root.Find("CameraHolder").transform.Find("CameraRecoil").GetComponent<GunRecoil>();
         _playerMove = transform.root.GetComponent<PlayerMove>();
@@ -74,7 +65,7 @@ public class RaycastGun : MonoBehaviour
         _bulletCasings = transform.Find("WeaponMesh").transform.Find("CasingSpawnPoint").transform.Find("BulletCasings").GetComponent<ParticleSystem>();
         _gunAnimator = transform.Find("WeaponMesh").GetComponent<Animator>();
 
-        _pointAdditionParent = GameObject.Find("HUD").transform.Find("Points").transform.Find("Player0").transform.Find("PointAdditionParent");
+        _playerPerks = transform.root.GetComponent<PlayerPerks>();
     }
 
     void Start()
@@ -85,7 +76,7 @@ public class RaycastGun : MonoBehaviour
         _readyToShoot = true;
         CanAim = true;
 
-        _reserveAmmo = GunSettings.ReserveAmmo;
+        ReserveAmmo = GunSettings.ReserveAmmo;
 
         _gunRecoil.GunSettings = GunSettings;
 
@@ -106,17 +97,25 @@ public class RaycastGun : MonoBehaviour
 
         if (ReloadQueued)
         {
-            if (_bulletsLeft < GunSettings.MagazineSize && !_reloading && _reserveAmmo > 0)
+            if (_bulletsLeft < GunSettings.MagazineSize && !_reloading && ReserveAmmo > 0)
             {
                 _reloading = true;
                 CanAim = false;
                 _gunAnimator.SetTrigger("Reloading");
+                if (_playerPerks.TypeOfPerks[2].Active)
+                {
+                    _gunAnimator.speed = 2;
+                }
+                else
+                {
+                    _gunAnimator.speed = 1;
+                }
             }
 
             ReloadQueued = false;
         }
 
-        if (!_reloading && _bulletsLeft <= 0 && _reserveAmmo > 0)
+        if (!_reloading && _bulletsLeft <= 0 && ReserveAmmo > 0)
         {
             _reloading = true;
             CanAim = false;
@@ -149,8 +148,6 @@ public class RaycastGun : MonoBehaviour
 
         if (_readyToShoot && _shooting && !_reloading && _bulletsLeft > 0 && _playerCurrentGun.CanShoot)
         {
-            _bulletsShot = 0;
-
             Shoot();
         }
     }
@@ -171,7 +168,6 @@ public class RaycastGun : MonoBehaviour
             _muzzleFlash.GetComponent<ParticleSystem>().Play();
 
         _bulletsLeft--;
-        _bulletsShot++;
 
         UpdateHUD();
 
@@ -191,8 +187,6 @@ public class RaycastGun : MonoBehaviour
         Vector3 direction = _mainCam.transform.forward
             + _mainCam.transform.right * x
             + _mainCam.transform.up * y;
-
-        _debugDirection = direction;
 
         direction.Normalize();
 
@@ -216,9 +210,6 @@ public class RaycastGun : MonoBehaviour
                 ImpactEffect impact = hit.collider.GetComponent<ImpactEffect>();
                 if (impact != null)
                     impact.SpawnBloodEffect(hitPoint, hitNormal);
-
-                _points.Money += GameManager.Instance.HitPoints;
-                Instantiate(GameManager.Instance.PointsAdditionText, _pointAdditionParent);
             }
             else
             {
@@ -249,6 +240,7 @@ public class RaycastGun : MonoBehaviour
                     _ => 1f
                 };
                 enemyTakeDamage.EnemyHealth.TakeDamage(GunSettings.BulletDamage, damageMultiplier);
+                _points.AddPoints(GameManager.Instance.HitPoints);
             }
 
             break;
@@ -273,10 +265,10 @@ public class RaycastGun : MonoBehaviour
     public void Reload()
     {
         int bulletsNeeded = GunSettings.MagazineSize - _bulletsLeft;
-        int bulletsToReload = Mathf.Min(bulletsNeeded, _reserveAmmo);
+        int bulletsToReload = Mathf.Min(bulletsNeeded, ReserveAmmo);
 
         _bulletsLeft += bulletsToReload;
-        _reserveAmmo -= bulletsToReload;
+        ReserveAmmo -= bulletsToReload;
 
         _reloading = false;
 
@@ -297,6 +289,6 @@ public class RaycastGun : MonoBehaviour
     public void UpdateHUD()
     {
         _gunName.text = GunSettings.GunName;
-        _gunAmmo.text = _bulletsLeft + "/" + _reserveAmmo;
+        _gunAmmo.text = _bulletsLeft + "/" + ReserveAmmo;
     }
 }

@@ -5,30 +5,37 @@ public class PlayerCurrentGun : MonoBehaviour
 {
     public GameObject CurrentGun;
     public GameObject NextGun;
+    public GameObject Grenade;
+    private List<GameObject> _gunList = new List<GameObject>();
 
     public Transform GunHolder;
-    private List<GameObject> _gunList = new List<GameObject>();
+    public Transform GrenadeHolder;
 
     private string _primaryGun;
     private string _secondaryGun;
 
-    private Animator _gunAnimator;
+    [HideInInspector] public Animator GunAnimator;
+    [HideInInspector] public Animator GrenadeAnimator;
 
     public bool GunSwitching;
     public bool CanShoot;
+    public bool CanSwitchGuns = true;
     public bool SwitchToPrimaryGun;
     public bool SwitchToSecondGun;
     public bool SwitchToAnyGunController;
     public bool SwitchToAnyGunMouse;
+    public bool GrenadeActive;
+
+    private Points _playerPoints;
+    public Grenade GrenadeScript;
 
     private void Awake()
     {
         GunHolder = transform.Find("CameraHolder").transform.Find("CameraRecoil").
             transform.Find("GunCamera").transform.Find("WeaponHolder");
-    }
 
-    private void Start()
-    {
+        _playerPoints = GetComponent<Points>();
+
         foreach (Transform child in GunHolder)
         {
             _gunList.Add(child.gameObject);
@@ -48,41 +55,49 @@ public class PlayerCurrentGun : MonoBehaviour
 
         _primaryGun = CurrentGun.name;
 
-        if(NextGun != null)
+        if (NextGun != null)
         {
             _secondaryGun = NextGun.name;
         }
 
-        _gunAnimator = CurrentGun.transform.Find("WeaponMesh").GetComponent<Animator>();
+        GunAnimator = CurrentGun.transform.Find("WeaponMesh").GetComponent<Animator>();
 
+        GrenadeHolder = transform.Find("CameraHolder").transform.Find("CameraRecoil").transform.Find("GunCamera").transform.Find("GrenadeHolder");
+        Grenade = GrenadeHolder.transform.Find("Grenade").gameObject;
+        GrenadeAnimator = Grenade.transform.Find("GrenadeMesh").GetComponent<Animator>();
+        GrenadeScript = Grenade.GetComponent<Grenade>();
+    }
+
+    private void Start()
+    {
         GunSwitching = false;
     }
 
     private void Update()
     {
-        if(NextGun != null)
+        if(NextGun != null && !GrenadeActive && CanSwitchGuns)
         {
             if (SwitchToSecondGun && !GunSwitching)
             {
-                _gunAnimator.SetTrigger("PutAway");
+                GunAnimator.SetTrigger("PutAway");
                 GunSwitching = true;
                 SwitchToSecondGun = false;
             }
             else if (SwitchToPrimaryGun && !GunSwitching)
             {
-                _gunAnimator.SetTrigger("PutAway");
+                GunAnimator.SetTrigger("PutAway");
                 GunSwitching = true;
                 SwitchToPrimaryGun = false;
             }
             else if (SwitchToAnyGunController)
             {
-                _gunAnimator.SetTrigger("PutAway");
+                GunAnimator.SetTrigger("PutAway");
                 GunSwitching = true;
                 SwitchToAnyGunController = false;
             }
             else if (SwitchToAnyGunMouse && !GunSwitching)
             {
-                _gunAnimator.SetTrigger("PutAway");
+                GunAnimator.SetTrigger("PutAway");
                 GunSwitching = true;
             }
         }
@@ -100,17 +115,65 @@ public class PlayerCurrentGun : MonoBehaviour
 
     public void SwitchGun()
     {
-        GameObject nextGun = NextGun;
-        GameObject currentGun = CurrentGun;
-        CurrentGun.SetActive(false);
-        NextGun.SetActive(true);
-        CurrentGun = nextGun;
-        NextGun = currentGun;
-        if (CurrentGun.GetComponent<RaycastGun>())
+        if (GrenadeActive)
         {
-            CurrentGun.GetComponent<RaycastGun>().UpdateHUD();
+            CurrentGun.SetActive(true);
         }
-        _gunAnimator = CurrentGun.transform.Find("WeaponMesh").GetComponent<Animator>();
-        GunSwitching = false;
+        else
+        {
+            GameObject nextGun = NextGun;
+            GameObject currentGun = CurrentGun;
+            CurrentGun.SetActive(false);
+            NextGun.SetActive(true);
+            CurrentGun = nextGun;
+            NextGun = currentGun;
+            if (CurrentGun.GetComponent<RaycastGun>())
+            {
+                CurrentGun.GetComponent<RaycastGun>().UpdateHUD();
+            }
+            GunAnimator = CurrentGun.transform.Find("WeaponMesh").GetComponent<Animator>();
+            GunSwitching = false;
+        }
+    }
+
+    public void WallBuyAmmo(bool mainGun, int pointCost)
+    {
+        if (mainGun)
+        {
+            if(CurrentGun.GetComponent<RaycastGun>().ReserveAmmo < CurrentGun.GetComponent<RaycastGun>().GunSettings.ReserveAmmo)
+            {
+                CurrentGun.GetComponent<RaycastGun>().ReserveAmmo = CurrentGun.GetComponent<RaycastGun>().GunSettings.ReserveAmmo;
+                if (CurrentGun.GetComponent<RaycastGun>())
+                {
+                    CurrentGun.GetComponent<RaycastGun>().UpdateHUD();
+                }
+                _playerPoints.RemovePoints(pointCost);
+            }
+        }
+        else
+        {
+            if(NextGun.GetComponent<RaycastGun>().ReserveAmmo < NextGun.GetComponent<RaycastGun>().GunSettings.ReserveAmmo)
+            {
+                NextGun.GetComponent<RaycastGun>().ReserveAmmo = NextGun.GetComponent<RaycastGun>().GunSettings.ReserveAmmo;
+                _playerPoints.RemovePoints(pointCost);
+            }
+        }
+    }
+
+    public void GrenadePull()
+    {
+        GrenadeActive = true;
+        CanSwitchGuns = false;
+        CurrentGun.SetActive(false);
+        Grenade.SetActive(true);
+        GrenadeAnimator.SetBool("GrenadePull", true);
+    }
+
+    public void GrenadeGunReset()
+    {
+        GrenadeActive = false;
+        CanSwitchGuns = true;
+        CurrentGun.SetActive(true);
+        Grenade.SetActive(false);
     }
 }

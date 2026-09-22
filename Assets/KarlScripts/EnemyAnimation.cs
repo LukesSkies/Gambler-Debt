@@ -5,13 +5,19 @@ public class EnemyAnimation : MonoBehaviour
 {
     public Animator Animator;
     [SerializeField] private float _resetPosDuration;
-
+    private CapsuleCollider _attackCollider;
     private EnemyStateMachine _enemyStateMachine;
 
     void Awake()
     {
         Animator = GetComponent<Animator>();
         _enemyStateMachine = GetComponentInParent<EnemyStateMachine>();
+        _attackCollider = transform.Find("AttackCollider").GetComponent<CapsuleCollider>();
+    }
+
+    private void Start()
+    {
+        _attackCollider.enabled = false;
     }
 
     private void SetMovementTrigger()
@@ -52,8 +58,14 @@ public class EnemyAnimation : MonoBehaviour
         }
         else if (!_enemyStateMachine.EnemyInSpawner)
         {
-            return;
-            //TODO: Damage Player
+            StartCoroutine(AttackPlayer());
         }
+    }
+
+    private IEnumerator AttackPlayer()
+    {
+        _attackCollider.enabled = true;
+        yield return new WaitForSeconds(0.1f);
+        _attackCollider.enabled = false;
     }
 }

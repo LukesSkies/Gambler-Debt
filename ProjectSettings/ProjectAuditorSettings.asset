@@ -32,4 +32,20 @@ MonoBehaviour:
         Value: 4000
       - Key: StreamingAssetsFolderSizeLimit
         Value: 50
+    - PlatformGroup: 1
+      m_SerializedParams:
+      - Key: StreamingClipThresholdBytes
+        Value: 218294
+      - Key: LongDecompressedClipThresholdBytes
+        Value: 204800
+      - Key: LongCompressedMobileClipThresholdBytes
+        Value: 204800
+      - Key: LoadInBackGroundClipSizeThresholdBytes
+        Value: 204800
+      - Key: SpriteAtlasEmptySpaceLimit
+        Value: 50
+      - Key: TextureStreamingMipmapsSizeLimit
+        Value: 4000
+      - Key: StreamingAssetsFolderSizeLimit
+        Value: 50
     CurrentParamsIndex: 0

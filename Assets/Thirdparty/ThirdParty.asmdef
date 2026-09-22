@@ -1,0 +1,24 @@
+{
+    "name": "ThirdParty",
+    "rootNamespace": "",
+    "references": [
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "GUID:2a69708d171a17043a9d0ad45f205cfe",
+        "GUID:69257879134bba646869b21467b3338d",
+        "GUID:2b3eec6472d6cb248b60138bebe1f26e",
+        "GUID:9e0de4a12aaad02499ffafb271fc9e4c",
+        "GUID:3b9c1e777897a454ab8f17fb7264c2af",
+        "GUID:d8548a9d25a091541a1fcde53694c91a",
+        "GUID:d02e55938f9d33c4aa8e18466d48abf6",
+        "GUID:bef7f1246b968e04096165af98b4f824"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -14,7 +14,8 @@ public class GameplayMenus : MonoBehaviour
 
     private EventSystem _eventSystem;
 
-    [HideInInspector] public GameObject DeathMenu;
+    [HideInInspector] public GameObject GameOverMenu;
+    [HideInInspector] public GameObject ReviveQTE;
 
     void Awake()
     {
@@ -26,13 +27,14 @@ public class GameplayMenus : MonoBehaviour
         PlayerCurrentGun = GameObject.Find("NewPlayer0").GetComponent<PlayerCurrentGun>();
         PlayerMove = GameObject.Find("NewPlayer0").GetComponent<PlayerMove>();
         _eventSystem = GameObject.Find("EventSystem").GetComponent<EventSystem>();
-        DeathMenu = transform.Find("DeathMenu").gameObject;
+        GameOverMenu = transform.Find("DeathMenu").gameObject;
+        ReviveQTE = transform.Find("ReviveQTE").gameObject;
     }
 
     private void Start()
     {
         _pauseMenu.SetActive(false);
-        DeathMenu.SetActive(false);
+        GameOverMenu.SetActive(false);
     }
 
     public void Resume()
@@ -67,11 +69,11 @@ public class GameplayMenus : MonoBehaviour
 
     public void Pause()
     {
-        if (_pauseMenu.activeSelf && !GameManager.Instance.EndGame)
+        if (_pauseMenu.activeSelf)
         {
             Resume();
         }
-        else if (!_pauseMenu.activeSelf && !GameManager.Instance.EndGame)
+        else if (!_pauseMenu.activeSelf)
         {
             SettingsBack();
             if (!GameManager.Instance.Player0IsUsingKeyboardOrMouse)
@@ -86,7 +88,7 @@ public class GameplayMenus : MonoBehaviour
             PlayerCurrentGun.CanShoot = false;
             PlayerMove.CanJump = false;
         }
-        else if (_settingsMenu.activeSelf && !GameManager.Instance.EndGame)
+        else if (_settingsMenu.activeSelf)
         {
             SettingsBack();
         }
@@ -95,6 +97,9 @@ public class GameplayMenus : MonoBehaviour
     private IEnumerator ReEnableJump()
     {
         yield return new WaitForSeconds(0.1f);
-        PlayerMove.CanJump = true;
+        if (!GameManager.Instance.PlayerDead)
+        {
+            PlayerMove.CanJump = true;
+        }
     }
 }

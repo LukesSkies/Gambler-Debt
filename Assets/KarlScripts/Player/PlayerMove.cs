@@ -8,8 +8,14 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private float _groundDrag;
     [SerializeField] private float _walkSpeedSmoothness = 12;
     [SerializeField] private float _sprintSpeedSmoothness = 6;
-    [SerializeField] private float _maxSprintStamina = 4;
+    public float MaxSprintStamina = 4;
     [SerializeField] private float _timePlayerSprintEnabled = 1.5f;
+
+    [Header("Player Step Height")]
+    [SerializeField] private float _stepHeight = 0.3f;
+    [SerializeField] private float _stepSmooth = 0.1f;
+    private GameObject _stepRayLower;
+    private GameObject _stepRayHigher;
 
     [Header("Jumping")]
     [SerializeField] private float _jumpForce;
@@ -31,17 +37,14 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private float _slideJumpDelay = 0.2f;
 
     private float _slideTimer;
-    private float _startHeight;
     private float _startYScale;
     private bool _readyToJump;
     private float _moveSpeed;
     private float _slideJumpTimer;
-    private float _sprintStaminaLerp;
 
     [Header("Ground Check")]
     [SerializeField] private float _playerHeight;
     [SerializeField] private LayerMask _groundMask;
-    private bool _grounded;
 
     [Header("Slope Handling")]
     [SerializeField] private float _maxSlopeAngle;
@@ -50,6 +53,7 @@ public class PlayerMove : MonoBehaviour
 
     [Header("PlayerStates")]
     public MovementState State;
+    public bool CanMove;
     public bool CanJump;
     public bool CanSprint;
     public bool SprintQueued;
@@ -60,7 +64,7 @@ public class PlayerMove : MonoBehaviour
     public Vector2 PlayerDir;
 
     [Header("Player Live Values")]
-    [SerializeField] private float _sprintStamina = 4;
+    public float CurrentSprintStamina = 4;
 
     private Vector3 _moveDir;
     private Vector3 _smoothMoveDir;
@@ -72,9 +76,7 @@ public class PlayerMove : MonoBehaviour
     [HideInInspector] public bool JumpSlide;
     private bool _slideJump;
     private bool _slideJumpToggle;
-    private bool _sprintTimerCheck;
 
-    private CapsuleCollider _playerCollider;
     private Transform _playerMesh;
 
     private Vector2 _slideDir;
@@ -102,6 +104,9 @@ public class PlayerMove : MonoBehaviour
             transform.Find("GunCamera").transform.Find("WeaponHolder");
         
         _playerMesh = transform.Find("PlayerMesh");
+
+        _stepRayLower = transform.Find("StepRayLower").gameObject;
+        _stepRayHigher = transform.Find("StepRayHigher").gameObject;
     }
 
     void Start()
@@ -109,36 +114,55 @@ public class PlayerMove : MonoBehaviour
         _rb = GetComponent<Rigidbody>();
         _rb.freezeRotation = true;
         _readyToJump = true;
-        CanJump = true;
+        CanJump = false;
+        CanSprint = false;
+        CanMove = false;
         _startYScale = _playerMesh.localScale.y;
+        _stepRayHigher.transform.localPosition = new Vector3(_stepRayHigher.transform.localPosition.x, _stepHeight, _stepRayHigher.transform.localPosition.z);
     }
 
     void FixedUpdate()
     {
-        if (IsSliding)
+        if (CanMove)
         {
-            SlidingMovement();
-        }
-        else if(JumpSlide)
-        {
-            OutSide();
-            MovePlayer();
-
-            if (_slideJumpToggle)
+            if (IsSliding)
             {
-                _slideJumpToggle = false;
-                StartCoroutine(DelayJumping());
+                SlidingMovement();
             }
-        }
-        else
-        {
-            MovePlayer();
+            else if (JumpSlide)
+            {
+                OutSide();
+                MovePlayer();
+
+                if (_slideJumpToggle)
+                {
+                    _slideJumpToggle = false;
+                    StartCoroutine(DelayJumping());
+                }
+            }
+            else
+            {
+                MovePlayer();
+            }
+            StepClimb();
         }
     }
 
     void Update()
     {
-        PlayerInput();
+        if (GameManager.Instance.PlayerDead)
+        {
+            CanMove = false;
+            CanSprint = false;
+            CanJump = false;
+        }
+        else
+        {
+            CanMove = true;
+            CanJump = true;
+        }
+
+        JumpInput();
         SpeedControl();
         StateHandler();
         StaminaHandler();
@@ -162,7 +186,7 @@ public class PlayerMove : MonoBehaviour
         }
     }
 
-    private void PlayerInput()
+    private void JumpInput()
     {
         if (JumpQueued)
         {
@@ -238,34 +262,34 @@ public class PlayerMove : MonoBehaviour
 
     private void StaminaHandler()
     {
-        if(_sprintStamina >= _timePlayerSprintEnabled)
+        if(CurrentSprintStamina >= _timePlayerSprintEnabled && GameManager.Instance.PlayerDead != true)
         {
             CanSprint = true;
         }
 
-        else if(_sprintStamina == 0)
+        else if(CurrentSprintStamina == 0)
         {
             CanSprint = false;
         }
 
-        else if (_sprintStamina < 0)
+        else if (CurrentSprintStamina < 0)
         {
-            _sprintStamina = 0;
+            CurrentSprintStamina = 0;
         }
 
-        else if (_sprintStamina > _maxSprintStamina)
+        else if (CurrentSprintStamina > MaxSprintStamina)
         {
-            _sprintStamina = _maxSprintStamina;
+            CurrentSprintStamina = MaxSprintStamina;
         }
 
-        if (State == MovementState.sprinting && _sprintStamina > 0)
+        if (State == MovementState.sprinting && CurrentSprintStamina > 0)
         {
-            _sprintStamina -= Time.deltaTime;
+            CurrentSprintStamina -= Time.deltaTime;
         }
 
-        else if (State != MovementState.sprinting && _sprintStamina < 4)
+        else if (State != MovementState.sprinting && CurrentSprintStamina < MaxSprintStamina)
         {
-            _sprintStamina += Time.deltaTime;
+            CurrentSprintStamina += Time.deltaTime;
         }
     }
 
@@ -276,7 +300,7 @@ public class PlayerMove : MonoBehaviour
 
         float lerpSpeed;
         if (State == MovementState.idle && OnSlope())
-            lerpSpeed = _walkSpeedSmoothness * 3f;
+            lerpSpeed = _walkSpeedSmoothness * 2f;
         else
             lerpSpeed = (State == MovementState.sprinting) ? _sprintSpeedSmoothness : _walkSpeedSmoothness;
 
@@ -287,7 +311,7 @@ public class PlayerMove : MonoBehaviour
         {
             _rb.AddForce(GetSlopeMoveDir(clampedDir) * _moveSpeed * 20f, ForceMode.Force);
 
-            if(_rb.linearVelocity.y > 0)
+            if(_rb.linearVelocity.y > 0 && State == MovementState.outSliding)
             {
                 _rb.AddForce(Vector3.down * 40f, ForceMode.Force);
             }
@@ -305,6 +329,19 @@ public class PlayerMove : MonoBehaviour
         }
 
         _rb.useGravity = true;
+    }
+
+    private void StepClimb()
+    {
+        RaycastHit hitLower;
+        Debug.DrawRay(_stepRayLower.transform.position, transform.TransformDirection(Vector3.forward * 0.05f), Color.green);
+        if (Physics.Raycast(_stepRayLower.transform.position, transform.TransformDirection(Vector3.forward), out hitLower, 0.05f, LayerMask.GetMask("Ledge")))
+        {
+            Debug.Log("Ledge Hit");
+            Vector3 targetpos = new Vector3(_rb.position.x, hitLower.point.y, _rb.position.z);
+            _rb.position = Vector3.Lerp(_rb.position, targetpos, Time.deltaTime / 0.1f);
+            _rb.linearVelocity = new Vector3(_rb.linearVelocity.x, 0, _rb.linearVelocity.z);
+        }
     }
 
     private void OutSide()
@@ -350,7 +387,7 @@ public class PlayerMove : MonoBehaviour
 
         _rb.linearVelocity = new Vector3(_rb.linearVelocity.x, 0, _rb.linearVelocity.z);
 
-        bool reducedJump = GoingDownSlope() && OnSlope() && !GroundCheck() == false;
+        bool reducedJump = GoingDownSlope() && OnSlope() && GroundCheck();
 
         _rb.AddForce(transform.up * (reducedJump ? _jumpForce : (wasSliding ? _slideJumpForce : _jumpForce)), ForceMode.Impulse);
     }

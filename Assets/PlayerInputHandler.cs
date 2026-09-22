@@ -11,6 +11,8 @@ public class PlayerInputHandler : MonoBehaviour
     private NewPlayerInteraction _newPlayerInteraction;
 
     [SerializeField] private PlayerInput _playerInput;
+    private InputAction _menuNavigationAction;
+    public Vector2 NavigationInput;
 
     [SerializeField] private float _controllerTimeToInteract;
 
@@ -27,17 +29,26 @@ public class PlayerInputHandler : MonoBehaviour
     private bool _toggleCrouchController;
     private bool _toggleCrouchKeyboard;
 
-    private void Start()
+    private void Awake()
     {
-        _gameplayMenus = GameObject.Find("Menus").GetComponent<GameplayMenus>();
+        _gameplayMenus = GameObject.Find("Menus&QTE").GetComponent<GameplayMenus>();
         _playerMove = GetComponent<PlayerMove>();
         _playerCamera = transform.Find("CameraHolder").GetComponent<PlayerCamera>();
         _playerCurrentGun = GetComponent<PlayerCurrentGun>();
         _newPlayerInteraction = GetComponent<NewPlayerInteraction>();
+        _playerInput = GetComponent<PlayerInput>();
+        _menuNavigationAction = _playerInput.actions["Navigate"];
+    }
+
+    private void Start()
+    {
+        _menuNavigationAction = _playerInput.actions["Navigate"];
     }
 
     private void Update()
     {
+        NavigationInput = _menuNavigationAction.ReadValue<Vector2>();
+
         GameManager.Instance.Player0IsUsingKeyboardOrMouse = _playerInput.currentControlScheme == "Keyboard&Mouse";
 
         RaycastGun gun = _playerCurrentGun.CurrentGun.GetComponent<RaycastGun>();
@@ -68,7 +79,7 @@ public class PlayerInputHandler : MonoBehaviour
 
                 if (_newPlayerInteraction.InteractionTest(out IInteractable interactable))
                 {
-                    if (interactable.CanInteract(_newPlayerInteraction.InteractText))
+                    if (interactable.CanInteract(_newPlayerInteraction.InteractText, _playerMove.GetComponent<NewPlayerInteraction>()))
                     {
                         _newPlayerInteraction.InteractQueued = true;
                     }
@@ -100,7 +111,7 @@ public class PlayerInputHandler : MonoBehaviour
 
     public void OnPause(CallbackContext ctx)
     {
-        if (ctx.started)
+        if (ctx.started && !GameManager.Instance.PlayerDead)
         {
             Debug.Log("Paused");
             GameManager.Instance.Player0IsUsingKeyboardOrMouse = _playerInput.currentControlScheme == "Keyboard&Mouse";
@@ -182,7 +193,7 @@ public class PlayerInputHandler : MonoBehaviour
         {
             if(_newPlayerInteraction.InteractionTest(out IInteractable interactable))
                 {
-                    if (interactable.CanInteract(_newPlayerInteraction.InteractText))
+                    if (interactable.CanInteract(_newPlayerInteraction.InteractText, _playerMove.GetComponent<NewPlayerInteraction>()))
                     {
                         _newPlayerInteraction.InteractQueued = true;
                     }
@@ -300,6 +311,28 @@ public class PlayerInputHandler : MonoBehaviour
         else
         {
             _playerCurrentGun.SwitchToAnyGunMouse = false;
+        }
+    }
+
+    public void OnReviveActivate(CallbackContext ctx)
+    {
+        if (ctx.started && GameManager.Instance.PlayerDead && !_gameplayMenus.ReviveQTE.GetComponent<ReviveQTE>().InputQueued)
+        {
+            _gameplayMenus.ReviveQTE.GetComponent<ReviveQTE>().InputQueued = true;
+        }
+    }
+
+    public void OnGrenade(CallbackContext ctx)
+    {
+        if(ctx.started && !_playerCurrentGun.GrenadeActive)
+        {
+            _playerCurrentGun.GrenadeActive = true;
+            _playerCurrentGun.GrenadePull();
+        }
+        else if(ctx.canceled && _playerCurrentGun.GrenadeActive)
+        {
+            _playerCurrentGun.GrenadeActive = false;
+            _playerCurrentGun.GrenadeScript.ThrowGrenade = true;
         }
     }
 }
