@@ -5,7 +5,7 @@ public class ChangeTextOfValue : MonoBehaviour
 {
     private TextMeshProUGUI _sliderText;
 
-    private void Start()
+    private void Awake()
     {
         _sliderText = transform.Find("Value").GetComponent<TextMeshProUGUI>();
     }

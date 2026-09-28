@@ -64,6 +64,11 @@ public class PlayerCamera : MonoBehaviour
         AimingFOV = DefaultFOV + FOVAimingChange;
 
         SprintFOV = DefaultFOV + FOVSprintSpeedChange;
+
+        MouseSensitivity = PlayerPrefs.GetFloat("PlayerMouseSensitivity", 10);
+        MouseAimSensitivity = PlayerPrefs.GetFloat("PlayerMouseAimSensitivity", 6);
+        ControllerSensitivity = PlayerPrefs.GetFloat("PlayerControllerSensitivity", 400);
+        ControllerAimSensitivity = PlayerPrefs.GetFloat("PlayerControllerAimSensitivity", 200);
     }
 
     void Start()
