@@ -126,6 +126,7 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        LoadGraphicSettings();
         Round = 1;
         PlayerCount = 1;
         ZombieCount = GetZombieCount(1, Round);
@@ -153,5 +154,10 @@ public class GameManager : MonoBehaviour
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
         }
+    }
+
+    private void LoadGraphicSettings()
+    {
+
     }
 }
