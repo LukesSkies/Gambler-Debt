@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class GameManager : MonoBehaviour
 {
@@ -10,7 +12,7 @@ public class GameManager : MonoBehaviour
         {
             if(_instance == null)
             {
-                Debug.LogError("Need Gamemanager in the scene :(");
+                Debug.LogError("Need GameManager in the scene :(");
             }
             return _instance;
         }
@@ -57,6 +59,11 @@ public class GameManager : MonoBehaviour
 
     [Header("Player Values")]
     public bool Player0IsUsingKeyboardOrMouse;
+
+    [Header("Graphics")]
+    public int CurrentResolutionIndex;
+    private Light _directionalLight;
+    private UniversalAdditionalLightData _lightData;
 
     private float GetZombieCount(int playerCount, int round)
     {
@@ -122,6 +129,7 @@ public class GameManager : MonoBehaviour
     void Awake()
     {
         _instance = this;
+        _directionalLight = GameObject.Find("Directional Light").GetComponent<Light>();
     }
 
     void Start()
@@ -156,8 +164,111 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void LoadGraphicSettings()
+    public void LoadGraphicSettings()
     {
+        if (PlayerPrefs.GetString("ResolutionString") == null)
+        {
+            Screen.SetResolution(1920, 1080, Screen.fullScreen);
+        }
+        else
+        {
+            Screen.SetResolution(PlayerPrefs.GetInt("ResolutionWidth"), PlayerPrefs.GetInt("ResolutionHeight"), Screen.fullScreen);
+        }
 
+        switch (PlayerPrefs.GetInt("FullScreenOption", 0))
+        {
+            case 0:
+                Screen.fullScreenMode = FullScreenMode.FullScreenWindow;
+                break;
+            case 1:
+                Screen.fullScreenMode = FullScreenMode.ExclusiveFullScreen;
+                break;
+            case 2:
+                Screen.fullScreenMode = FullScreenMode.Windowed;
+                break;
+            default:
+                break;
+        }
+
+        if(Convert.ToBoolean(PlayerPrefs.GetInt("Vsync", 0)))
+        {
+            QualitySettings.vSyncCount = 1;
+        }
+        else
+        {
+            QualitySettings.vSyncCount = 0;
+        }
+
+        switch (PlayerPrefs.GetInt("AntiAliasing", 3))
+        {
+            case 0:
+                QualitySettings.antiAliasing = 0;
+                break;
+            case 1:
+                QualitySettings.antiAliasing = 2;
+                break;
+            case 2:
+                QualitySettings.antiAliasing = 4;
+                break;
+            case 3:
+                QualitySettings.antiAliasing = 8;
+                break;
+            default:
+                break;
+        }
+
+        switch (PlayerPrefs.GetInt("Shadows", 2))
+        {
+            case 0:
+                QualitySettings.shadows = UnityEngine.ShadowQuality.Disable;
+                _directionalLight.shadows = LightShadows.None;
+                break;
+            case 1:
+                QualitySettings.shadows = UnityEngine.ShadowQuality.HardOnly;
+                _directionalLight.shadows = LightShadows.Hard;
+                break;
+            case 2:
+                QualitySettings.shadows = UnityEngine.ShadowQuality.All;
+                _directionalLight.shadows = LightShadows.Soft;
+                break;
+            default:
+                break;
+        }
+
+        if(_directionalLight.TryGetComponent(out _lightData))
+        {
+            switch (PlayerPrefs.GetInt("SoftShadows", 2))
+            {
+                case 0:
+                    _lightData.softShadowQuality = SoftShadowQuality.Low;
+                    break;
+                case 1:
+                    _lightData.softShadowQuality = SoftShadowQuality.Medium;
+                    break;
+                case 2:
+                    _lightData.softShadowQuality = SoftShadowQuality.High;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        switch (PlayerPrefs.GetInt("TextureQuality", 0))
+        {
+            case 0:
+                QualitySettings.globalTextureMipmapLimit = 0;
+                break;
+            case 1:
+                QualitySettings.globalTextureMipmapLimit = 1;
+                break;
+            case 2:
+                QualitySettings.globalTextureMipmapLimit = 2;
+                break;
+            case 3:
+                QualitySettings.globalTextureMipmapLimit = 3;
+                break;
+            default:
+                break;
+        }
     }
 }
