@@ -1,8 +1,9 @@
-using TMPro;
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using System;
 
 public class SettingsMenu : MonoBehaviour
 {
@@ -30,6 +31,11 @@ public class SettingsMenu : MonoBehaviour
     [SerializeField] private TMP_Dropdown _shadowsDropdown;
     [SerializeField] private TMP_Dropdown _softShadowQualityDropdown;
     [SerializeField] private TMP_Dropdown _textureQualityDropdown;
+
+    public bool SettingsHasChanged;
+    public bool SettingsApplied;
+
+    [SerializeField] private GameObject _unappliedSettingsPanel;
 
     private Resolution[] _resolutions;
     [SerializeField] private List<string> _resolutionOptions = new List<string>();
@@ -141,7 +147,7 @@ public class SettingsMenu : MonoBehaviour
         _textureQualityDropdown.RefreshShownValue();
     }
 
-    private void LoadSettings()
+    public void LoadSettings()
     {
         //Gameplay Settings
         _playerFieldOfView.value = PlayerPrefs.GetFloat("PlayerFieldOfView", 80);
@@ -201,6 +207,26 @@ public class SettingsMenu : MonoBehaviour
         PlayerPrefs.SetInt("TextureQuality", _textureQualityDropdown.value);
 
         GameManager.Instance.LoadGraphicSettings();
+
+        StartCoroutine(SettingsApplying());
+
+        if (_unappliedSettingsPanel.activeSelf)
+        {
+            _unappliedSettingsPanel.SetActive(false);
+        }
+    }
+
+    public void SettingsChanged()
+    {
+        SettingsHasChanged = true;
+    }
+
+    private IEnumerator SettingsApplying()
+    {
+        SettingsApplied = true;
+        yield return new WaitForEndOfFrame();
+        SettingsApplied = false;
+        SettingsHasChanged = false;
     }
 
     private float HorizontalToVertical(float fov)

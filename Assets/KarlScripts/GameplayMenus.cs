@@ -1,16 +1,20 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
-using UnityEngine.UIElements;
 
 public class GameplayMenus : MonoBehaviour
 {
     private GameObject _pauseMenu;
     private GameObject _settingsMenu;
     [SerializeField] private GameObject _resumeButton;
+    [SerializeField] private GameObject _unappliedSettings;
+    [SerializeField] private List<GameObject> _settingsOptions = new List<GameObject>();
     public PlayerCurrentGun PlayerCurrentGun;
     public PlayerMove PlayerMove;
+
+    private SettingsMenu _settingsScript;
 
     private EventSystem _eventSystem;
 
@@ -24,6 +28,7 @@ public class GameplayMenus : MonoBehaviour
         _resumeButton = _pauseMenu.transform.Find("Buttons").transform.Find("Resume").gameObject;
 
         _settingsMenu = transform.Find("SettingsMenu").gameObject;
+        _settingsScript = _settingsMenu.GetComponent<SettingsMenu>();
         PlayerCurrentGun = GameObject.Find("NewPlayer0").GetComponent<PlayerCurrentGun>();
         PlayerMove = GameObject.Find("NewPlayer0").GetComponent<PlayerMove>();
         _eventSystem = GameObject.Find("EventSystem").GetComponent<EventSystem>();
@@ -47,14 +52,34 @@ public class GameplayMenus : MonoBehaviour
 
     public void SettingsBack()
     {
-        _pauseMenu.SetActive(true);
-        _settingsMenu.SetActive(false);
+        if (_settingsScript.SettingsHasChanged && !_settingsScript.SettingsApplied)
+        {
+            _unappliedSettings.SetActive(true);
+        }
+        else
+        {
+            _pauseMenu.SetActive(true);
+            _settingsMenu.SetActive(false);
+        }
     }
 
     public void SettingsMenu()
     {
         _pauseMenu.SetActive(false);
         _settingsMenu.SetActive(true);
+        _settingsScript.SettingsHasChanged = false;
+
+        for (int i = 0; i < _settingsOptions.Count; i++)
+        {
+            if(i == 0)
+            {
+                _settingsOptions[i].SetActive(true);
+            }
+            else
+            {
+                _settingsOptions[i].SetActive(false);
+            }
+        }
     }
 
     public void Restart()
@@ -75,7 +100,8 @@ public class GameplayMenus : MonoBehaviour
         }
         else if (!_pauseMenu.activeSelf)
         {
-            SettingsBack();
+            _pauseMenu.SetActive(true);
+            _settingsMenu.SetActive(false);
             if (!GameManager.Instance.Player0IsUsingKeyboardOrMouse)
             {
                 _eventSystem.SetSelectedGameObject(_resumeButton);
@@ -90,8 +116,24 @@ public class GameplayMenus : MonoBehaviour
         }
         else if (_settingsMenu.activeSelf)
         {
-            SettingsBack();
+            if (_settingsScript.SettingsHasChanged && !_settingsScript.SettingsApplied)
+            {
+                _unappliedSettings.SetActive(true);
+            }
+            else
+            {
+                _pauseMenu.SetActive(true);
+                _settingsMenu.SetActive(false);
+            }
         }
+    }
+
+    public void SettingsToMenu()
+    {
+        _unappliedSettings.SetActive(false);
+        _settingsScript.LoadSettings();
+        _pauseMenu.SetActive(true);
+        _settingsMenu.SetActive(false);
     }
 
     private IEnumerator ReEnableJump()

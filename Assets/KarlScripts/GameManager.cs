@@ -166,14 +166,7 @@ public class GameManager : MonoBehaviour
 
     public void LoadGraphicSettings()
     {
-        if (PlayerPrefs.GetString("ResolutionString") == null)
-        {
-            Screen.SetResolution(1920, 1080, Screen.fullScreen);
-        }
-        else
-        {
-            Screen.SetResolution(PlayerPrefs.GetInt("ResolutionWidth"), PlayerPrefs.GetInt("ResolutionHeight"), Screen.fullScreen);
-        }
+        Screen.SetResolution(PlayerPrefs.GetInt("ResolutionWidth", 1920), PlayerPrefs.GetInt("ResolutionHeight", 1080), Screen.fullScreen);
 
         switch (PlayerPrefs.GetInt("FullScreenOption", 0))
         {
