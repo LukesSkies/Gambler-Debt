@@ -1,3 +1,4 @@
+using KINEMATION.Shared.KAnimationCore.Runtime.Core;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -38,16 +39,28 @@ public class GameManager : MonoBehaviour
 
     [Header("Game Values")]
     public bool Paused;
-    public bool PlayerDead;
     public int Round;
-    public float ZombieCount;
     public int PlayerCount;
+    public List<GameObject> GunGameObjects = new List<GameObject>();
+    public List<GameObject> ZombieSpawnBarriers = new List<GameObject>();
+
+    [Header("Player Values")]
+    public bool Player0IsUsingKeyboardOrMouse;
+    public bool PlayerDead;
+
+    [Header("Zombie Values")]
+    public float ZombieSpawnRate;
+    public float ZombieCount;
+    private int _highRoundZombieSpawnRateChange;
     private int[] _soloLowRound = { 6, 8, 13, 18, 24, 27, 28, 28, 29, 33, 34, 36, 39, 41, 44, 47, 50, 53, 56 };
     private int[] _duoLowRound = { 7, 9, 15, 21, 27, 31, 32, 33, 34, 42, 45, 49, 54, 59, 64, 70, 76, 82, 89 };
     private int[] _trioLowRound = { 11, 14, 23, 32, 41, 47, 48, 50, 51, 62, 68, 74, 81, 89, 97, 105, 114, 123, 133 };
     private int[] _squadLowRound = { 14, 18, 30, 42, 54, 62, 64, 66, 68, 83, 91, 99, 108, 118, 129, 140, 152, 164, 178 };
-    public List<GameObject> GunGameObjects = new List<GameObject>();
-    public List<GameObject> ZombieSpawnBarriers = new List<GameObject>();
+    public int[] MaxZombieCount = { 24, 30, 36, 42 };
+    private float[] _zombieSpawnRateLowRound = { 2, 1.9f, 1.8f, 1.7f, 1.65f, 1.55f, 1.45f, 1.40f, 1.35f, 1.25f };
+
+    [Header("Game Referances")]
+    public GameObject Zombie;
 
     [Header("UI")]
     public GameObject PointsAdditionText;
@@ -57,15 +70,12 @@ public class GameManager : MonoBehaviour
     [Header("SlotMachine")]
     public List<GameObject> SlotMachineGuns = new List<GameObject>();
 
-    [Header("Player Values")]
-    public bool Player0IsUsingKeyboardOrMouse;
-
     [Header("Graphics")]
     public int CurrentResolutionIndex;
     private Light _directionalLight;
     private UniversalAdditionalLightData _lightData;
 
-    private float GetZombieCount(int playerCount, int round)
+    public int GetZombieCount(int playerCount, int round)
     {
         switch (playerCount)
         {
@@ -77,7 +87,7 @@ public class GameManager : MonoBehaviour
                 else
                 {
                     double zombieCount = 0.09f * round * round - 0.0029 * round + 23.958;
-                    return Mathf.Round((float)zombieCount);
+                    return Convert.ToInt32(Mathf.Round((float)zombieCount));
                 }
             case 2:
                 if (round < 20)
@@ -87,7 +97,7 @@ public class GameManager : MonoBehaviour
                 else
                 {
                     double zombieCount = 0.1882f * round * round - 0.4313f * round + 29.212;
-                    return Mathf.Round((float)zombieCount);
+                    return Convert.ToInt32(Mathf.Round((float)zombieCount));
                 }
             case 3:
                 if (round < 20)
@@ -97,7 +107,7 @@ public class GameManager : MonoBehaviour
                 else
                 {
                     double zombieCount = 0.2637f * round * round - 0.1802f * round + 35.015f;
-                    return Mathf.Round((float)zombieCount);
+                    return Convert.ToInt32(Mathf.Round((float)zombieCount));
                 }
             case 4:
                 if (round < 20)
@@ -107,7 +117,7 @@ public class GameManager : MonoBehaviour
                 else
                 {
                     double zombieCount = 0.35714f * round * round - 0.0714f * round + 50.4286;
-                    return Mathf.Round((float)zombieCount);
+                    return Convert.ToInt32(Mathf.Round((float)zombieCount));
                 }
             default:
                 return 0;
@@ -126,6 +136,29 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private float GetZombieSpawnRate(int round)
+    {
+        if (round <= 10)
+        {
+            return _zombieSpawnRateLowRound[round - 1];
+        }
+
+        if (round <= 20)
+        {
+            return ZombieSpawnRate - 0.05f;
+        }
+
+        // round > 20
+        _highRoundZombieSpawnRateChange += 1;
+        if (_highRoundZombieSpawnRateChange == 3)
+        {
+            _highRoundZombieSpawnRateChange = 0;
+            return Mathf.Max(ZombieSpawnRate - 0.05f, 0.1f);
+        }
+
+        return ZombieSpawnRate;
+    }
+
     void Awake()
     {
         _instance = this;
@@ -137,8 +170,9 @@ public class GameManager : MonoBehaviour
         LoadGraphicSettings();
         Round = 1;
         PlayerCount = 1;
-        ZombieCount = GetZombieCount(1, Round);
+        ZombieCount = GetZombieCount(PlayerCount, Round);
         ZombieHealth = GetZombieHealth(Round);
+        ZombieSpawnRate = GetZombieSpawnRate(Round);
     }
 
     private void Update()
@@ -148,6 +182,7 @@ public class GameManager : MonoBehaviour
             Round++;
             ZombieCount = GetZombieCount(1, Round);
             ZombieHealth = GetZombieHealth(Round);
+            ZombieSpawnRate = GetZombieSpawnRate(Round);
         }
 
         if (Paused && !PlayerDead)
