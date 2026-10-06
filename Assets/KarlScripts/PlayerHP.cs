@@ -59,6 +59,10 @@ public class PlayerHP : MonoBehaviour, IDamageable
 
     public void TakeDamage(float amount, float damageMultiplier = 1)
     {
+        if(Health > 0)
+        {
+            _redFlash.Play();
+        }
         Health -= amount;
         WaitForHealthRegen = true;
 

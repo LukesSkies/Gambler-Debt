@@ -136,6 +136,16 @@ public class GameplayMenus : MonoBehaviour
         _settingsMenu.SetActive(false);
     }
 
+    public void LoadTestMap()
+    {
+        SceneManager.LoadScene("TestingMovement2");
+    }
+
+    public void LoadSmallMap()
+    {
+        SceneManager.LoadScene("Small Map Idea 1 Rework");
+    }
+
     private IEnumerator ReEnableJump()
     {
         yield return new WaitForSeconds(0.1f);

@@ -41,7 +41,7 @@ public class ZombieSpawnPoint : MonoBehaviour
         {
             if (child.childCount == 0)
             {
-                Instantiate(GameManager.Instance.Zombie, child.position, child.rotation);
+                Instantiate(GameManager.Instance.Zombie, child);
                 break;
             }
         }

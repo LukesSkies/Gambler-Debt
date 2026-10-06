@@ -80,6 +80,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6556559663233657477}
   - component: {fileID: 6718803396482829996}
+  - component: {fileID: 4545004600554153645}
   - component: {fileID: 1991981842489383373}
   - component: {fileID: 8409654595962199944}
   - component: {fileID: 1031459169419395520}
@@ -121,7 +122,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _health: 150
---- !u!114 &1991981842489383373
+--- !u!114 &4545004600554153645
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -129,6 +130,25 @@ MonoBehaviour:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3843171908507042558}
   m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1eabd4a6b9f9e60449da211bf28ddcc8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _enemyState: 0
+  _barrierObject: {fileID: 0}
+  EnemySpawner: {fileID: 0}
+  FinishedSpawning: 0
+  EnemyInSpawner: 0
+  CanRun: 0
+  _walkedToBarriers: 0
+--- !u!114 &1991981842489383373
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3843171908507042558}
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 62e90b6b070d86f478cad5b2b162a901, type: 3}
   m_Name: 

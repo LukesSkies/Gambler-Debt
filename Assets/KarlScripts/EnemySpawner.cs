@@ -4,6 +4,7 @@ using UnityEngine;
 public class EnemySpawner : MonoBehaviour
 {
     public GameObject Barrier;
+    public GameObject MovePoint;
     private Collider _barrierCollider;
     private Material _barrierMaterial;
     public List<Transform> ZombiesInSpawner;
@@ -16,6 +17,7 @@ public class EnemySpawner : MonoBehaviour
     void Awake()
     {
         Barrier = transform.Find("Mesh").transform.Find("Barrier").gameObject;
+        MovePoint = transform.Find("Mesh").transform.Find("MovePoint").gameObject;
         _barrierCollider = Barrier.GetComponent<Collider>();
         _barrierMaterial = Barrier.GetComponent<MeshRenderer>().material;
     }
@@ -27,15 +29,28 @@ public class EnemySpawner : MonoBehaviour
         BarriersEnabled = true;
     }
 
+    private void Update()
+    {
+        ZombieBarrierHealth();
+    }
+
     public void ZombieBarrierHit()
     {
         if (!BarriersEnabled) return;
 
         BarrierHealth -= 1;
 
+        if(BarrierHealth <= 0)
+        {
+            BarrierHealth = 0;
+        }
+    }
+
+    public void ZombieBarrierHealth()
+    {
         if (BarrierHealth == 0)
         {
-            _barrierMaterial.SetFloat("_Transparency", BarrierHealth);
+            _barrierMaterial.SetFloat("_Transparency", 0);
 
             foreach (Transform zombie in ZombiesInSpawner)
             {
@@ -44,21 +59,9 @@ public class EnemySpawner : MonoBehaviour
             BarriersEnabled = false;
             return;
         }
-
-        float materialTransparency = (float)BarrierHealth / _maxBarrierHealth;
-
-        _barrierMaterial.SetFloat("_Transparency", materialTransparency);
-    }
-
-    public void ZombieBarrierGain()
-    {
-        if (BarriersEnabled) return;
-
-        BarrierHealth += 1;
-
-        if (BarrierHealth == 5)
+        else if (BarrierHealth == 5)
         {
-            _barrierMaterial.SetFloat("_Transparency", BarrierHealth);
+            _barrierMaterial.SetFloat("_Transparency", 1);
 
             foreach (Transform zombie in ZombiesInSpawner)
             {
@@ -67,9 +70,18 @@ public class EnemySpawner : MonoBehaviour
             BarriersEnabled = true;
             return;
         }
+        else
+        {
+            float materialTransparency = (float)BarrierHealth / _maxBarrierHealth;
 
-        float materialTransparency = (float)BarrierHealth / _maxBarrierHealth;
+            _barrierMaterial.SetFloat("_Transparency", materialTransparency);
+        }
+    }
 
-        _barrierMaterial.SetFloat("_Transparency", materialTransparency);
+    public void ZombieBarrierGain()
+    {
+        if (BarriersEnabled) return;
+
+        BarrierHealth += 1;
     }
 }

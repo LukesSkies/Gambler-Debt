@@ -32,7 +32,7 @@ public class EnemyStateMachine : MonoBehaviour
         _zombieFSM = new StateMachine();
         _enemyAnimation = transform.GetChild(0).GetComponent<EnemyAnimation>();
         EnemySpawner = transform.parent.transform.parent.transform.parent.GetComponent<EnemySpawner>();
-        _barrierObject = EnemySpawner.Barrier;
+        _barrierObject = EnemySpawner.MovePoint;
         _player = GameObject.Find("NewPlayer0");
     }
 
@@ -48,7 +48,7 @@ public class EnemyStateMachine : MonoBehaviour
             onEnter: state => WalkToBarriers(),
             onLogic: state =>
             {
-                if (_agent.pathStatus == NavMeshPathStatus.PathComplete && _agent.remainingDistance < 0.1)
+                if (_walkedToBarriers)
                     FinishedWalkingToBarriers();
             });
 
@@ -178,13 +178,12 @@ public class EnemyStateMachine : MonoBehaviour
 
     private void WalkToBarriers()
     {
-        _agent.SetDestination(_barrierObject.transform.position + new Vector3(0, 0, -1f));
+        _agent.SetDestination(_barrierObject.transform.position);
     }
 
     private void FinishedWalkingToBarriers()
     {
         _agent.ResetPath();
-        _walkedToBarriers = true;
         _enemyAnimation.Animator.SetBool("hit", true);
     }
 
@@ -197,7 +196,7 @@ public class EnemyStateMachine : MonoBehaviour
     private void SetWalkTrigger()
     {
         _agent.stoppingDistance = 1.5f;
-        _enemyAnimation.Animator.SetTrigger("walkTrigger");
+        _enemyAnimation.Animator.SetTrigger("walk");
         _enemyAnimation.Animator.SetBool("hit", false);
     }
 
@@ -212,7 +211,21 @@ public class EnemyStateMachine : MonoBehaviour
         if(other.tag == "EnemySpawn")
         {
             EnemyInSpawner = true;
-            transform.parent = null;
+        }
+        if(other.name == "MovePoint")
+        {
+            _walkedToBarriers = true;
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if(other.tag == "EnemySpawn")
+        {
+            if (FinishedSpawning)
+            {
+                transform.parent = null;
+            }
         }
     }
 

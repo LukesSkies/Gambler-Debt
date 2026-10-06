@@ -6,12 +6,12 @@ public class EnemyAnimation : MonoBehaviour
     public Animator Animator;
     [SerializeField] private float _resetPosDuration;
     private CapsuleCollider _attackCollider;
-    private EnemyStateMachine _enemyStateMachine;
+    private EnemyAI _enemyStateMachine;
 
     void Awake()
     {
         Animator = GetComponent<Animator>();
-        _enemyStateMachine = GetComponentInParent<EnemyStateMachine>();
+        _enemyStateMachine = GetComponentInParent<EnemyAI>();
         _attackCollider = transform.Find("AttackCollider").GetComponent<CapsuleCollider>();
     }
 
@@ -23,6 +23,7 @@ public class EnemyAnimation : MonoBehaviour
     private void SetMovementTrigger()
     {
         _enemyStateMachine.FinishedSpawning = true;
+        _enemyStateMachine.SwitchState();
         Animator.applyRootMotion = false;
         StartCoroutine(ResetPos());
         if (_enemyStateMachine.CanRun)
@@ -51,14 +52,16 @@ public class EnemyAnimation : MonoBehaviour
 
     private void ZombieHit()
     {
-        if (_enemyStateMachine.EnemyInSpawner && _enemyStateMachine.EnemySpawner != null)
+        if(!_enemyStateMachine.EnemyInSpawner || _enemyStateMachine.EnemySpawner.BarrierHealth <=0)
+        {
+            StartCoroutine(AttackPlayer());
+            return;
+        }
+        else if (_enemyStateMachine.EnemyInSpawner)
         {
             Debug.Log("HittingBarrier");
             _enemyStateMachine.EnemySpawner.ZombieBarrierHit();
-        }
-        else if (!_enemyStateMachine.EnemyInSpawner)
-        {
-            StartCoroutine(AttackPlayer());
+            return;
         }
     }
 

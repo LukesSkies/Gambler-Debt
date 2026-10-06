@@ -262,7 +262,7 @@ GameObject:
   - component: {fileID: 1604578390614805587}
   - component: {fileID: 8708579570086342731}
   - component: {fileID: 3391835749564225153}
-  m_Layer: 0
+  m_Layer: 16
   m_Name: Barrier
   m_TagString: Barrier
   m_Icon: {fileID: 0}
