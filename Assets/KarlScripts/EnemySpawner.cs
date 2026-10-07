@@ -63,9 +63,12 @@ public class EnemySpawner : MonoBehaviour
         {
             _barrierMaterial.SetFloat("_Transparency", 1);
 
-            foreach (Transform zombie in ZombiesInSpawner)
+            if(ZombiesInSpawner.Count > 0)
             {
-                zombie.GetComponent<EnemyStateMachine>().EnableBarrierCollider(_barrierCollider);
+                foreach (Transform zombie in ZombiesInSpawner)
+                {
+                    zombie.GetComponent<EnemyStateMachine>().EnableBarrierCollider(_barrierCollider);
+                }
             }
             BarriersEnabled = true;
             return;

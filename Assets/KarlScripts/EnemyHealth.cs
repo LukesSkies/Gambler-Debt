@@ -5,12 +5,23 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     public float Health { get; set; }
     [SerializeField] private float _health;
     private bool _healthSet;
+    private EnemyAI _enemyAI;
+
+    private void Awake()
+    {
+        _enemyAI = GetComponent<EnemyAI>();
+        _health = GameManager.Instance.GetZombieHealth(GameManager.Instance.Round);
+    }
+
+    private void Start()
+    {
+        _health = GameManager.Instance.GetZombieHealth(GameManager.Instance.Round);
+    }
 
     private void Update()
     {
         if(!_healthSet && _health == 0)
         {
-            _health = GameManager.Instance.ZombieHealth;
             Health = _health;
         }
         if(_health > 0 && !_healthSet)
@@ -41,6 +52,9 @@ public class EnemyHealth : MonoBehaviour, IDamageable
 
     private void Death()
     {
+        ZombieSpawner.Instance.CurrentZombieCount--;
+        ZombieSpawner.Instance.RoundZombieCount--;
+        _enemyAI.EnemySpawner.ZombiesInSpawner.Remove(transform);
         Destroy(gameObject);
     }
 }

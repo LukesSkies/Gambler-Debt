@@ -69,7 +69,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _zombieDamage: 30
-  _redFlash: {fileID: 0}
 --- !u!1 &3843171908507042558
 GameObject:
   m_ObjectHideFlags: 0
@@ -121,7 +120,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aba6efc4eef35ac469ce6c7ba2c0f915, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _health: 150
+  _health: 0
 --- !u!114 &4545004600554153645
 MonoBehaviour:
   m_ObjectHideFlags: 0
