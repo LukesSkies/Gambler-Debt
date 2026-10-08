@@ -6,6 +6,14 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     [SerializeField] private float _health;
     private bool _healthSet;
     private EnemyAI _enemyAI;
+    public enum TypeOfEnemy
+    {
+        Walking,
+        Running,
+        Jogging
+    }
+
+    public TypeOfEnemy EnemyType;
 
     private void Awake()
     {
@@ -54,6 +62,20 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     {
         ZombieSpawner.Instance.CurrentZombieCount--;
         ZombieSpawner.Instance.RoundZombieCount--;
+
+        switch (EnemyType)
+        {
+            case TypeOfEnemy.Walking:
+                ZombieSpawner.Instance.CurrentWalkingZombieCount--;
+                break;
+            case TypeOfEnemy.Running:
+                ZombieSpawner.Instance.CurrentRunningZombieCount--;
+                break;
+            case TypeOfEnemy.Jogging:
+                ZombieSpawner.Instance.CurrentJoggingZombieCount--;
+                break;
+        }
+
         _enemyAI.EnemySpawner.ZombiesInSpawner.Remove(transform);
         Destroy(gameObject);
     }

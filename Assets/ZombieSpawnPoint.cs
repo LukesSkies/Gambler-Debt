@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class ZombieSpawnPoint : MonoBehaviour
 {
@@ -35,13 +36,40 @@ public class ZombieSpawnPoint : MonoBehaviour
         return false;
     }
 
-    public void SpawnZombie()
+    public void SpawnZombie(bool canRun = false, bool jogging = false)
     {
         foreach (Transform child in _spawnPoints)
         {
             if (child.childCount == 0)
             {
-                Instantiate(GameManager.Instance.Zombie, child);
+                GameObject zombie = Instantiate(GameManager.Instance.Zombie, child);
+                NavMeshAgent zombieNavMesh = zombie.GetComponent<NavMeshAgent>();
+                EnemyAI enemyAI = zombie.GetComponent<EnemyAI>();
+                EnemyHealth enemyHealth = zombie.GetComponent<EnemyHealth>();
+
+                //Jogging
+                if(canRun && jogging)
+                {
+                    zombieNavMesh.speed = RoundSystem.Instance.JoggingZombieSpeed;
+                    enemyAI.CanJog = true;
+                    enemyHealth.EnemyType = EnemyHealth.TypeOfEnemy.Jogging;
+                }
+
+                //Running Zombie
+                if (canRun)
+                {
+                    zombieNavMesh.speed = RoundSystem.Instance.RunningZombieSpeed;
+                    enemyAI.CanRun = true;
+                    enemyHealth.EnemyType = EnemyHealth.TypeOfEnemy.Running;
+                }
+
+                //Walking Zombie
+                else
+                {
+                    zombieNavMesh.speed = RoundSystem.Instance.WalkingZombieSpeed;
+                    enemyAI.CanRun = false;
+                    enemyHealth.EnemyType = EnemyHealth.TypeOfEnemy.Walking;
+                }
                 break;
             }
         }

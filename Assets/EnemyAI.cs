@@ -10,6 +10,7 @@ public class EnemyAI : MonoBehaviour
         BreakingBarriers,
         WalkToPlayer,
         RunToPlayer,
+        JogToPlayer,
         HitPlayer,
     }
 
@@ -27,6 +28,7 @@ public class EnemyAI : MonoBehaviour
     public bool FinishedSpawning;
     public bool EnemyInSpawner;
     public bool CanRun;
+    public bool CanJog;
     [SerializeField] private bool _walkedToBarriers;
 
 
@@ -61,7 +63,7 @@ public class EnemyAI : MonoBehaviour
             case EnemyStates.WalkToPlayer:
                 _agent.stoppingDistance = 1.5f;
                 _enemyAnimation.Animator.SetBool("hit", false);
-                _enemyAnimation.Animator.SetBool("isRunning", false);
+                _enemyAnimation.Animator.SetBool("isStumbling", false);
                 _agent.SetDestination(_player.transform.position);
                 transform.LookAt(transform.position);
                 if(DistanceToPlayer() <= _agent.stoppingDistance + 0.2f)
@@ -73,6 +75,19 @@ public class EnemyAI : MonoBehaviour
                 _agent.stoppingDistance = 1.2f;
                 _enemyAnimation.Animator.SetBool("hit", false);
                 _enemyAnimation.Animator.SetBool("isRunning", true);
+                _enemyAnimation.Animator.SetBool("isStumbling", false);
+                _agent.SetDestination(_player.transform.position);
+                transform.LookAt(transform.position);
+                if (DistanceToPlayer() <= _agent.stoppingDistance + 0.2f)
+                {
+                    _enemyState = EnemyStates.HitPlayer;
+                }
+                break;
+            case EnemyStates.JogToPlayer:
+                _agent.stoppingDistance = 1.2f;
+                _enemyAnimation.Animator.SetBool("hit", false);
+                _enemyAnimation.Animator.SetBool("isRunning", false);
+                _enemyAnimation.Animator.SetBool("isStumbling", false);
                 _agent.SetDestination(_player.transform.position);
                 transform.LookAt(transform.position);
                 if (DistanceToPlayer() <= _agent.stoppingDistance + 0.2f)
@@ -110,7 +125,18 @@ public class EnemyAI : MonoBehaviour
         }
         else if(EnemySpawner.BarrierHealth <= 0)
         {
-            if (CanRun)
+            if (CanJog)
+            {
+                if (DistanceToPlayer() <= _agent.stoppingDistance + 0.2f)
+                {
+                    _enemyState = EnemyStates.HitPlayer;
+                }
+                else
+                {
+                    _enemyState = EnemyStates.JogToPlayer;
+                }
+            }
+            else if (CanRun)
             {
                 if(DistanceToPlayer() <= _agent.stoppingDistance + 0.2f)
                 {

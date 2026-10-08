@@ -36149,7 +36149,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StartZombieSpawer: 1
   CurrentZombieCount: 0
+  CurrentWalkingZombieCount: 0
+  CurrentJoggingZombieCount: 0
+  CurrentRunningZombieCount: 0
   RoundZombieCount: 0
+  RoundZombieWalkingCount: 0
+  RoundZombieJoggingCount: 0
+  RoundZombieRunningCount: 0
   ZombieSpawnerTimer: 0
   ActiveSpawners:
   - {fileID: 1520459043}
@@ -36430,6 +36436,9 @@ MonoBehaviour:
   _hudFadeIn: {fileID: 852504303}
   _roundText: {fileID: 1390435060}
   ZombieSpawnRate: 0
+  WalkingZombieSpeed: 1
+  JoggingZombieSpeed: 2
+  RunningZombieSpeed: 4
   ZombieCount: 0
   MaxZombieCount: 180000001e000000240000002a000000
 --- !u!4 &1187638147

@@ -28,14 +28,18 @@ public class RoundSystem : MonoBehaviour
 
     [Header("Zombie Values")]
     [SerializeField] public float ZombieSpawnRate;
+    [SerializeField] public float WalkingZombieSpeed;
+    [SerializeField] public float JoggingZombieSpeed;
+    [SerializeField] public float RunningZombieSpeed;
     public float ZombieCount;
     private int _highRoundZombieSpawnRateChange;
     private int[] _soloLowRound = { 6, 8, 13, 18, 24, 27, 28, 28, 29, 33, 34, 36, 39, 41, 44, 47, 50, 53, 56 };
     private int[] _duoLowRound = { 7, 9, 15, 21, 27, 31, 32, 33, 34, 42, 45, 49, 54, 59, 64, 70, 76, 82, 89 };
     private int[] _trioLowRound = { 11, 14, 23, 32, 41, 47, 48, 50, 51, 62, 68, 74, 81, 89, 97, 105, 114, 123, 133 };
     private int[] _squadLowRound = { 14, 18, 30, 42, 54, 62, 64, 66, 68, 83, 91, 99, 108, 118, 129, 140, 152, 164, 178 };
-    private int[] _amountOfFastZombies = { 0, 0, 2, 9, 15, 20, 23, 24 };
-    private int[] _amountOfSlowZombies = { 6, 8, 11, 9, 9, 4, 1, 0 };
+    private int[] _amountOfRunningZombies = { 0, 0, 0, 0, 8, 17, 25, 28 };
+    private int[] _amountOfJoggingZombies = { 0, 0, 2, 11, 14, 9, 3, 0};
+    private int[] _amountOfWalkingZombies = { 6, 8, 11, 7, 2, 1, 0 };
     public int[] MaxZombieCount = { 24, 30, 36, 42 };
     private float[] _zombieSpawnRateLowRound = { 2, 1.9f, 1.8f, 1.7f, 1.65f, 1.55f, 1.45f, 1.40f, 1.35f, 1.25f };
 
@@ -111,27 +115,39 @@ public class RoundSystem : MonoBehaviour
         return ZombieSpawnRate;
     }
 
-    private int GetSlowZombieAmount(int round)
+    private int GetWalkingZombieAmount(int round)
     {
-        if(round < 10)
+        if(round < 7)
         {
-            return _amountOfSlowZombies[round - 1];
+            return _amountOfWalkingZombies[round - 1];
         }
         else
         {
-            return _amountOfSlowZombies[7];
+            return _amountOfWalkingZombies[6];
         }
     }
 
-    private int GetFastZombieAmount(int round)
+    private int GetJoggingZombieAmount(int round)
     {
-        if (round < 10)
+        if (round < 8)
         {
-            return _amountOfFastZombies[round - 1];
+            return _amountOfWalkingZombies[round - 1];
         }
         else
         {
-            return _amountOfFastZombies[7];
+            return _amountOfWalkingZombies[7];
+        }
+    }
+
+    private int GetRunningZombieAmount(int round)
+    {
+        if (round < 9)
+        {
+            return _amountOfRunningZombies[round - 1];
+        }
+        else
+        {
+            return ZombieSpawner.Instance.RoundZombieCount;
         }
     }
 
@@ -180,6 +196,9 @@ public class RoundSystem : MonoBehaviour
         _roundText.text = GameManager.Instance.Round.ToString();
         ZombieSpawner.Instance.RoundZombieCount = GetZombieCount(GameManager.Instance.PlayerCount,
                 GameManager.Instance.Round);
+        ZombieSpawner.Instance.RoundZombieWalkingCount = GetWalkingZombieAmount(GameManager.Instance.Round);
+        ZombieSpawner.Instance.RoundZombieJoggingCount = GetJoggingZombieAmount(GameManager.Instance.Round);
+        ZombieSpawner.Instance.RoundZombieRunningCount = GetRunningZombieAmount(GameManager.Instance.Round);
         ZombieSpawnRate = GetZombieSpawnRate(GameManager.Instance.Round);
         GameManager.Instance.ZombieHealth = GameManager.Instance.GetZombieHealth(GameManager.Instance.Round);
     }
