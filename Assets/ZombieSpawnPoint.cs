@@ -53,6 +53,7 @@ public class ZombieSpawnPoint : MonoBehaviour
                     zombieNavMesh.speed = RoundSystem.Instance.JoggingZombieSpeed;
                     enemyAI.CanJog = true;
                     enemyHealth.EnemyType = EnemyHealth.TypeOfEnemy.Jogging;
+                    return;
                 }
 
                 //Running Zombie
@@ -61,6 +62,7 @@ public class ZombieSpawnPoint : MonoBehaviour
                     zombieNavMesh.speed = RoundSystem.Instance.RunningZombieSpeed;
                     enemyAI.CanRun = true;
                     enemyHealth.EnemyType = EnemyHealth.TypeOfEnemy.Running;
+                    return;
                 }
 
                 //Walking Zombie
@@ -68,9 +70,10 @@ public class ZombieSpawnPoint : MonoBehaviour
                 {
                     zombieNavMesh.speed = RoundSystem.Instance.WalkingZombieSpeed;
                     enemyAI.CanRun = false;
+                    enemyAI.CanJog = false;
                     enemyHealth.EnemyType = EnemyHealth.TypeOfEnemy.Walking;
+                    return;
                 }
-                break;
             }
         }
     }

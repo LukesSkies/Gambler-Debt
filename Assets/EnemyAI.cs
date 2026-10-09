@@ -55,6 +55,14 @@ public class EnemyAI : MonoBehaviour
                 break;
             case EnemyStates.WalkToBarriers:
                 _agent.SetDestination(_barrierObject.transform.position);
+                if(!CanJog && CanRun)
+                {
+                    _enemyAnimation.Animator.SetBool("isRunning", true);
+                }
+                else if (!CanJog && !CanRun)
+                {
+                    _enemyAnimation.Animator.SetBool("isStumbling", true);
+                }
                 break;
             case EnemyStates.BreakingBarriers:
                 _agent.ResetPath();
@@ -63,7 +71,7 @@ public class EnemyAI : MonoBehaviour
             case EnemyStates.WalkToPlayer:
                 _agent.stoppingDistance = 1.5f;
                 _enemyAnimation.Animator.SetBool("hit", false);
-                _enemyAnimation.Animator.SetBool("isStumbling", false);
+                _enemyAnimation.Animator.SetBool("isStumbling", true);
                 _agent.SetDestination(_player.transform.position);
                 transform.LookAt(transform.position);
                 if(DistanceToPlayer() <= _agent.stoppingDistance + 0.2f)
@@ -147,7 +155,7 @@ public class EnemyAI : MonoBehaviour
                     _enemyState = EnemyStates.RunToPlayer;
                 }
             }
-            else
+            else if(!CanJog && !CanRun)
             {
                 if (DistanceToPlayer() <= _agent.stoppingDistance + 0.2f)
                 {

@@ -67,12 +67,15 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         {
             case TypeOfEnemy.Walking:
                 ZombieSpawner.Instance.CurrentWalkingZombieCount--;
+                ZombieSpawner.Instance.RoundZombieWalkingCount--;
                 break;
             case TypeOfEnemy.Running:
                 ZombieSpawner.Instance.CurrentRunningZombieCount--;
+                ZombieSpawner.Instance.RoundZombieRunningCount--;
                 break;
             case TypeOfEnemy.Jogging:
                 ZombieSpawner.Instance.CurrentJoggingZombieCount--;
+                ZombieSpawner.Instance.RoundZombieJoggingCount--;
                 break;
         }
 

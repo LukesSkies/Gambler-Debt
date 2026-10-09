@@ -92,8 +92,15 @@ public class ZombieSpawner : MonoBehaviour
             {
                 CurrentZombieCount++;
 
+                //Late rounds if there are just running zombies
+                if (RoundZombieRunningCount == RoundZombieCount)
+                {
+                    spawnPoint.SpawnZombie(true);
+                    CurrentRunningZombieCount++;
+                }
+
                 //Early round where there isnt any jogging zombies
-                if(RoundZombieJoggingCount == 0)
+                else if (RoundZombieJoggingCount == 0)
                 {
                     spawnPoint.SpawnZombie();
                     CurrentWalkingZombieCount++;
@@ -145,7 +152,7 @@ public class ZombieSpawner : MonoBehaviour
                                 else
                                 {
                                     spawnPoint.SpawnZombie(true);
-                                    CurrentWalkingZombieCount++;
+                                    CurrentRunningZombieCount++;
                                 }
                             }
 
@@ -165,8 +172,8 @@ public class ZombieSpawner : MonoBehaviour
                                 //Spawn running zombie if there are any to spawn in
                                 if (CurrentWalkingZombieCount == RoundZombieWalkingCount && CurrentRunningZombieCount != RoundZombieRunningCount)
                                 {
-                                    spawnPoint.SpawnZombie(true, false);
-                                    CurrentJoggingZombieCount++;
+                                    spawnPoint.SpawnZombie(true);
+                                    CurrentRunningZombieCount++;
                                 }
                                 //Spawn walking zombie
                                 else
@@ -180,7 +187,7 @@ public class ZombieSpawner : MonoBehaviour
                             else
                             {
                                 spawnPoint.SpawnZombie(true, true);
-                                CurrentWalkingZombieCount++;
+                                CurrentJoggingZombieCount++;
                             }
                             break;
                     }

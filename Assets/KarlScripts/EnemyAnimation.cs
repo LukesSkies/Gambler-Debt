@@ -30,7 +30,11 @@ public class EnemyAnimation : MonoBehaviour
         {
             Animator.SetTrigger("run");
         }
-        else
+        else if(_enemyStateMachine.CanJog)
+        {
+            Animator.SetTrigger("jog");
+        }
+        else if(!_enemyStateMachine.CanRun && !_enemyStateMachine.CanRun)
         {
             Animator.SetTrigger("walk");
         }

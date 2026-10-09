@@ -131,11 +131,11 @@ public class RoundSystem : MonoBehaviour
     {
         if (round < 8)
         {
-            return _amountOfWalkingZombies[round - 1];
+            return _amountOfJoggingZombies[round - 1];
         }
         else
         {
-            return _amountOfWalkingZombies[7];
+            return _amountOfJoggingZombies[7];
         }
     }
 
@@ -201,5 +201,8 @@ public class RoundSystem : MonoBehaviour
         ZombieSpawner.Instance.RoundZombieRunningCount = GetRunningZombieAmount(GameManager.Instance.Round);
         ZombieSpawnRate = GetZombieSpawnRate(GameManager.Instance.Round);
         GameManager.Instance.ZombieHealth = GameManager.Instance.GetZombieHealth(GameManager.Instance.Round);
+        ZombieSpawner.Instance.CurrentJoggingZombieCount = 0;
+        ZombieSpawner.Instance.CurrentWalkingZombieCount = 0;
+        ZombieSpawner.Instance.CurrentRunningZombieCount = 0;
     }
 }
