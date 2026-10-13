@@ -67,6 +67,10 @@ public class EnemyAI : MonoBehaviour
             case EnemyStates.BreakingBarriers:
                 _agent.ResetPath();
                 _enemyAnimation.Animator.SetBool("hit", true);
+                if(EnemySpawner.BarrierHealth <= 0)
+                {
+                    SwitchState();
+                }
                 break;
             case EnemyStates.WalkToPlayer:
                 _agent.stoppingDistance = 1.5f;
