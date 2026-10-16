@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering.Universal;
+//using UnityEngine.Rendering.Universal;
 
 public class GameManager : MonoBehaviour
 {
@@ -61,7 +61,7 @@ public class GameManager : MonoBehaviour
     [Header("Graphics")]
     public int CurrentResolutionIndex;
     private Light _directionalLight;
-    private UniversalAdditionalLightData _lightData;
+    //private UniversalAdditionalLightData _lightData;
 
     public int GetZombieHealth(int round)
     {
@@ -167,7 +167,7 @@ public class GameManager : MonoBehaviour
             default:
                 break;
         }
-
+        /*
         if(_directionalLight.TryGetComponent(out _lightData))
         {
             switch (PlayerPrefs.GetInt("SoftShadows", 2))
@@ -184,7 +184,7 @@ public class GameManager : MonoBehaviour
                 default:
                     break;
             }
-        }
+        }*/
 
         switch (PlayerPrefs.GetInt("TextureQuality", 0))
         {
