@@ -324,15 +324,23 @@ public class PlayerInputHandler : MonoBehaviour
 
     public void OnGrenade(CallbackContext ctx)
     {
-        if(ctx.started && !_playerCurrentGun.GrenadeActive)
+        if(ctx.started && !_playerCurrentGun.GrenadeActive && !_playerCurrentGun.KnifeActive)
         {
             _playerCurrentGun.GrenadeActive = true;
             _playerCurrentGun.GrenadePull();
         }
         else if(ctx.canceled && _playerCurrentGun.GrenadeActive)
         {
-            _playerCurrentGun.GrenadeActive = false;
             _playerCurrentGun.GrenadeScript.ThrowGrenade = true;
+        }
+    }
+
+    public void OnKnife(CallbackContext ctx)
+    {
+        if(ctx.started && !_playerCurrentGun.GrenadeActive && !_playerCurrentGun.KnifeActive)
+        {
+            _playerCurrentGun.KnifeActive = true;
+            _playerCurrentGun.KnifeAttack();
         }
     }
 }
