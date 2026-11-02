@@ -12,10 +12,20 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private float _timePlayerSprintEnabled = 1.5f;
 
     [Header("Player Step Height")]
-    [SerializeField] private float _stepHeight = 0.3f;
-    [SerializeField] private float _stepSmooth = 0.1f;
-    private GameObject _stepRayLower;
-    private GameObject _stepRayHigher;
+    [SerializeField] private float _stepHeight = 0.4f;
+    [SerializeField] private float _stepLerpSpeed = 12f;
+    [SerializeField] private float _stepCheckMargin = 0.05f;
+    [SerializeField] private float _minStepHeight = 0.02f;
+    [SerializeField] private CapsuleCollider _playerCollider;
+
+    private bool _isStepping;
+    private float _stepTargetY;
+    private Vector3 _stepEntryFlatVel;
+
+    private Vector3 _debugLowerOrigin;
+    private Vector3 _debugUpperOrigin;
+    private Vector3 _debugDownOrigin;
+    private Vector3 _debugDirection;
 
     [Header("Jumping")]
     [SerializeField] private float _jumpForce;
@@ -104,9 +114,6 @@ public class PlayerMove : MonoBehaviour
             transform.Find("GunCamera").transform.Find("WeaponHolder");
         
         _playerMesh = transform.Find("PlayerMesh");
-
-        _stepRayLower = transform.Find("StepRayLower").gameObject;
-        _stepRayHigher = transform.Find("StepRayHigher").gameObject;
     }
 
     void Start()
@@ -118,7 +125,6 @@ public class PlayerMove : MonoBehaviour
         CanSprint = false;
         CanMove = false;
         _startYScale = _playerMesh.localScale.y;
-        _stepRayHigher.transform.localPosition = new Vector3(_stepRayHigher.transform.localPosition.x, _stepHeight, _stepRayHigher.transform.localPosition.z);
     }
 
     void FixedUpdate()
@@ -184,6 +190,8 @@ public class PlayerMove : MonoBehaviour
         {
             _rb.linearDamping = 0;
         }
+
+        DebugRays();
     }
 
     private void JumpInput()
@@ -333,15 +341,137 @@ public class PlayerMove : MonoBehaviour
 
     private void StepClimb()
     {
-        RaycastHit hitLower;
-        Debug.DrawRay(_stepRayLower.transform.position, transform.TransformDirection(Vector3.forward * 0.05f), Color.green);
-        if (Physics.Raycast(_stepRayLower.transform.position, transform.TransformDirection(Vector3.forward), out hitLower, 0.05f, LayerMask.GetMask("Ledge")))
+        if (_exitingSlope)
         {
-            Debug.Log("Ledge Hit");
-            Vector3 targetpos = new Vector3(_rb.position.x, hitLower.point.y, _rb.position.z);
-            _rb.position = Vector3.Lerp(_rb.position, targetpos, Time.deltaTime / 0.1f);
-            _rb.linearVelocity = new Vector3(_rb.linearVelocity.x, 0, _rb.linearVelocity.z);
+            _isStepping = false;
+            return;
         }
+
+        //Stop if the player has no input
+        bool hasInput = PlayerDir != Vector2.zero || IsSliding;
+        if (!hasInput)
+        {
+            _isStepping = false;
+            return;
+        }
+
+        DetectStep();
+
+        if (_isStepping)
+        {
+            LerpToStep();
+        }
+    }
+
+    private void DetectStep()
+    {
+        if (!GroundCheck()) return;
+
+        //Get Players direction
+        Vector3 dir;
+        if (IsSliding)
+        {
+            dir = new Vector3(_rb.linearVelocity.x, 0f, _rb.linearVelocity.z);
+        }
+        else
+        {
+            dir = transform.forward * PlayerDir.y + transform.right * PlayerDir.x;
+        }
+        dir.Normalize();
+        _debugDirection = dir;
+
+        //Store the players velocity and ajust the check distance accordingly
+        Vector3 flatVel = new Vector3(_rb.linearVelocity.x, 0f, _rb.linearVelocity.z);
+        float checkDist = GetStepRadius() + _stepCheckMargin + flatVel.magnitude * Time.fixedDeltaTime;
+
+        //Get the players "feet" position
+        float feetY = _playerCollider.bounds.min.y;
+        Vector3 feet = new Vector3(transform.position.x, feetY, transform.position.z);
+        float feetToRoot = transform.position.y - feetY;
+
+        //Checks if there is anything touching the players "feet"
+        Vector3 lowerOrigin = feet + Vector3.up * 0.05f;
+        _debugLowerOrigin = lowerOrigin;
+        if (!Physics.Raycast(lowerOrigin, dir, out RaycastHit lowerHit, checkDist, _groundMask))
+        {
+            return;
+        }
+
+        if (lowerHit.normal.y > 0.3f)
+        {
+            return;
+        }
+
+        //Checks if the player is touching a step or a wall
+        Vector3 upperOrigin = feet + Vector3.up * _stepHeight;
+        _debugUpperOrigin = upperOrigin;
+        if (Physics.Raycast(upperOrigin, dir, checkDist, _groundMask))
+            return;
+
+        //Calculate the position of the step top
+        Vector3 downOrigin = feet + dir * lowerHit.distance + Vector3.up * _stepHeight;
+        _debugDownOrigin = downOrigin;
+        if (!Physics.Raycast(downOrigin, Vector3.down, out RaycastHit topHit, _stepHeight, _groundMask,
+                QueryTriggerInteraction.Ignore))
+            return;
+
+        float rise = topHit.point.y - feet.y;
+        if (rise < _minStepHeight || rise > _stepHeight)
+        {
+            return;
+        }
+
+        //Set the lerping position
+        float targetY = topHit.point.y + feetToRoot;
+        if (!_isStepping || targetY > _stepTargetY)
+        {
+            //Get sliding speed if the player is sliding
+            if (!_isStepping) _stepEntryFlatVel = flatVel;
+
+            _stepTargetY = targetY;
+            _isStepping = true;
+        }
+    }
+
+    //Get the collider radius depending on the scale of the collider
+    private float GetStepRadius()
+    {
+        return _playerCollider.radius * Mathf.Max(Mathf.Abs(_playerCollider.transform.localScale.x), Mathf.Abs(_playerCollider.transform.localScale.z));
+    }
+
+    private void LerpToStep()
+    {
+        //Smoothing the player to the step postion
+        float newY = Mathf.Lerp(_rb.position.y, _stepTargetY, _stepLerpSpeed * Time.fixedDeltaTime);
+
+        //Stop the lerp if the player is close enough to the step top
+        if (Mathf.Abs(_stepTargetY - newY) < 0.005f)
+        {
+            newY = _stepTargetY;
+            _isStepping = false;
+        }
+
+        _rb.position = new Vector3(_rb.position.x, newY, _rb.position.z);
+
+        //Stop gravity pushing player into step
+        Vector3 vel = _rb.linearVelocity;
+        if (vel.y < 0f)
+        {
+            vel.y = 0f;
+        }
+
+        //Override the velocity if the player is sliding
+        if (IsSliding)
+        {
+            Vector3 flat = new Vector3(vel.x, 0f, vel.z);
+            if (flat.magnitude < _stepEntryFlatVel.magnitude)
+            {
+                vel.x = _stepEntryFlatVel.x;
+                vel.z = _stepEntryFlatVel.z;
+            }
+        }
+
+        _rb.linearVelocity = vel;
     }
 
     private void OutSide()
@@ -536,5 +666,12 @@ public class PlayerMove : MonoBehaviour
         }
 
         _weaponHolder.localRotation = Quaternion.Euler(gunRot);
+    }
+
+    private void DebugRays()
+    {
+        Debug.DrawRay(_debugLowerOrigin, _debugDirection, Color.green);
+        Debug.DrawRay(_debugUpperOrigin, _debugDirection, Color.green);
+        Debug.DrawRay(_debugDownOrigin, Vector3.down, Color.green);
     }
 }

@@ -6,16 +6,19 @@ public class PlayerCurrentGun : MonoBehaviour
     public GameObject CurrentGun;
     public GameObject NextGun;
     public GameObject Grenade;
+    public GameObject Knife;
     private List<GameObject> _gunList = new List<GameObject>();
 
     public Transform GunHolder;
     public Transform GrenadeHolder;
+    public Transform KnifeHolder;
 
     private string _primaryGun;
     private string _secondaryGun;
 
     [HideInInspector] public Animator GunAnimator;
     [HideInInspector] public Animator GrenadeAnimator;
+    [HideInInspector] public Animator KnifeAnimator;
 
     public bool GunSwitching;
     public bool CanShoot;
@@ -25,6 +28,7 @@ public class PlayerCurrentGun : MonoBehaviour
     public bool SwitchToAnyGunController;
     public bool SwitchToAnyGunMouse;
     public bool GrenadeActive;
+    public bool KnifeActive;
 
     private Points _playerPoints;
     public Grenade GrenadeScript;
@@ -66,6 +70,10 @@ public class PlayerCurrentGun : MonoBehaviour
         Grenade = GrenadeHolder.transform.Find("Grenade").gameObject;
         GrenadeAnimator = Grenade.transform.Find("GrenadeMesh").GetComponent<Animator>();
         GrenadeScript = Grenade.GetComponent<Grenade>();
+
+        KnifeHolder = transform.Find("CameraHolder").transform.Find("CameraRecoil").transform.Find("GunCamera").transform.Find("KnifeHolder");
+        Knife = KnifeHolder.transform.Find("Knife").gameObject;
+        KnifeAnimator = Knife.transform.Find("KnifeMesh").transform.Find("KnifeModel").GetComponent<Animator>();
     }
 
     private void Start()
@@ -75,7 +83,7 @@ public class PlayerCurrentGun : MonoBehaviour
 
     private void Update()
     {
-        if(NextGun != null && !GrenadeActive && CanSwitchGuns)
+        if(NextGun != null && !GrenadeActive && !KnifeActive && CanSwitchGuns)
         {
             if (SwitchToSecondGun && !GunSwitching)
             {
@@ -117,7 +125,7 @@ public class PlayerCurrentGun : MonoBehaviour
     {
         if (GrenadeActive)
         {
-            CurrentGun.SetActive(true);
+            GrenadeGunReset();
         }
         else
         {
@@ -169,11 +177,28 @@ public class PlayerCurrentGun : MonoBehaviour
         GrenadeAnimator.SetBool("GrenadePull", true);
     }
 
+    public void KnifeAttack()
+    {
+        KnifeActive = true;
+        CanSwitchGuns = false;
+        CurrentGun.SetActive(false);
+        Knife.SetActive(true);
+        KnifeAnimator.SetBool("KnifePull", true);
+    }
+
     public void GrenadeGunReset()
     {
         GrenadeActive = false;
         CanSwitchGuns = true;
         CurrentGun.SetActive(true);
         Grenade.SetActive(false);
+    }
+
+    public void KnifeGunReset()
+    {
+        KnifeActive = false;
+        CanSwitchGuns = true;
+        CurrentGun.SetActive(true);
+        Knife.SetActive(false);
     }
 }
