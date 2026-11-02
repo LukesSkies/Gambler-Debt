@@ -51,7 +51,19 @@ public class PlayerInputHandler : MonoBehaviour
 
         GameManager.Instance.Player0IsUsingKeyboardOrMouse = _playerInput.currentControlScheme == "Keyboard&Mouse";
 
+        if (_playerMove.PlayerDir == Vector2.zero || _playerMove.PlayerDir.y < 0)
+        {
+            _isSprinting = false;
+        }
+
+        _playerMove.SprintQueued = _isSprinting;
+
         RaycastGun gun = _playerCurrentGun.CurrentGun.GetComponent<RaycastGun>();
+
+        if (_playerCurrentGun.CurrentGun == null)
+        {
+            return;
+        }
 
         if (gun.GunSettings.AllowButtonHold && _isShootHeld)
         {
@@ -59,13 +71,6 @@ public class PlayerInputHandler : MonoBehaviour
         }
 
         gun.Aiming = _isAimHeld;
-
-        if (_playerMove.PlayerDir == Vector2.zero || _playerMove.PlayerDir.y < 0)
-        {
-            _isSprinting = false;
-        }
-
-        _playerMove.SprintQueued = _isSprinting;
 
         //Controller logic to check if the player wants to reload or interact
         if (_startControllerInteractTimer)

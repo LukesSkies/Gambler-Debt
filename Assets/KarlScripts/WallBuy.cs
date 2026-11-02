@@ -38,7 +38,18 @@ public class WallBuy : MonoBehaviour, IInteractable
     public bool CanInteract(TextMeshProUGUI interactText, NewPlayerInteraction playerInteraction)
     {
         string currentGun = playerInteraction.GetComponent<PlayerCurrentGun>().CurrentGun.name;
-        string secondGun = playerInteraction.gameObject.GetComponent<PlayerCurrentGun>().NextGun.name;
+
+        string secondGun;
+
+        if(playerInteraction.gameObject.GetComponent<PlayerCurrentGun>().NextGun == null)
+        {
+            secondGun = "";
+        }
+        else
+        {
+
+            secondGun = playerInteraction.gameObject.GetComponent<PlayerCurrentGun>().NextGun.name;
+        }
 
         //If the player does not have the wall buy gun
         if(currentGun != _gunName + "(Clone)" && secondGun != _gunName + "(Clone)")
@@ -62,7 +73,17 @@ public class WallBuy : MonoBehaviour, IInteractable
     public bool Interact(NewPlayerInteraction playerInteraction)
     {
         string currentGun = playerInteraction.GetComponent<PlayerCurrentGun>().CurrentGun.name;
-        string secondGun = playerInteraction.gameObject.GetComponent<PlayerCurrentGun>().NextGun.name;
+        string secondGun;
+
+        if (playerInteraction.gameObject.GetComponent<PlayerCurrentGun>().NextGun == null)
+        {
+            secondGun = "";
+        }
+        else
+        {
+
+            secondGun = playerInteraction.gameObject.GetComponent<PlayerCurrentGun>().NextGun.name;
+        }
 
         Points playerPoints = playerInteraction.GetComponent<Points>();
 
@@ -98,13 +119,22 @@ public class WallBuy : MonoBehaviour, IInteractable
                     break;
             }
 
+            if (playerCurrentGun.NextGun == null)
+            {
+                playerCurrentGun.NextGun = wallBuyGun;
+
+                playerCurrentGun.SwitchGun();
+            }
+            else
+            {
+                Destroy(playerCurrentGun.CurrentGun);
+
+                playerCurrentGun.CurrentGun = wallBuyGun;
+                wallBuyGun.SetActive(true);
+                playerCurrentGun.GunAnimator = playerCurrentGun.CurrentGun.transform.Find("WeaponMesh").GetComponent<Animator>();
+            }
+
             playerPoints.RemovePoints(_pointCostBuy);
-
-            Destroy(playerCurrentGun.CurrentGun);
-
-            playerCurrentGun.CurrentGun = wallBuyGun;
-            wallBuyGun.SetActive(true);
-            playerCurrentGun.GunAnimator = playerCurrentGun.CurrentGun.transform.Find("WeaponMesh").GetComponent<Animator>();
 
             _wallbuyActive = true;
         }

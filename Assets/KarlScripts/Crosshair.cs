@@ -60,6 +60,11 @@ public class Crosshair : MonoBehaviour
 
     private bool IsAiming()
     {
+        if (_playerCurrentGun.CurrentGun == null)
+        {
+            return false;
+        }
+
         if (_playerMove.GetComponent<PlayerCurrentGun>().CurrentGun.GetComponent<RaycastGun>())
         {
             return _playerMove.GetComponent<PlayerCurrentGun>().CurrentGun.GetComponent<RaycastGun>().Aiming;
