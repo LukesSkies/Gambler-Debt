@@ -31,10 +31,6 @@ public sealed class WaveManager : MonoBehaviour
     [SerializeField, Min(0f)] private float fallbackIntermissionSeconds = 12f;
     [SerializeField] private bool resetTempoWhenStartingANewRun = true;
 
-    [Header("Optional HUD")]
-    [Tooltip("Assign the existing round-number TMP text if you want this manager to update it. No change to RoundSystem is required.")]
-    [SerializeField] private TMP_Text roundNumberText;
-
     [Header("Runtime debug")]
     [SerializeField] private int currentRound;
     [SerializeField] private int currentPlayerCount = 1;
@@ -194,15 +190,8 @@ public sealed class WaveManager : MonoBehaviour
         // Both systems receive the exact same configuration object.
         recorder.BeginWave(configuration);
 
-        if (roundNumberText != null)
-            roundNumberText.text = currentRound.ToString();
-
         waveActive = true;
         state = WaveState.Active;
-
-        Debug.Log(
-            $"WaveManager started Round {currentRound} with {configuration.totalDemonCount} demons for {currentPlayerCount} player(s).",
-            this);
     }
 
     private IEnumerator CompleteAfterDestroyCallbacks()

@@ -1,14 +1,5 @@
 using UnityEngine;
 
-/// DATA RETURNED TO THE TEMPO SYSTEM AND DEBUG UI.
-///
-/// WaveBaselineManager fills this struct with one 0-100 score per metric. The
-/// "has..." flags tell TempoDirector/UI whether a real measurement exists. A
-/// value of 50 by itself does not mean a measurement exists; always check its
-/// matching has... flag before using it in an overall score.
-///
-/// LIVE CONNECTION: these field names are read by TempoDirector and TempoDebugUI.
-/// If a field is renamed here, update both of those scripts as well.
 public struct WaveMetricScores
 {
     public float roundTime;
@@ -29,114 +20,59 @@ public struct WaveMetricScores
     public bool hasPoints;
 }
 
-/// OWNS THE STARTING EXPECTATIONS AND LEARNED PERFORMANCE BASELINES.
-///
-/// This is the shared reference point for TempoDirector. It estimates what a
-/// wave's workload should look like from the configuration captured by
-/// WavePerformanceRecorder, scores the recorded results against the current
-/// averages, and learns from a completed wave after TempoDirector has scored it.
-///
-/// RESPONSIBILITIES:
-/// - Keep the solo Round 1 reference workload and performance targets.
-/// - Scale expectations to the wave's demon count, health, player count, active
-///   demon limit and swipe damage.
-/// - Calculate per-metric scores for the live debug UI and completed-wave result.
-/// - Gradually learn normalized duration, cadence, first-hit and damage-taken
-///   averages from completed waves.
-///
-/// NOT THIS SCRIPT'S RESPONSIBILITY:
-/// - It does not record player/enemy events. WavePerformanceRecorder does that.
-/// - It does not decide the overall Tempo Score or intermission. TempoDirector does.
-/// - It does not create/spawn a wave. WaveDirector and the production WaveSpawner do.
-///
-/// LIVE CONNECTIONS REQUIRED:
-/// - WavePerformanceRecorder.BeginWave(configuration) must receive the exact
-///   WaveConfiguration used by WaveSpawner. That captures the workload fields
-///   this script reads from WavePerformanceSnapshot.
-/// - WavePerformanceRecorder must publish WaveCompleted only after the whole wave
-///   is finished. TempoDirector listens to that event and calls LearnFromCompletedWave.
-/// - TempoDirector.GetMetricScores(snapshot) forwards live UI requests here.
-/// - RunManager should call TempoDirector.ResetForNewRun, which calls ResetToDefaults.
-///
-/// The learned averages currently reset for each new run and are not saved between
-/// application sessions. Add save/load code here only if cross-session learning is
-/// deliberately wanted.
 public sealed class WaveBaselineManager : MonoBehaviour
 {
     public static WaveBaselineManager Instance { get; private set; }
 
     [Header("Round 1 Reference Workload")]
-    [Tooltip("Number of demons in the default solo Round 1 wave. Keep this aligned with WaveDirector's Round 1 population.")]
     [SerializeField, Min(1)] private int roundOneDemonCount = 6;
 
-    [Tooltip("Reference health for one standard Round 1 demon. Keep this aligned with WaveDirector's roundOneDemonHealth.")]
     [SerializeField, Min(1f)] private float roundOneDemonHealth = 150f;
 
-    [Tooltip("Reference damage from one standard demon swipe. Keep this aligned with WaveDirector's demonSwipeDamage.")]
     [SerializeField, Min(0f)] private float roundOneDemonSwipeDamage = 50f;
 
-    [Tooltip("Reference Round 1 spawn interval. Used only if the Recorder did not capture a real configuration value.")]
     [SerializeField, Min(0.1f)] private float roundOneSpawnInterval = 2f;
 
-    [Tooltip("Reference active demon cap for solo Round 1. Keep this aligned with WaveDirector's baseActiveDemonCap.")]
     [SerializeField, Min(1)] private int roundOneMaximumActiveDemons = 4;
 
     [Header("Round 1 Performance Defaults")]
-    [Tooltip("Initial expected duration for solo Round 1. Later waves are estimated from this using their configured demon workload.")]
     [SerializeField, Min(1f)] private float roundOneExpectedDuration = 40f;
 
-    [Tooltip("Initial expected gap between consecutive kills by the same player in solo Round 1. This is not time to first kill.")]
     [SerializeField, Min(0.1f)] private float roundOneExpectedKillCadence = 5f;
 
-    [Tooltip("Initial expected time from the start of Round 1 until the first successful hit on a demon.")]
     [SerializeField, Min(0.1f)] private float expectedFirstDamageTime = 5f;
 
-    [Tooltip("Starting movement reference shown for diagnostics. Movement scoring itself rewards more movement: 100 percent is always the maximum movement score.")]
     [SerializeField, Range(0f, 100f)] private float expectedMovementPercentage = 60f;
 
-    [Tooltip("Expected total damage received by one player in the solo Round 1 reference workload. This is the base damage-taken threshold before workload scaling.")]
     [SerializeField, Min(0f)] private float roundOneExpectedDamageTaken = 150f;
 
-    [Tooltip("Maximum expected points opportunity per Round 1 reference demon. The supplied example is 8 shots x 10 points + 130 melee points = 210.")]
     [SerializeField, Min(0f)] private float maximumPointsPerRoundOneDemon = 210f;
 
     [Header("Workload Scaling")]
-    [Tooltip("Controls how enemy health changes expected round duration. 0 ignores health, 0.5 uses square-root scaling, and 1 scales linearly.")]
     [SerializeField, Range(0f, 1f)] private float healthWorkloadExponent = 0.5f;
 
-    [Tooltip("Controls how extra players reduce the estimated team round duration. 0.5 uses square-root scaling; 1 uses linear scaling.")]
     [SerializeField, Range(0f, 1f)] private float playerWorkloadExponent = 0.5f;
 
-    [Tooltip("Controls how the total configured enemy-health workload affects expected incoming damage. Actual elapsed round time is deliberately not used for this threshold.")]
     [SerializeField, Range(0f, 1.5f)] private float damageExposureExponent = 0.75f;
 
-    [Tooltip("Controls how configured demon swipe damage changes the expected damage-taken threshold.")]
     [SerializeField, Range(0f, 1.5f)] private float swipeDamageExponent = 0.75f;
 
     [Header("Learning")]
-    [Tooltip("How strongly each completed wave updates the learned ratios. 0.2 means the average moves 20 percent toward the new result.")]
     [SerializeField, Range(0.01f, 1f)] private float learningRate = 0.20f;
 
-    [Tooltip("Limits an individual normalized result so one extreme round cannot completely redefine the learned average.")]
     [SerializeField, Range(1f, 10f)] private float maximumObservedRatio = 4f;
 
     [Header("Learned Averages (runtime debug values)")]
-    [Tooltip("Average observed round duration divided by the workload-estimated duration. 1 means the starting estimate matches the learned average.")]
     [SerializeField, Min(0.01f)] private float averageDurationRatio = 1f;
 
-    [Tooltip("Average observed per-player kill interval divided by the expected interval. Lower actual time is better when scoring.")]
     [SerializeField, Min(0.01f)] private float averageKillCadenceRatio = 1f;
 
-    [Tooltip("Average observed first successful hit time divided by the starting first-hit estimate.")]
     [SerializeField, Min(0.01f)] private float averageFirstDamageRatio = 1f;
 
-    [Tooltip("Average observed damage received divided by the expected damage for the configured workload. Zero-damage waves are not used to reduce this average.")]
     [SerializeField, Min(0.01f)] private float averageDamageTakenRatio = 1f;
 
-    [Tooltip("Average movement percentage for diagnostics only. It is not used to penalize high movement.")]
     [SerializeField, Range(0f, 100f)] private float averageMovementPercentage = 60f;
 
-    [Tooltip("Number of completed waves that have contributed to the learned baseline.")]
     [SerializeField, Min(0)] private int completedWavesLearned;
 
     // Public read-only values for TempoDirector, debug displays and future tuning tools.
@@ -151,10 +87,6 @@ public sealed class WaveBaselineManager : MonoBehaviour
 
     // Registers the single scene instance, then initializes all learned averages
     // to neutral ratios (1.0) and the initial Round 1 movement reference.
-    //
-    // LIVE SCENE SETUP: put one WaveBaselineManager in the gameplay scene. If a
-    // persistent RunManager owns managers across scene changes, keep this object
-    // with that manager rather than creating another copy in each scene.
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -195,10 +127,6 @@ public sealed class WaveBaselineManager : MonoBehaviour
     // Resets the learned values to the starting Round 1 references. Call this
     // once when a new run begins, not when each new wave begins; otherwise the
     // manager would forget everything it learned from the previous wave.
-    //
-    // LIVE CONNECTION: TempoDirector.ResetForNewRun already calls this method.
-    // The real RunManager should call TempoDirector.ResetForNewRun when a new
-    // run is created/restarted.
     public void ResetToDefaults()
     {
         averageDurationRatio = 1f;
@@ -214,10 +142,6 @@ public sealed class WaveBaselineManager : MonoBehaviour
     // any average. TempoDebugUI calls this through TempoDirector while the wave
     // is active, so the display can update live without teaching the baseline
     // from an unfinished wave.
-    //
-    // LIVE DATA REQUIRED: snapshot fields come from WavePerformanceRecorder:
-    // duration, damage totals, points, first-hit time, kill cadence, movement
-    // percentage, player count and the captured WaveConfiguration values.
     public WaveMetricScores GetMetricScores(WavePerformanceSnapshot snapshot)
     {
         EnsureInitialized();
@@ -317,11 +241,6 @@ public sealed class WaveBaselineManager : MonoBehaviour
         // has removed all scheduled enemy health. Therefore it is an opportunity/
         // completion measure, not a useful speed measure at wave end. Round Time
         // and Kill Cadence are the metrics that distinguish faster clears.
-        //
-        // LIVE CONNECTION: the demon health/damage system must call Recorder's
-        // RecordDamageDealt only for health actually removed. Avoid recording
-        // overkill damage above a demon's remaining health, or this percentage can
-        // reach 100 before all enemies are defeated.
         scores.hasDamageDealt = expectedTotalEnemyHealth > 0f;
         if (scores.hasDamageDealt)
         {
@@ -424,11 +343,6 @@ public sealed class WaveBaselineManager : MonoBehaviour
     // demons and higher per-demon health increase expected work; more players
     // reduce the team estimate using the configured player exponent. The spawn
     // schedule is also used as a minimum duration estimate.
-    //
-    // LIVE CONNECTION: WavePerformanceRecorder.BeginWave(configuration) copies
-    // demon count, health, spawn interval and batch size into the snapshot. If
-    // the Recorder is started using only the fallback int overload, this method
-    // has to estimate missing values and will not know the exact planned workload.
     public float EstimateExpectedRoundDuration(WavePerformanceSnapshot snapshot)
     {
         if (snapshot == null)
@@ -557,11 +471,6 @@ public sealed class WaveBaselineManager : MonoBehaviour
     // Estimates the maximum points opportunity for the configured wave. The
     // current formula uses 210 points per Round 1 demon and scales linearly with
     // enemy health, assuming extra health permits additional point-awarding hits.
-    //
-    // LIVE GAME CHANGE: connect this formula to the actual points/economy rules.
-    // If the live game always caps each demon at 210 points regardless of health,
-    // remove the healthRatio multiplier. If point values change by weapon, body
-    // part, melee kill or difficulty, calculate the true maximum from those rules.
     private float EstimateExpectedMaximumPoints(WavePerformanceSnapshot snapshot)
     {
         float health = GetExpectedDemonHealth(snapshot);

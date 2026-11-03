@@ -1,29 +1,6 @@
 using TMPro;
 using UnityEngine;
 
-/// This component reads the configuration currently stored by WaveDirector and
-/// copies selected values into TextMeshPro fields. It does not create a wave,
-/// spawn enemies, count living enemies, or change the configuration itself.
-///
-/// HOW IT CONNECTS TO THE CURRENT WAVE DIRECTOR:
-/// - The supplied WaveDirector exposes CurrentConfiguration.
-/// - The supplied WaveDirector raises ConfigurationChanged whenever PreviewWave
-///   creates a new configuration.
-/// - This component subscribes to that event and refreshes the displayed values.
-///
-/// WHAT THE REAL GAME STILL NEEDS:
-/// - The production WaveManager must request a configuration from WaveDirector.
-/// - The WaveManager must pass that same configuration to the real WaveSpawner.
-/// - The WaveSpawner must actually apply the count, cap, interval, batch limit,
-///   health, swipe damage, and Walker/Jogger/Runner composition.
-/// - The WavePerformanceRecorder must receive that same configuration in
-///   BeginWave(configuration), so TempoDirector evaluates the workload that was
-///   actually played rather than a preview or different set of settings.
-///
-/// IMPORTANT: the supplied WaveDirector.Start currently calls PreviewWave to
-/// create an initial preview for debugging. PreviewWave only prepares data; it
-/// does not start gameplay. Do not use PreviewNextWave as your production round
-/// progression method. The real WaveManager should own round progression.
 public sealed class WaveDirectorDebugUI : MonoBehaviour
 {
     [Header("Reference")]
@@ -66,11 +43,6 @@ public sealed class WaveDirectorDebugUI : MonoBehaviour
     // Unity calls this when the UI object becomes enabled. We find the current
     // WaveDirector and subscribe to its ConfigurationChanged event. If the
     // director has not run Awake yet, Start performs another lookup.
-    //
-    // LIVE CONNECTION: the supplied WaveDirector already has the matching event,
-    // so no change is needed to that event for this UI to receive updates.
-    // If the game later changes scenes/additively loads managers, reconnect this
-    // UI when the active WaveDirector instance changes.
 
     private void OnEnable()
     {
@@ -104,12 +76,6 @@ public sealed class WaveDirectorDebugUI : MonoBehaviour
     // Reads WaveDirector.CurrentConfiguration and updates every assigned TMP field.
     // Unassigned TMP references are skipped, so this UI can display only the fields
     // needed by the current debug Canvas.
-    //
-    // LIVE CONNECTION:
-    // The supplied WaveDirector already exposes CurrentConfiguration and the
-    // WaveConfiguration field names used here. If those fields are renamed, update
-    // the matching reads below. If you need live spawned/alive counts, those must
-    // come from WaveSpawner; this configuration only contains planned values.
 
     public void RefreshDisplay()
     {
@@ -165,14 +131,6 @@ public sealed class WaveDirectorDebugUI : MonoBehaviour
 
     // DEBUG-ONLY BUTTON CALLBACK. It asks the supplied WaveDirector to prepare
     // the round after its current preview, then refreshes this display.
-    //
-    // LIVE GAME CHANGE:
-    // Do not connect this method to the production Start Next Wave button.
-    // The real WaveManager must decide when a round starts, call
-    // WaveDirector.PreviewWave(nextRound, playerCount) (or a renamed production
-    // configuration method), then pass the returned configuration to both the
-    // WaveSpawner and WavePerformanceRecorder. Remove this debug button from
-    // the shipped HUD if players should not be able to change the preview.
 
     public void PreviewNextWave()
     {
@@ -198,11 +156,6 @@ public sealed class WaveDirectorDebugUI : MonoBehaviour
     // Finds the director reference and subscribes to its configuration event.
     // A serialized Inspector reference is preferred; otherwise the singleton
     // is used, followed by a scene search.
-    //
-    // LIVE CONNECTION:
-    // The supplied WaveDirector has a singleton and ConfigurationChanged event.
-    // If production code stops using a singleton or creates multiple wave systems,
-    // replace this lookup with an explicit reference supplied by WaveManager.
 
     private void SubscribeToWaveDirector()
     {

@@ -27546,7 +27546,6 @@ MonoBehaviour:
   fallbackPlayerCount: 1
   fallbackIntermissionSeconds: 12
   resetTempoWhenStartingANewRun: 1
-  roundNumberText: {fileID: 0}
   currentRound: 0
   currentPlayerCount: 1
   lastIntermissionUsed: 0
@@ -90301,7 +90300,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 859269746705170506, guid: e78679183a4582345b94fa3b70a0f13f, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -25.840332
+      value: -25.840347
       objectReference: {fileID: 0}
     - target: {fileID: 1000113940583005052, guid: e78679183a4582345b94fa3b70a0f13f, type: 3}
       propertyPath: m_Name
@@ -124367,7 +124366,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   recorder: {fileID: 1620657883}
   tempoDirector: {fileID: 2024976384}
-  roundText: {fileID: 1056678809}
+  roundText: {fileID: 1390435060}
   roundTimerText: {fileID: 1929988725}
   averageKillTimeText: {fileID: 672056902}
   firstDamageTimerText: {fileID: 1649225058}
