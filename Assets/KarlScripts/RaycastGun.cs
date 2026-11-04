@@ -19,6 +19,7 @@ public class RaycastGun : MonoBehaviour
     [SerializeField] private float _bulletHoleDelay;
 
     [Header("Debug")]
+    public bool Upgraded;
     [SerializeField] private bool _allowInvoke = true;
     [SerializeField] private bool _allowRaycastShown = true;
     public bool InputShooting;

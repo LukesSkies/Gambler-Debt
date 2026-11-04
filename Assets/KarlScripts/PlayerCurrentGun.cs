@@ -132,6 +132,10 @@ public class PlayerCurrentGun : MonoBehaviour
             GameObject nextGun = NextGun;
             GameObject currentGun = CurrentGun;
             CurrentGun.SetActive(false);
+            if(nextGun == null)
+            {
+                return;
+            }
             NextGun.SetActive(true);
             CurrentGun = nextGun;
             NextGun = currentGun;

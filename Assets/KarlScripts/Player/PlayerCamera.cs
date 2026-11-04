@@ -86,11 +86,19 @@ public class PlayerCamera : MonoBehaviour
 
         else if (GameManager.Instance.Player0IsUsingKeyboardOrMouse)
         {
+            if(_playerCurrentGun.CurrentGun == null)
+            {
+                return;
+            }
             _cameraLook = PlayerLookVector * Time.deltaTime * (_playerCurrentGun.CurrentGun.GetComponent<RaycastGun>().Aiming ? MouseAimSensitivity : MouseSensitivity);
         }
 
         else
         {
+            if (_playerCurrentGun.CurrentGun == null)
+            {
+                return;
+            }
             _cameraLook = PlayerLookVector * Time.deltaTime * (_playerCurrentGun.CurrentGun.GetComponent<RaycastGun>().Aiming ? ControllerAimSensitivity : ControllerSensitivity);
         }
 
@@ -135,6 +143,11 @@ public class PlayerCamera : MonoBehaviour
 
     private void FOVChecks()
     {
+        if (_playerCurrentGun.CurrentGun == null)
+        {
+            return;
+        }
+
         if (_playerCurrentGun.CurrentGun.GetComponent<RaycastGun>().CanAim && _playerCurrentGun.CurrentGun.GetComponent<RaycastGun>().Aiming)
         {
             _aimTimer += Time.deltaTime;
