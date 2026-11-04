@@ -9863,7 +9863,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &7811502418910971002
 Transform:
   m_ObjectHideFlags: 0
@@ -9892,7 +9892,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eacebc6b97ee7fa449db159b844b9ce8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GunSettings: {fileID: 11400000, guid: 10f3fd3b108a18f41a41f0290fac99c0, type: 2}
+  GunSettings: {fileID: 11400000, guid: 69e5331398590ff44b28ff93a9379195, type: 2}
   _startingPos: {x: 0.375, y: -0.267, z: 0.534}
   _aimingPos: {x: 0, y: -0.212, z: 0.363}
   _timeToAim: 0.2

@@ -9,6 +9,9 @@ public class UpgradeWeapon : MonoBehaviour, IInteractable
     public bool CanTakeWeapon;
     public Animation UpgradeAnimation;
 
+    [SerializeField] private string _gunName;
+    private GameObject _gunHolderObject;
+
     public bool CanInteract(TextMeshProUGUI interactText, NewPlayerInteraction playerInteraction)
     {
         if(playerInteraction.GetComponent<PlayerCurrentGun>().CurrentGun == null)
@@ -48,24 +51,31 @@ public class UpgradeWeapon : MonoBehaviour, IInteractable
         //If the player had not upgraded the gun and wants to upgrade it
         if (playerPoints.Money >= _pointCostBuy && !_currentGun.Upgraded && !GunInMachine && !CanTakeWeapon)
         {
+            _gunName = _currentGun.name;
+
             playerPoints.RemovePoints(_pointCostBuy);
 
             Destroy(playerCurrentGun.CurrentGun.gameObject);
 
             playerCurrentGun.SwitchGun();
 
-            GameObject playerGun;
-
-            //TODO: Play Upgrade Gun Animation
-
             switch (_currentGun.name)
             {
                 case "M1911":
-                    playerGun = Instantiate(GameManager.Instance.GunUpgradeStartingGameObjects[0], UpgradeAnimation.transform);
+                    _gunHolderObject = Instantiate(GameManager.Instance.GunUpgradeStartingGameObjects[0], UpgradeAnimation.transform);
+                    break;
+                case "M1928":
+                    _gunHolderObject = Instantiate(GameManager.Instance.GunUpgradeStartingGameObjects[1], UpgradeAnimation.transform);
+                    break;
+                case "P90":
+                    _gunHolderObject = Instantiate(GameManager.Instance.GunUpgradeStartingGameObjects[2], UpgradeAnimation.transform);
+                    break;
+                case "P90(Clone)":
+                    _gunHolderObject = Instantiate(GameManager.Instance.GunUpgradeStartingGameObjects[2], UpgradeAnimation.transform);
                     break;
 
                 default:
-                    playerGun = Instantiate(GameManager.Instance.GunUpgradeStartingGameObjects[0], UpgradeAnimation.transform);
+                    _gunHolderObject = Instantiate(GameManager.Instance.GunUpgradeStartingGameObjects[0], UpgradeAnimation.transform);
                     break;
             }
 
@@ -78,9 +88,54 @@ public class UpgradeWeapon : MonoBehaviour, IInteractable
 
         else if (GunInMachine && CanTakeWeapon)
         {
-            //TODO: Get Upgraded Gun
+
+            GunInMachine = false;
+            CanTakeWeapon = false;
+
+            UpgradeAnimation.Stop("UpgradeWeaponMoveBack");
+
+            Transform playerGunSpawn = playerCurrentGun.GunHolder;
+
+            GameObject upgradedGun;
+
+            switch (_gunName)
+            {
+                case "M1911":
+                    upgradedGun = Instantiate(GameManager.Instance.UpgradedGunGameObjects[0], playerGunSpawn);
+                    break;
+                case "M1928":
+                    upgradedGun = Instantiate(GameManager.Instance.UpgradedGunGameObjects[1], playerGunSpawn);
+                    break;
+                case "P90":
+                    upgradedGun = Instantiate(GameManager.Instance.UpgradedGunGameObjects[2], playerGunSpawn);
+                    break;
+                case "P90(Clone)":
+                    upgradedGun = Instantiate(GameManager.Instance.UpgradedGunGameObjects[2], playerGunSpawn);
+                    break;
+
+                default:
+                    upgradedGun = Instantiate(GameManager.Instance.UpgradedGunGameObjects[0], playerGunSpawn);
+                    break;
+            }
+
+            Destroy(_gunHolderObject);
+
+            if (playerCurrentGun.NextGun == null)
+            {
+                playerCurrentGun.NextGun = upgradedGun;
+
+                playerCurrentGun.SwitchGun();
+            }
+
+            else
+            {
+                playerCurrentGun.CurrentGun = upgradedGun;
+                playerCurrentGun.GunAnimator = playerCurrentGun.CurrentGun.transform.Find("WeaponMesh").GetComponent<Animator>();
+            }
+
+            return true;
         }
 
-        return true;
+        return false;
     }
 }

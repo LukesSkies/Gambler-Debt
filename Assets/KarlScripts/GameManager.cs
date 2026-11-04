@@ -41,7 +41,9 @@ public class GameManager : MonoBehaviour
     public int Round;
     public int PlayerCount;
     public List<GameObject> GunGameObjects = new List<GameObject>();
+    public List<GameObject> UpgradedGunGameObjects = new List<GameObject>();
     public List<GameObject> GunUpgradeStartingGameObjects = new List<GameObject>();
+    public List<GameObject> GunUpgradeEndingGameObjects = new List<GameObject>();
     public List<GameObject> ZombieSpawnBarriers = new List<GameObject>();
 
     [Header("Player Values")]
