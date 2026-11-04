@@ -5,20 +5,6 @@ using UnityEngine;
 /// Records the events and measurements from one wave. It does not decide whether
 /// performance was good or how difficult the next wave should be.
 ///
-/// MAIN GAME HOOKUPS:
-/// - WaveManager: call BeginWave(theSameWaveConfigurationSentToTheSpawner).
-/// - Demon health: call RecordDamageDealt(playerId, actualHealthRemoved) when the
-///   player's attack really removes enemy health. Use RecordDamageDealt(amount)
-///   if the game cannot identify the attacking player yet.
-/// - Player health: call RecordDamageTaken(actualDamageReceived) after mitigation.
-/// - Demon death: call RecordKill(killingPlayerId) exactly once for a confirmed kill.
-///   The no-argument RecordKill() remains for solo tests/older call sites.
-/// - Points/economy: call RecordPointsEarned(pointsActuallyAwarded).
-/// - Each player's movement controller: call RecordMovement(isActuallyMoving,
-///   Time.deltaTime) once per frame for that player, including when stationary.
-/// - WaveManager: call EndWave only when all scheduled demons have spawned and
-///   every demon belonging to this wave has been defeated.
-///
 /// KILL CADENCE:
 /// Each player's consecutive kill intervals are measured separately. At the end
 /// of a wave, all available per-player intervals are pooled into one average.
