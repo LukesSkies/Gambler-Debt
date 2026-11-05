@@ -13,9 +13,8 @@ public sealed class WaveEnemyRecorderBridge : MonoBehaviour
         "_zombieDamage",
         BindingFlags.Instance | BindingFlags.NonPublic);
 
-    [Header("Kill attribution")]
-    [Tooltip("The existing damage calls do not pass an attacker ID. For the current solo game this should remain 0.")]
-    [SerializeField] private int killingPlayerId;
+    // Existing damage calls do not supply attacker identity; current solo game uses player 0.
+    private int killingPlayerId;
 
     private EnemyHealth enemyHealth;
     private WavePerformanceRecorder recorder;
@@ -42,6 +41,8 @@ public sealed class WaveEnemyRecorderBridge : MonoBehaviour
         ApplySwipeDamage();
     }
 
+    // Called by WaveSpawner immediately after the existing ZombieSpawnPoint
+    // has created the zombie.
     public void Configure(float demonHealth, float swipeDamage, int creditedPlayerId = 0)
     {
         configuredDemonHealth = Mathf.Max(1f, demonHealth);

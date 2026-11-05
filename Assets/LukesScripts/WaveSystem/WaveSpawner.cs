@@ -4,15 +4,9 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public sealed class WaveSpawner : MonoBehaviour
 {
-    [Header("Existing game references")]
-    [SerializeField] private ZombieSpawner zombieSpawner;
-
-    [Header("Spawn behaviour")]
-    [Tooltip("If true, use all active ZombieSpawnPoint objects when ZombieSpawner.ActiveSpawners is empty.")]
-    [SerializeField] private bool findSpawnPointsWhenListIsEmpty = true;
-
-    [Tooltip("Randomise which available spawn point is selected for each enemy.")]
-    [SerializeField] private bool randomiseSpawnPoint = true;
+    // Auto-discovered scene dependency; no manual Inspector wiring required.
+    private ZombieSpawner zombieSpawner;
+    private const bool RandomiseSpawnPoint = true;
 
     private WaveConfiguration configuration;
     private readonly List<ZombieSpawnPoint> spawnPoints = new List<ZombieSpawnPoint>();
@@ -107,6 +101,7 @@ public sealed class WaveSpawner : MonoBehaviour
             nextSpawnTime = Time.time + Mathf.Max(0.01f, configuration.spawnInterval);
     }
 
+    // Begins executing the exact configuration already passed to Recorder.
     public bool BeginWave(WaveConfiguration waveConfiguration)
     {
         if (waveConfiguration == null)
@@ -193,7 +188,7 @@ public sealed class WaveSpawner : MonoBehaviour
         if (availablePoints.Count == 0)
             return false;
 
-        int startIndex = randomiseSpawnPoint
+        int startIndex = RandomiseSpawnPoint
             ? Random.Range(0, availablePoints.Count)
             : 0;
 
@@ -295,7 +290,7 @@ public sealed class WaveSpawner : MonoBehaviour
             }
         }
 
-        if (spawnPoints.Count == 0 && findSpawnPointsWhenListIsEmpty)
+        if (spawnPoints.Count == 0)
         {
             ZombieSpawnPoint[] found = FindObjectsByType<ZombieSpawnPoint>(FindObjectsSortMode.None);
             foreach (ZombieSpawnPoint spawnPoint in found)

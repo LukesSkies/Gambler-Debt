@@ -16,31 +16,27 @@ public sealed class WaveManager : MonoBehaviour
         Stopped
     }
 
-    [Header("Manager references")]
-    [SerializeField] private WaveDirector waveDirector;
-    [SerializeField] private WaveSpawner waveSpawner;
-    [SerializeField] private WavePerformanceRecorder recorder;
-    [SerializeField] private TempoDirector tempoDirector;
-    [SerializeField] private GameManager gameManager;
-    [SerializeField] private RoundSystem roundSystem;
+    [Header("Optional HUD")]
+    [SerializeField] private TMP_Text roundNumberText;
 
-    [Header("Start settings")]
+    [Header("Start")]
     [SerializeField] private bool startFirstWaveAutomatically = true;
-    [SerializeField, Min(1)] private int startingRound = 1;
-    [SerializeField, Range(1, 4)] private int fallbackPlayerCount = 1;
-    [SerializeField, Min(0f)] private float fallbackIntermissionSeconds = 12f;
-    [SerializeField] private bool resetTempoWhenStartingANewRun = true;
 
-    [Header("Runtime debug")]
-    [SerializeField] private int currentRound;
-    [SerializeField] private int currentPlayerCount = 1;
-    [SerializeField] private float lastIntermissionUsed;
-    [SerializeField] private bool waveActive;
+    private WaveDirector waveDirector;
+    private WaveSpawner waveSpawner;
+    private WavePerformanceRecorder recorder;
+    private TempoDirector tempoDirector;
+    private GameManager gameManager;
+    private RoundSystem roundSystem;
 
+    private int currentRound;
+    private int currentPlayerCount = 1;
+    private float lastIntermissionUsed;
+    private bool waveActive;
+    private bool runInitialized;
     private WaveState state = WaveState.WaitingToStart;
     private Coroutine intermissionCoroutine;
     private Coroutine completionCoroutine;
-    private bool runInitialized;
 
     public int CurrentRound => currentRound;
     public int CurrentPlayerCount => currentPlayerCount;
@@ -51,7 +47,7 @@ public sealed class WaveManager : MonoBehaviour
     {
         if (Instance != null && Instance != this)
         {
-            Debug.LogWarning("Multiple WaveManager instances detected. Destroying duplicate.");
+            Debug.LogWarning("Multiple WaveManager instances detected. Destroying duplicate.", this);
             Destroy(gameObject);
             return;
         }
@@ -62,18 +58,14 @@ public sealed class WaveManager : MonoBehaviour
 
     private IEnumerator Start()
     {
-        // Let existing GameManager, RoundSystem and spawn-point Start methods
-        // finish before the first configured wave is prepared.
+        // Allow the existing GameManager, RoundSystem and spawn points to initialise.
         yield return null;
+        yield return new WaitForEndOfFrame();
 
         FindReferences();
-        AttachPlayerBridges();
-
-        if (gameManager == null || waveDirector == null || waveSpawner == null || recorder == null)
+        if (waveDirector == null || waveSpawner == null || recorder == null || gameManager == null)
         {
-            Debug.LogError(
-                "WaveManager cannot start. Required references are GameManager, WaveDirector, WaveSpawner and WavePerformanceRecorder.",
-                this);
+            Debug.LogError("WaveManager needs WaveDirector, WaveSpawner, WavePerformanceRecorder and GameManager in the scene.", this);
             state = WaveState.Stopped;
             yield break;
         }
@@ -81,12 +73,10 @@ public sealed class WaveManager : MonoBehaviour
         if (tempoDirector == null)
             tempoDirector = FindFirstObjectByType<TempoDirector>();
 
-        // Take ownership even when the first wave is started by a menu later.
-        // This prevents the old ZombieSpawner Update loop from auto-advancing.
         waveSpawner.TakeOverLegacySpawner();
 
         if (startFirstWaveAutomatically)
-            StartWave(Mathf.Max(1, startingRound));
+            StartWave(waveDirector.FirstRoundToStart);
         else
             state = WaveState.WaitingToStart;
     }
@@ -104,10 +94,8 @@ public sealed class WaveManager : MonoBehaviour
     {
         if (intermissionCoroutine != null)
             StopCoroutine(intermissionCoroutine);
-
         if (completionCoroutine != null)
             StopCoroutine(completionCoroutine);
-
         if (Instance == this)
             Instance = null;
     }
@@ -117,7 +105,9 @@ public sealed class WaveManager : MonoBehaviour
         if (state == WaveState.Active || state == WaveState.Intermission)
             return;
 
-        StartWave(Mathf.Max(1, startingRound));
+        FindReferences();
+        if (waveDirector != null)
+            StartWave(waveDirector.FirstRoundToStart);
     }
 
     public void StopWaveProgression()
@@ -147,21 +137,16 @@ public sealed class WaveManager : MonoBehaviour
 
         if (waveDirector == null || waveSpawner == null || recorder == null || gameManager == null)
         {
-            Debug.LogError("WaveManager is missing a required reference and cannot start a wave.", this);
+            Debug.LogError("WaveManager is missing a required runtime dependency; wave start cancelled.", this);
             state = WaveState.Stopped;
             return;
         }
 
         InitializeRunIfNeeded();
-
         currentPlayerCount = ResolvePlayerCount();
         currentRound = Mathf.Max(1, roundNumber);
-
-        // Existing EnemyHealth.Awake/Start read GameManager.Round and
-        // GameManager.GetZombieHealth to initialise each spawned enemy.
         gameManager.Round = currentRound;
 
-        // WaveDirector creates the real configuration using the latest Tempo Score.
         WaveConfiguration configuration = waveDirector.PreviewWave(currentRound, currentPlayerCount);
         if (configuration == null)
         {
@@ -179,26 +164,26 @@ public sealed class WaveManager : MonoBehaviour
             roundSystem.ZombieSpawnRate = configuration.spawnInterval;
         }
 
-        // Configure the spawner first. It only schedules its first spawn in the
-        // future, so the Recorder can begin before an enemy is instantiated.
         if (!waveSpawner.BeginWave(configuration))
         {
             state = WaveState.Stopped;
             return;
         }
 
-        // Both systems receive the exact same configuration object.
+        // Recorder and Spawner receive the same configuration before the first spawn.
         recorder.BeginWave(configuration);
+
+        if (roundNumberText != null)
+            roundNumberText.text = currentRound.ToString();
 
         waveActive = true;
         state = WaveState.Active;
+        Debug.Log($"WaveManager started Round {currentRound}: {configuration.totalDemonCount} demons, {currentPlayerCount} player(s).", this);
     }
 
     private IEnumerator CompleteAfterDestroyCallbacks()
     {
-        // EnemyHealth decrements the ZombieSpawner counters before Destroy(gameObject).
-        // Wait until the end of the frame so WaveEnemyRecorderBridge.OnDestroy can
-        // record the lethal hit and kill before the Recorder freezes its snapshot.
+        // Let EnemyHealth.OnDestroy and WaveEnemyRecorderBridge finish recording the final hit/kill.
         yield return new WaitForEndOfFrame();
         yield return null;
         completionCoroutine = null;
@@ -215,31 +200,23 @@ public sealed class WaveManager : MonoBehaviour
         waveActive = false;
         state = WaveState.Intermission;
         waveSpawner.StopWave();
-
-        // TempoDirector receives WaveCompleted synchronously from EndWave and
-        // calculates the next score/intermission before this call returns.
         recorder.EndWave();
 
         float intermission = tempoDirector != null
             ? tempoDirector.NextIntermissionSeconds
-            : fallbackIntermissionSeconds;
+            : (waveDirector != null ? waveDirector.DefaultIntermission : 12f);
 
         lastIntermissionUsed = Mathf.Max(0f, intermission);
         intermissionCoroutine = StartCoroutine(BeginNextWaveAfterIntermission(lastIntermissionUsed));
-
-        Debug.Log(
-            $"WaveManager cleared Round {currentRound}. Next wave in {lastIntermissionUsed:F1} seconds.",
-            this);
+        Debug.Log($"WaveManager cleared Round {currentRound}. Next wave in {lastIntermissionUsed:F1} seconds.", this);
     }
 
     private IEnumerator BeginNextWaveAfterIntermission(float seconds)
     {
         yield return new WaitForSeconds(seconds);
         intermissionCoroutine = null;
-
         if (state != WaveState.Intermission)
             yield break;
-
         StartWave(currentRound + 1);
     }
 
@@ -247,8 +224,7 @@ public sealed class WaveManager : MonoBehaviour
     {
         if (gameManager != null && gameManager.PlayerCount >= 1)
             return Mathf.Clamp(gameManager.PlayerCount, 1, 4);
-
-        return Mathf.Clamp(fallbackPlayerCount, 1, 4);
+        return waveDirector != null ? waveDirector.DefaultPlayerCount : 1;
     }
 
     private void InitializeRunIfNeeded()
@@ -256,9 +232,8 @@ public sealed class WaveManager : MonoBehaviour
         if (runInitialized)
             return;
 
-        if (resetTempoWhenStartingANewRun && tempoDirector != null)
+        if (tempoDirector != null)
             tempoDirector.ResetForNewRun();
-
         runInitialized = true;
     }
 
@@ -267,9 +242,7 @@ public sealed class WaveManager : MonoBehaviour
         if (configuration == null || configuration.roundNumber <= 9)
             return;
 
-        // Existing GameManager.GetZombieHealth(round) multiplies its stored
-        // previous-round health by 1.1 for Round 10 onward. Store the preceding
-        // value so its existing health initialisation produces this configured HP.
+        // Keep the existing GameManager's Round 10+ 1.1x health progression aligned with the configured value.
         gameManager.ZombieHealth = Mathf.RoundToInt(configuration.baseDemonHealth / 1.1f);
     }
 
@@ -284,29 +257,17 @@ public sealed class WaveManager : MonoBehaviour
             WavePlayerRecorderBridge bridge = player.GetComponent<WavePlayerRecorderBridge>();
             if (bridge == null)
                 bridge = player.gameObject.AddComponent<WavePlayerRecorderBridge>();
-
             bridge.Initialize();
         }
     }
 
     private void FindReferences()
     {
-        if (gameManager == null)
-            gameManager = FindFirstObjectByType<GameManager>();
-
-        if (roundSystem == null)
-            roundSystem = FindFirstObjectByType<RoundSystem>();
-
-        if (waveDirector == null)
-            waveDirector = FindFirstObjectByType<WaveDirector>();
-
-        if (waveSpawner == null)
-            waveSpawner = FindFirstObjectByType<WaveSpawner>();
-
-        if (recorder == null)
-            recorder = FindFirstObjectByType<WavePerformanceRecorder>();
-
-        if (tempoDirector == null)
-            tempoDirector = FindFirstObjectByType<TempoDirector>();
+        if (gameManager == null) gameManager = FindFirstObjectByType<GameManager>();
+        if (roundSystem == null) roundSystem = FindFirstObjectByType<RoundSystem>();
+        if (waveDirector == null) waveDirector = WaveDirector.Instance != null ? WaveDirector.Instance : FindFirstObjectByType<WaveDirector>();
+        if (waveSpawner == null) waveSpawner = FindFirstObjectByType<WaveSpawner>();
+        if (recorder == null) recorder = WavePerformanceRecorder.Instance != null ? WavePerformanceRecorder.Instance : FindFirstObjectByType<WavePerformanceRecorder>();
+        if (tempoDirector == null) tempoDirector = TempoDirector.Instance != null ? TempoDirector.Instance : FindFirstObjectByType<TempoDirector>();
     }
 }

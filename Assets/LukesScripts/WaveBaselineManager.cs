@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// One 0-100 score per measured performance category.
 public struct WaveMetricScores
 {
     public float roundTime;
@@ -20,62 +21,24 @@ public struct WaveMetricScores
     public bool hasPoints;
 }
 
+// Calculates metric scores and learns per-run averages. All authored settings
+// are read from WaveDirector, so this component has no tuning Inspector fields.
+[DisallowMultipleComponent]
 public sealed class WaveBaselineManager : MonoBehaviour
 {
     public static WaveBaselineManager Instance { get; private set; }
 
-    [Header("Round 1 Reference Workload")]
-    [SerializeField, Min(1)] private int roundOneDemonCount = 6;
+    private WaveDirector waveDirector;
 
-    [SerializeField, Min(1f)] private float roundOneDemonHealth = 150f;
+    // Runtime learning state only. These are deliberately not serialized into the Inspector.
+    private float averageDurationRatio = 1f;
+    private float averageKillCadenceRatio = 1f;
+    private float averageFirstDamageRatio = 1f;
+    private float averageDamageTakenRatio = 1f;
+    private float averageMovementPercentage = 60f;
+    private int completedWavesLearned;
+    private bool initialized;
 
-    [SerializeField, Min(0f)] private float roundOneDemonSwipeDamage = 50f;
-
-    [SerializeField, Min(0.1f)] private float roundOneSpawnInterval = 2f;
-
-    [SerializeField, Min(1)] private int roundOneMaximumActiveDemons = 4;
-
-    [Header("Round 1 Performance Defaults")]
-    [SerializeField, Min(1f)] private float roundOneExpectedDuration = 40f;
-
-    [SerializeField, Min(0.1f)] private float roundOneExpectedKillCadence = 5f;
-
-    [SerializeField, Min(0.1f)] private float expectedFirstDamageTime = 5f;
-
-    [SerializeField, Range(0f, 100f)] private float expectedMovementPercentage = 60f;
-
-    [SerializeField, Min(0f)] private float roundOneExpectedDamageTaken = 150f;
-
-    [SerializeField, Min(0f)] private float maximumPointsPerRoundOneDemon = 210f;
-
-    [Header("Workload Scaling")]
-    [SerializeField, Range(0f, 1f)] private float healthWorkloadExponent = 0.5f;
-
-    [SerializeField, Range(0f, 1f)] private float playerWorkloadExponent = 0.5f;
-
-    [SerializeField, Range(0f, 1.5f)] private float damageExposureExponent = 0.75f;
-
-    [SerializeField, Range(0f, 1.5f)] private float swipeDamageExponent = 0.75f;
-
-    [Header("Learning")]
-    [SerializeField, Range(0.01f, 1f)] private float learningRate = 0.20f;
-
-    [SerializeField, Range(1f, 10f)] private float maximumObservedRatio = 4f;
-
-    [Header("Learned Averages (runtime debug values)")]
-    [SerializeField, Min(0.01f)] private float averageDurationRatio = 1f;
-
-    [SerializeField, Min(0.01f)] private float averageKillCadenceRatio = 1f;
-
-    [SerializeField, Min(0.01f)] private float averageFirstDamageRatio = 1f;
-
-    [SerializeField, Min(0.01f)] private float averageDamageTakenRatio = 1f;
-
-    [SerializeField, Range(0f, 100f)] private float averageMovementPercentage = 60f;
-
-    [SerializeField, Min(0)] private int completedWavesLearned;
-
-    // Public read-only values for TempoDirector, debug displays and future tuning tools.
     public int CompletedWavesLearned => completedWavesLearned;
     public float AverageMovementPercentage => averageMovementPercentage;
     public float AverageDurationRatio => averageDurationRatio;
@@ -83,83 +46,52 @@ public sealed class WaveBaselineManager : MonoBehaviour
     public float AverageFirstDamageRatio => averageFirstDamageRatio;
     public float AverageDamageTakenRatio => averageDamageTakenRatio;
 
-    private bool initialized;
-
-    // Registers the single scene instance, then initializes all learned averages
-    // to neutral ratios (1.0) and the initial Round 1 movement reference.
     private void Awake()
     {
         if (Instance != null && Instance != this)
         {
-            Debug.LogWarning("Multiple WaveBaselineManager instances detected. Destroying duplicate.");
+            Debug.LogWarning("Multiple WaveBaselineManager instances detected. Destroying duplicate.", this);
             Destroy(gameObject);
             return;
         }
 
         Instance = this;
+        ResolveWaveDirector();
         ResetToDefaults();
     }
 
-    // Clears the singleton reference when this manager is destroyed.
     private void OnDestroy()
     {
         if (Instance == this)
             Instance = null;
     }
 
-    // Clamps Inspector values to valid ranges. This runs in the editor when
-    // serialized values change; it is not the runtime learning calculation.
-    // Keep the Round 1 workload values synchronized with WaveDirector.
-    private void OnValidate()
-    {
-        roundOneDemonCount = Mathf.Max(1, roundOneDemonCount);
-        roundOneDemonHealth = Mathf.Max(1f, roundOneDemonHealth);
-        roundOneSpawnInterval = Mathf.Max(0.1f, roundOneSpawnInterval);
-        roundOneMaximumActiveDemons = Mathf.Max(1, roundOneMaximumActiveDemons);
-        roundOneExpectedDuration = Mathf.Max(1f, roundOneExpectedDuration);
-        roundOneExpectedDamageTaken = Mathf.Max(0f, roundOneExpectedDamageTaken);
-        maximumPointsPerRoundOneDemon = Mathf.Max(0f, maximumPointsPerRoundOneDemon);
-        roundOneExpectedKillCadence = Mathf.Max(0.1f, roundOneExpectedKillCadence);
-        learningRate = Mathf.Clamp(learningRate, 0.01f, 1f);
-        maximumObservedRatio = Mathf.Max(1f, maximumObservedRatio);
-    }
-
-    // Resets the learned values to the starting Round 1 references. Call this
-    // once when a new run begins, not when each new wave begins; otherwise the
-    // manager would forget everything it learned from the previous wave.
     public void ResetToDefaults()
     {
+        ResolveWaveDirector();
         averageDurationRatio = 1f;
         averageKillCadenceRatio = 1f;
         averageFirstDamageRatio = 1f;
         averageDamageTakenRatio = 1f;
-        averageMovementPercentage = expectedMovementPercentage;
+        averageMovementPercentage = waveDirector != null ? waveDirector.ExpectedMovementPercentage : 60f;
         completedWavesLearned = 0;
         initialized = true;
     }
 
-    // Calculates the current scores from a Recorder snapshot without changing
-    // any average. TempoDebugUI calls this through TempoDirector while the wave
-    // is active, so the display can update live without teaching the baseline
-    // from an unfinished wave.
     public WaveMetricScores GetMetricScores(WavePerformanceSnapshot snapshot)
     {
         EnsureInitialized();
-
         WaveMetricScores scores = NeutralScores();
-        if (snapshot == null)
+        if (snapshot == null || waveDirector == null)
             return scores;
 
         float expectedDuration = EstimateExpectedRoundDuration(snapshot);
         float expectedKillCadence = EstimateExpectedKillCadence(snapshot);
         float expectedDamageTaken = EstimateExpectedDamageTaken(snapshot);
         float expectedTotalEnemyHealth = EstimateExpectedTotalEnemyHealth(snapshot);
-        float expectedMaximumPoints = EstimateExpectedMaximumPoints(snapshot);
+        float expectedPointsTarget = EstimateExpectedPointsTarget(snapshot);
         float expectedFirstHit = EstimateExpectedFirstDamageTime(snapshot);
 
-        // ROUND TIME: compare actual elapsed time with the expected duration for
-        // the current population/health/player workload. The learned duration ratio
-        // gradually adjusts the estimate to match actual playtest behaviour.
         scores.hasRoundTime = snapshot.duration > 0f && expectedDuration > 0f;
         if (scores.hasRoundTime)
         {
@@ -167,125 +99,58 @@ public sealed class WaveBaselineManager : MonoBehaviour
             scores.roundTime = ScoreLowerIsBetter(normalizedDuration, averageDurationRatio);
         }
 
-        // KILL CADENCE: Recorder stores an average of each player's own consecutive
-        // kill intervals. It is not the interval between alternating team kills.
-        // A player needs at least two confirmed kills before a cadence exists.
         scores.hasKillCadence = snapshot.hasKillCadence && expectedKillCadence > 0f;
         if (scores.hasKillCadence)
         {
-            float normalizedCadence = SafeRatio(
-                snapshot.averageTimeBetweenKills,
-                expectedKillCadence);
-
-            scores.killCadence = ScoreLowerIsBetter(
-                normalizedCadence,
-                averageKillCadenceRatio);
+            float normalizedCadence = SafeRatio(snapshot.averageTimeBetweenKills, expectedKillCadence);
+            scores.killCadence = ScoreLowerIsBetter(normalizedCadence, averageKillCadenceRatio);
         }
 
-        // TIME TO FIRST DAMAGE: measures time from BeginWave to the first successful
-        // hit on an enemy. Until that hit occurs, the live UI uses snapshot.duration
-        // as the running timer. At wave end, an untriggered first hit is unavailable
-        // and TempoDirector excludes it from the completed-wave weighted score.
-        float observedFirstHitTime = snapshot.hasFirstDamage
-            ? snapshot.firstDamageTime
-            : snapshot.duration;
-
+        float observedFirstHitTime = snapshot.hasFirstDamage ? snapshot.firstDamageTime : snapshot.duration;
         scores.hasFirstDamage = snapshot.hasFirstDamage;
-
         if (expectedFirstHit > 0f)
         {
-            float normalizedFirstHit = SafeRatio(
-                observedFirstHitTime,
-                expectedFirstHit);
-
-            scores.timeToFirstDamage = ScoreLowerIsBetter(
-                normalizedFirstHit,
-                averageFirstDamageRatio);
+            float normalizedFirstHit = SafeRatio(observedFirstHitTime, expectedFirstHit);
+            scores.timeToFirstDamage = ScoreLowerIsBetter(normalizedFirstHit, averageFirstDamageRatio);
         }
 
-        // MOVEMENT: higher movement is intentionally better in this game. The score
-        // is the reported percentage itself: 0% = 0, 50% = 50, 100% = 100. The two
-        // UI fields share this same result and TempoDirector counts it only once.
-        // Recorder.RecordMovement must be called every frame for every player,
-        // including while standing still, or the percentage is not trustworthy.
         scores.hasMovementSamples = snapshot.activeCombatTime > 0f;
         if (scores.hasMovementSamples)
         {
-            float movementScore = Mathf.Clamp(
-                snapshot.movementPercentage,
-                0f,
-                100f);
-
-            scores.movement = movementScore;
-            scores.movementPercentage = movementScore;
+            float value = Mathf.Clamp(snapshot.movementPercentage, 0f, 100f);
+            scores.movement = value;
+            scores.movementPercentage = value;
         }
 
-        // DAMAGE TAKEN: use the full-wave expected amount. Do not divide the target
-        // by elapsed time; doing so made the same damage total change colour merely
-        // because the round was taking longer. Expected damage is workload-scaled
-        // from configured demons/health, player count, swipe damage and active cap.
-        // Zero received damage always returns a perfect score. The learned ratio
-        // adapts the full-wave target only after completed waves with actual damage.
         scores.hasDamageTaken = snapshot.duration >= 0f;
         if (scores.hasDamageTaken)
         {
             float learnedExpectedDamage = expectedDamageTaken * averageDamageTakenRatio;
-            scores.damageTaken = ScoreDamageTaken(
-                snapshot.damageTaken,
-                learnedExpectedDamage);
+            scores.damageTaken = ScoreDamageTaken(snapshot.damageTaken, learnedExpectedDamage);
         }
 
-        // DAMAGE DEALT: this is total recorded enemy health removed divided by the
-        // total health workload (demon count * health). It is not divided by time.
-        // For a fully cleared wave, this will normally reach 100 because the team
-        // has removed all scheduled enemy health. Therefore it is an opportunity/
-        // completion measure, not a useful speed measure at wave end. Round Time
-        // and Kill Cadence are the metrics that distinguish faster clears.
         scores.hasDamageDealt = expectedTotalEnemyHealth > 0f;
         if (scores.hasDamageDealt)
         {
-            float damageCompletionRatio = SafeRatio(
-                snapshot.damageDealt,
-                expectedTotalEnemyHealth);
-
-            scores.damageDealt = Mathf.Clamp01(damageCompletionRatio) * 100f;
+            float completionRatio = SafeRatio(snapshot.damageDealt, expectedTotalEnemyHealth);
+            scores.damageDealt = Mathf.Clamp01(completionRatio) * 100f;
         }
 
-        // POINTS: compare total points with the maximum expected points opportunity,
-        // not points per second. With the current Round 1 reference this is
-        // 6 demons * 210 points = 1,260. An identical points total gets the same
-        // score regardless of round duration.
-        //
-        // The health-based increase below assumes more demon health permits more
-        // point-awarding shots. If the live scoring/economy script awards a fixed
-        // maximum per demon regardless of health, change EstimateExpectedMaximumPoints
-        // to use a fixed per-demon amount instead of multiplying by health ratio.
-        scores.hasPoints = expectedMaximumPoints > 0f;
+        scores.hasPoints = expectedPointsTarget > 0f;
         if (scores.hasPoints)
         {
-            float pointsOpportunityRatio = SafeRatio(
-                snapshot.pointsEarned,
-                expectedMaximumPoints);
-
-            scores.points = Mathf.Clamp01(pointsOpportunityRatio) * 100f;
+            // The calibrated average (550 by default in solo Round 1) maps to 75/100.
+            float pointsRatio = SafeRatio(snapshot.pointsEarned, expectedPointsTarget);
+            scores.points = Mathf.Clamp(pointsRatio * waveDirector.PointsScoreAtExpectedAverage, 0f, 100f);
         }
 
         return scores;
     }
 
-    // Updates learned averages from one finished wave. TempoDirector must call
-    // this AFTER it calculates the completed wave's metric scores and overall
-    // Tempo Score. That means a wave is judged against the previous baseline and
-    // cannot change its own target before the comparison is made.
-    //
-    // Only metrics with valid measurements are learned. In particular, zero
-    // damage-taken rounds do not pull the damage expectation down toward zero.
-    // Damage dealt and points use fixed workload opportunity ceilings and are
-    // deliberately not converted into per-second averages.
     public void LearnFromCompletedWave(WavePerformanceSnapshot snapshot)
     {
         EnsureInitialized();
-        if (snapshot == null)
+        if (snapshot == null || waveDirector == null)
             return;
 
         float expectedDuration = EstimateExpectedRoundDuration(snapshot);
@@ -294,307 +159,193 @@ public sealed class WaveBaselineManager : MonoBehaviour
         float expectedFirstHit = EstimateExpectedFirstDamageTime(snapshot);
 
         if (snapshot.duration > 0f && expectedDuration > 0f)
-        {
-            LearnRatio(
-                ref averageDurationRatio,
-                snapshot.duration / expectedDuration);
-        }
+            LearnRatio(ref averageDurationRatio, snapshot.duration / expectedDuration);
 
         if (snapshot.hasKillCadence && expectedKillCadence > 0f)
-        {
-            LearnRatio(
-                ref averageKillCadenceRatio,
-                snapshot.averageTimeBetweenKills / expectedKillCadence);
-        }
+            LearnRatio(ref averageKillCadenceRatio, snapshot.averageTimeBetweenKills / expectedKillCadence);
 
         if (snapshot.hasFirstDamage && expectedFirstHit > 0f)
-        {
-            LearnRatio(
-                ref averageFirstDamageRatio,
-                snapshot.firstDamageTime / expectedFirstHit);
-        }
+            LearnRatio(ref averageFirstDamageRatio, snapshot.firstDamageTime / expectedFirstHit);
 
-        // Learn incoming damage only from completed waves where damage was really
-        // received. A zero-damage result is excellent, but treating zero as an
-        // ordinary ratio would make the expected-damage threshold collapse over time.
-        if (snapshot.isComplete &&
-            snapshot.damageTaken > 0f &&
-            expectedDamageTaken > 0f)
-        {
-            LearnRatio(
-                ref averageDamageTakenRatio,
-                snapshot.damageTaken / expectedDamageTaken);
-        }
+        if (snapshot.isComplete && snapshot.damageTaken > 0f && expectedDamageTaken > 0f)
+            LearnRatio(ref averageDamageTakenRatio, snapshot.damageTaken / expectedDamageTaken);
 
-        // The movement average is retained for diagnostics/balancing only. It is
-        // not used to penalize a player who moves above the average.
         if (snapshot.activeCombatTime > 0f)
         {
             averageMovementPercentage = Mathf.Lerp(
                 averageMovementPercentage,
                 Mathf.Clamp(snapshot.movementPercentage, 0f, 100f),
-                learningRate);
+                waveDirector.LearningRate);
         }
 
         completedWavesLearned++;
     }
 
-    // Estimates how long a wave should take from the captured workload. More
-    // demons and higher per-demon health increase expected work; more players
-    // reduce the team estimate using the configured player exponent. The spawn
-    // schedule is also used as a minimum duration estimate.
     public float EstimateExpectedRoundDuration(WavePerformanceSnapshot snapshot)
     {
+        EnsureWaveDirector();
+        if (waveDirector == null)
+            return 40f;
         if (snapshot == null)
-            return roundOneExpectedDuration;
+            return waveDirector.RoundOneExpectedDuration;
 
         int players = Mathf.Clamp(snapshot.playerCount, 1, 4);
         int demons = GetExpectedDemonCount(snapshot);
         float health = GetExpectedDemonHealth(snapshot);
 
-        float healthRatio = Mathf.Max(
-            0.01f,
-            health / roundOneDemonHealth);
+        float healthRatio = Mathf.Max(0.01f, health / waveDirector.RoundOneDemonHealth);
+        float healthScale = Mathf.Pow(healthRatio, waveDirector.HealthWorkloadExponent);
+        float playerScale = Mathf.Pow(players, waveDirector.PlayerWorkloadExponent);
 
-        float healthScale = Mathf.Pow(
-            healthRatio,
-            healthWorkloadExponent);
-
-        float playerScale = Mathf.Pow(
-            players,
-            playerWorkloadExponent);
-
-        float workloadDuration = roundOneExpectedDuration
-            * (demons / (float)roundOneDemonCount)
+        float workloadDuration = waveDirector.RoundOneExpectedDuration
+            * (demons / (float)waveDirector.RoundOneDemonCount)
             * healthScale
             / Mathf.Max(1f, playerScale);
 
         int batchSize = Mathf.Max(1, snapshot.configuredSpawnBatchLimit);
         int batchCount = Mathf.CeilToInt(demons / (float)batchSize);
-
         float spawnInterval = snapshot.configuredSpawnInterval > 0f
             ? snapshot.configuredSpawnInterval
-            : roundOneSpawnInterval;
-
+            : waveDirector.RoundOneSpawnInterval;
         float spawnScheduleDuration = Mathf.Max(0, batchCount - 1) * spawnInterval;
 
-        return Mathf.Max(
-            1f,
-            Mathf.Max(workloadDuration, spawnScheduleDuration));
+        return Mathf.Max(1f, Mathf.Max(workloadDuration, spawnScheduleDuration));
     }
 
-    // Estimates the expected interval between consecutive kills by one player.
-    // Higher demon health increases the expected interval. The active demon cap
-    // changes how many targets may be available at once, and is divided by player
-    // count because the Recorder calculates a per-player cadence.
     public float EstimateExpectedKillCadence(WavePerformanceSnapshot snapshot)
     {
+        EnsureWaveDirector();
+        if (waveDirector == null)
+            return 5f;
+        if (snapshot == null)
+            return waveDirector.RoundOneExpectedKillCadence;
+
         float health = GetExpectedDemonHealth(snapshot);
-        float healthRatio = Mathf.Max(0.01f, health / roundOneDemonHealth);
-        float healthScale = Mathf.Pow(healthRatio, healthWorkloadExponent);
+        float healthRatio = Mathf.Max(0.01f, health / waveDirector.RoundOneDemonHealth);
+        float healthScale = Mathf.Pow(healthRatio, waveDirector.HealthWorkloadExponent);
 
         int players = Mathf.Clamp(snapshot.playerCount, 1, 4);
         int activeCap = GetExpectedActiveCap(snapshot);
         float activeCapPerPlayer = activeCap / (float)players;
+        float availabilityScale = Mathf.Sqrt(waveDirector.BaseActiveDemonCap / Mathf.Max(0.5f, activeCapPerPlayer));
+        availabilityScale = Mathf.Clamp(availabilityScale, 0.5f, 2f);
 
-        float targetAvailabilityScale = Mathf.Sqrt(
-            roundOneMaximumActiveDemons / Mathf.Max(0.5f, activeCapPerPlayer));
-
-        targetAvailabilityScale = Mathf.Clamp(targetAvailabilityScale, 0.5f, 2f);
-
-        return Mathf.Max(
-            0.1f,
-            roundOneExpectedKillCadence * healthScale * targetAvailabilityScale);
+        return Mathf.Max(0.1f, waveDirector.RoundOneExpectedKillCadence * healthScale * availabilityScale);
     }
 
-    // Estimates how quickly the team should land its first hit. Additional players
-    // create more opportunities for an early hit. This is a heuristic starting
-    // target; tune it with recorded matches once the real spawn/player flow exists.
     private float EstimateExpectedFirstDamageTime(WavePerformanceSnapshot snapshot)
     {
-        int players = Mathf.Clamp(snapshot.playerCount, 1, 4);
-        return Mathf.Max(
-            0.1f,
-            expectedFirstDamageTime / Mathf.Sqrt(players));
+        EnsureWaveDirector();
+        if (waveDirector == null)
+            return 5f;
+        int players = snapshot != null ? Mathf.Clamp(snapshot.playerCount, 1, 4) : 1;
+        return Mathf.Max(0.1f, waveDirector.ExpectedFirstDamageTime / Mathf.Sqrt(players));
     }
 
-    // Estimates how much damage the team might reasonably receive during the
-    // full wave. The expectation uses workload, not actual elapsed duration:
-    // configured demon count and health estimate the amount of enemy pressure,
-    // swipe damage changes the severity of each hit, active cap estimates how many
-    // enemies can threaten players simultaneously, and player count scales the
-    // team total. Tune these exponents against real matches; they are a model, not
-    // a guarantee of how much damage players must take.
     private float EstimateExpectedDamageTaken(WavePerformanceSnapshot snapshot)
     {
+        EnsureWaveDirector();
+        if (waveDirector == null || snapshot == null)
+            return 0f;
+
         int players = Mathf.Clamp(snapshot.playerCount, 1, 4);
         int demons = GetExpectedDemonCount(snapshot);
         float demonHealth = GetExpectedDemonHealth(snapshot);
-
-        float populationHealthRatio =
-            (demons / (float)roundOneDemonCount) *
-            Mathf.Max(0.01f, demonHealth / roundOneDemonHealth);
-
-        float workloadScale = Mathf.Pow(
-            Mathf.Max(0.1f, populationHealthRatio),
-            damageExposureExponent);
+        float populationHealthRatio = (demons / (float)waveDirector.RoundOneDemonCount)
+            * Mathf.Max(0.01f, demonHealth / waveDirector.RoundOneDemonHealth);
+        float workloadScale = Mathf.Pow(Mathf.Max(0.1f, populationHealthRatio), waveDirector.DamageExposureExponent);
 
         float swipeDamage = snapshot.configuredDemonSwipeDamage > 0f
             ? snapshot.configuredDemonSwipeDamage
-            : roundOneDemonSwipeDamage;
-
-        float swipeScale = roundOneDemonSwipeDamage > 0f
-            ? Mathf.Pow(
-                Mathf.Max(0.01f, swipeDamage / roundOneDemonSwipeDamage),
-                swipeDamageExponent)
+            : waveDirector.DemonSwipeDamage;
+        float swipeScale = waveDirector.DemonSwipeDamage > 0f
+            ? Mathf.Pow(Mathf.Max(0.01f, swipeDamage / waveDirector.DemonSwipeDamage), waveDirector.SwipeDamageExponent)
             : 1f;
 
         int activeCap = GetExpectedActiveCap(snapshot);
-        float activeCapScale = Mathf.Sqrt(
-            activeCap / (float)roundOneMaximumActiveDemons);
-
-        return roundOneExpectedDamageTaken
-            * players
-            * workloadScale
-            * swipeScale
-            * activeCapScale;
+        float activeCapScale = Mathf.Sqrt(activeCap / (float)waveDirector.BaseActiveDemonCap);
+        return waveDirector.RoundOneExpectedDamageTaken * players * workloadScale * swipeScale * activeCapScale;
     }
 
-    // Calculates all scheduled enemy health. A real WaveSpawner/health system
-    // should make sure the Recorder is given the same count and health that the
-    // demons actually receive.
     private float EstimateExpectedTotalEnemyHealth(WavePerformanceSnapshot snapshot)
     {
         return GetExpectedDemonCount(snapshot) * GetExpectedDemonHealth(snapshot);
     }
 
-    // Estimates the maximum points opportunity for the configured wave. The
-    // current formula uses 210 points per Round 1 demon and scales linearly with
-    // enemy health, assuming extra health permits additional point-awarding hits.
-    private float EstimateExpectedMaximumPoints(WavePerformanceSnapshot snapshot)
+    private float EstimateExpectedPointsTarget(WavePerformanceSnapshot snapshot)
     {
-        float health = GetExpectedDemonHealth(snapshot);
-        float healthRatio = Mathf.Max(0.01f, health / roundOneDemonHealth);
-
-        return maximumPointsPerRoundOneDemon
-            * GetExpectedDemonCount(snapshot)
-            * healthRatio;
+        // Points are calibrated against average real play, not theoretical maximum points.
+        // Enemy health is intentionally excluded from this target.
+        return waveDirector.RoundOneExpectedAveragePoints
+            * (GetExpectedDemonCount(snapshot) / (float)waveDirector.RoundOneDemonCount);
     }
 
-    // Uses the actual configured demon count saved by the Recorder. If the value
-    // is zero, the wave was likely started through the temporary/test overload
-    // instead of BeginWave(WaveConfiguration), so a basic fallback is used.
-    // Replace the fallback growth numbers if WaveDirector's population formula changes.
     private int GetExpectedDemonCount(WavePerformanceSnapshot snapshot)
     {
         if (snapshot.configuredDemonCount > 0)
             return snapshot.configuredDemonCount;
 
-        return Mathf.Max(
-            1,
-            roundOneDemonCount
-            + (Mathf.Max(1, snapshot.roundNumber) - 1) * 2
-            + (Mathf.Clamp(snapshot.playerCount, 1, 4) - 1) * 2);
+        int round = Mathf.Max(1, snapshot.roundNumber);
+        int players = Mathf.Clamp(snapshot.playerCount, 1, 4);
+        return Mathf.Max(1, waveDirector.RoundOneDemonCount
+            + (round - 1) * waveDirector.AdditionalDemonsPerRound
+            + (players - 1) * waveDirector.AdditionalDemonsPerExtraPlayer);
     }
 
-    // Uses the per-demon health captured from WaveConfiguration. If it was not
-    // captured, this fallback mirrors the current supplied WaveDirector's health
-    // progression. Keep this fallback synchronized if that progression changes.
     private float GetExpectedDemonHealth(WavePerformanceSnapshot snapshot)
     {
         if (snapshot.configuredDemonHealth > 0f)
             return snapshot.configuredDemonHealth;
 
         int round = Mathf.Max(1, snapshot.roundNumber);
-
         if (round <= 9)
-            return roundOneDemonHealth + (round - 1) * 100f;
+            return waveDirector.RoundOneDemonHealth + (round - 1) * waveDirector.HealthIncreasePerRound;
 
-        float roundNineHealth = roundOneDemonHealth + 8f * 100f;
-        return roundNineHealth * Mathf.Pow(1.1f, round - 9);
+        float roundNineHealth = waveDirector.RoundOneDemonHealth + 8f * waveDirector.HealthIncreasePerRound;
+        return roundNineHealth * Mathf.Pow(1f + waveDirector.HealthIncreasePercentageFromRound10, round - 9);
     }
 
-    // Reads the maximum active demon count stored by Recorder. When it is missing,
-    // the solo Round 1 cap is used. Production waves should always pass a real config.
     private int GetExpectedActiveCap(WavePerformanceSnapshot snapshot)
     {
-        return snapshot.configuredMaximumActiveDemons > 0
-            ? snapshot.configuredMaximumActiveDemons
-            : roundOneMaximumActiveDemons;
+        if (snapshot.configuredMaximumActiveDemons > 0)
+            return snapshot.configuredMaximumActiveDemons;
+
+        int players = Mathf.Clamp(snapshot.playerCount, 1, 4);
+        return Mathf.Clamp(waveDirector.BaseActiveDemonCap
+            + (players - 1) * waveDirector.ExtraActiveCapPerPlayer,
+            1, waveDirector.AbsoluteMaximumActiveDemons);
     }
 
-    // Moves one learned ratio toward the latest observed ratio using the Inspector
-    // learning rate. Extreme observations are clamped to prevent one unusual wave
-    // from changing the baseline too aggressively.
     private void LearnRatio(ref float average, float observedRatio)
     {
-        float minimum = 1f / maximumObservedRatio;
-        float clamped = Mathf.Clamp(
-            observedRatio,
-            minimum,
-            maximumObservedRatio);
-
-        average = Mathf.Max(
-            0.01f,
-            Mathf.Lerp(average, clamped, learningRate));
+        float minimum = 1f / waveDirector.MaximumObservedRatio;
+        float clamped = Mathf.Clamp(observedRatio, minimum, waveDirector.MaximumObservedRatio);
+        average = Mathf.Max(0.01f, Mathf.Lerp(average, clamped, waveDirector.LearningRate));
     }
 
-    // Returns actual divided by expected, with a neutral fallback for invalid expectations.
     private static float SafeRatio(float actual, float expected)
     {
-        if (expected <= 0f)
-            return 1f;
-
-        return Mathf.Max(0f, actual) / expected;
+        return expected > 0f ? Mathf.Max(0f, actual) / expected : 1f;
     }
 
-    // Converts incoming damage into a score using the full expected amount.
-    // For an expected 150 damage: 0 damage = 100; 100 damage is about 67;
-    // 150 damage is 49; 200 damage is about 33; 300 damage is 0.
-    // The UI then maps these scores to green/yellow/red/orange.
     private static float ScoreDamageTaken(float actualDamage, float expectedDamage)
     {
         actualDamage = Mathf.Max(0f, actualDamage);
-
-        if (actualDamage <= 0f)
-            return 100f;
-
-        if (expectedDamage <= 0f)
-            return 0f;
+        if (actualDamage <= 0f) return 100f;
+        if (expectedDamage <= 0f) return 0f;
 
         float ratio = actualDamage / expectedDamage;
-
         if (ratio < 1f)
-        {
-            return Mathf.Lerp(
-                100f,
-                50f,
-                Mathf.Clamp01(ratio));
-        }
-
-        return Mathf.Lerp(
-            49f,
-            0f,
-            Mathf.Clamp01(ratio - 1f));
+            return Mathf.Lerp(100f, 50f, Mathf.Clamp01(ratio));
+        return Mathf.Lerp(49f, 0f, Mathf.Clamp01(ratio - 1f));
     }
 
-    // Scores a lower-is-better result such as round duration or kill interval.
-    // The caller passes normalized ratios, not raw seconds. Faster than the learned
-    // reference scores higher; slower than the reference scores lower.
     private static float ScoreLowerIsBetter(float actualRatio, float averageRatio)
     {
-        if (averageRatio <= 0f)
-            return 50f;
-
-        return Mathf.Clamp(
-            100f - (Mathf.Max(0f, actualRatio) / averageRatio) * 50f,
-            0f,
-            100f);
+        if (averageRatio <= 0f) return 50f;
+        return Mathf.Clamp(100f - (Mathf.Max(0f, actualRatio) / averageRatio) * 50f, 0f, 100f);
     }
 
-    // Returns neutral per-metric values when there is no snapshot to score. The
-    // availability flags remain false, so TempoDirector will not add these values
-    // to its weighted completed-wave score.
     private static WaveMetricScores NeutralScores()
     {
         return new WaveMetricScores
@@ -610,11 +361,24 @@ public sealed class WaveBaselineManager : MonoBehaviour
         };
     }
 
-    // Safety initialization in case another component calls a public method
-    // before Awake has initialized the baseline. Normally Awake calls ResetToDefaults.
     private void EnsureInitialized()
     {
+        EnsureWaveDirector();
         if (!initialized)
             ResetToDefaults();
+    }
+
+    private void EnsureWaveDirector()
+    {
+        if (waveDirector != null)
+            return;
+        ResolveWaveDirector();
+    }
+
+    private void ResolveWaveDirector()
+    {
+        waveDirector = WaveDirector.Instance != null
+            ? WaveDirector.Instance
+            : FindFirstObjectByType<WaveDirector>();
     }
 }

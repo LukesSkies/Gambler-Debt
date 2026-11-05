@@ -4,13 +4,7 @@ using UnityEngine.InputSystem;
 [DisallowMultipleComponent]
 public sealed class WavePlayerRecorderBridge : MonoBehaviour
 {
-    [Header("Player identity")]
-    [Tooltip("Leave at -1 to use PlayerInput.playerIndex, then the NewPlayerN name, then 0.")]
-    [SerializeField] private int playerId = -1;
-
-    [Header("Movement sampling")]
-    [Tooltip("Horizontal velocity above this value counts as actual movement.")]
-    [SerializeField, Min(0f)] private float movementSpeedThreshold = 0.1f;
+    private const float MovementSpeedThreshold = 0.1f;
 
     private PlayerMove playerMove;
     private PlayerHP playerHealth;
@@ -116,14 +110,11 @@ public sealed class WavePlayerRecorderBridge : MonoBehaviour
 
         Vector3 horizontalVelocity = body.linearVelocity;
         horizontalVelocity.y = 0f;
-        return horizontalVelocity.magnitude > movementSpeedThreshold;
+        return horizontalVelocity.magnitude > MovementSpeedThreshold;
     }
 
     private int ResolvePlayerId()
     {
-        if (playerId >= 0)
-            return playerId;
-
         PlayerInput input = GetComponent<PlayerInput>();
         if (input != null && input.playerIndex >= 0)
             return input.playerIndex;

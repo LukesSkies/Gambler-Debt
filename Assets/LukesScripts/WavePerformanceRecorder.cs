@@ -2,25 +2,18 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-/// Records the events and measurements from one wave. It does not decide whether
-/// performance was good or how difficult the next wave should be.
-///
-/// KILL CADENCE:
-/// Each player's consecutive kill intervals are measured separately. At the end
-/// of a wave, all available per-player intervals are pooled into one average.
-/// This prevents a four-player team killing in turns from appearing to have four
-/// times the individual kill speed of a solo player. Use a stable, unique playerId
-/// for each player in multiplayer.
+// Records the events and measurements from one wave. It does not decide whether
+// performance was good or how difficult the next wave should be.
 public sealed class WavePerformanceRecorder : MonoBehaviour
 {
     public static WavePerformanceRecorder Instance { get; private set; }
 
-    [Header("Live Wave Statistics (read-only during play)")]
-    [SerializeField] private int currentRound;
-    [SerializeField, Range(1, 4)] private int playerCount = 1;
-    [SerializeField] private float damageDealt;
-    [SerializeField] private float damageTaken;
-    [SerializeField] private int pointsEarned;
+    // Runtime statistics are exposed through read-only properties, not Inspector fields.
+    private int currentRound;
+    private int playerCount = 1;
+    private float damageDealt;
+    private float damageTaken;
+    private int pointsEarned;
 
     private float waveStartTime;
     private float waveEndTime;
@@ -362,9 +355,6 @@ public sealed class WavePerformanceRecorder : MonoBehaviour
             configuredDemonSwipeDamage = configuredDemonSwipeDamage
         };
     }
-
-    // Temporary keyboard-tester helper; production progression belongs to WaveManager.
-    public void BeginNextWave() => BeginWave(currentRound + 1, playerCount);
 
     private bool CanRecord() => hasStarted && !hasEnded;
 
