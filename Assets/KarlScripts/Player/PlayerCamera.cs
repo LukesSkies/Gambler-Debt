@@ -88,18 +88,24 @@ public class PlayerCamera : MonoBehaviour
         {
             if(_playerCurrentGun.CurrentGun == null)
             {
-                return;
+                _cameraLook = PlayerLookVector * Time.deltaTime * MouseSensitivity;
             }
-            _cameraLook = PlayerLookVector * Time.deltaTime * (_playerCurrentGun.CurrentGun.GetComponent<RaycastGun>().Aiming ? MouseAimSensitivity : MouseSensitivity);
+            else
+            {
+                _cameraLook = PlayerLookVector * Time.deltaTime * (_playerCurrentGun.CurrentGun.GetComponent<RaycastGun>().Aiming ? MouseAimSensitivity : MouseSensitivity);
+            }
         }
 
         else
         {
             if (_playerCurrentGun.CurrentGun == null)
             {
-                return;
+                _cameraLook = PlayerLookVector * Time.deltaTime * ControllerSensitivity;
             }
-            _cameraLook = PlayerLookVector * Time.deltaTime * (_playerCurrentGun.CurrentGun.GetComponent<RaycastGun>().Aiming ? ControllerAimSensitivity : ControllerSensitivity);
+            else
+            {
+                _cameraLook = PlayerLookVector * Time.deltaTime * (_playerCurrentGun.CurrentGun.GetComponent<RaycastGun>().Aiming ? ControllerAimSensitivity : ControllerSensitivity);
+            }
         }
 
         _yRot += _cameraLook.x;
@@ -143,23 +149,21 @@ public class PlayerCamera : MonoBehaviour
 
     private void FOVChecks()
     {
-        if (_playerCurrentGun.CurrentGun == null)
+        if (_playerCurrentGun.CurrentGun != null)
         {
-            return;
-        }
+            if (_playerCurrentGun.CurrentGun.GetComponent<RaycastGun>().CanAim && _playerCurrentGun.CurrentGun.GetComponent<RaycastGun>().Aiming)
+            {
+                _aimTimer += Time.deltaTime;
+                _gunRecoil.IsAiming = true;
+            }
+            else
+            {
+                _aimTimer -= Time.deltaTime;
+                _gunRecoil.IsAiming = false;
+            }
 
-        if (_playerCurrentGun.CurrentGun.GetComponent<RaycastGun>().CanAim && _playerCurrentGun.CurrentGun.GetComponent<RaycastGun>().Aiming)
-        {
-            _aimTimer += Time.deltaTime;
-            _gunRecoil.IsAiming = true;
+            _aimTimer = Mathf.Clamp(_aimTimer, 0f, _timeToAim);
         }
-        else
-        {
-            _aimTimer -= Time.deltaTime;
-            _gunRecoil.IsAiming = false;
-        }
-
-        _aimTimer = Mathf.Clamp(_aimTimer, 0f, _timeToAim);
 
         bool isSprintingOrSliding = _playerMove.IsSliding || _playerMove.State == PlayerMove.MovementState.sprinting || _playerMove.State == PlayerMove.MovementState.outSliding;
 
@@ -182,7 +186,14 @@ public class PlayerCamera : MonoBehaviour
 
         float targetMainFOV = Mathf.Lerp(DefaultFOV, SprintFOV, _sprintTime);
 
-        _mainCamera.fieldOfView = HFOVToVFOV(Mathf.Lerp(targetMainFOV, AimingFOV, aimTime));
+        if (_playerCurrentGun.CurrentGun != null)
+        {
+            _mainCamera.fieldOfView = HFOVToVFOV(Mathf.Lerp(targetMainFOV, AimingFOV, aimTime));
+        }
+        else
+        {
+            _mainCamera.fieldOfView = HFOVToVFOV(Mathf.Lerp(DefaultFOV, SprintFOV, _sprintTime));
+        }
     }
 
     private void CheckMotion()

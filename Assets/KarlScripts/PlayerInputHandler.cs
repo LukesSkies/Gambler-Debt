@@ -58,51 +58,71 @@ public class PlayerInputHandler : MonoBehaviour
 
         _playerMove.SprintQueued = _isSprinting;
 
-        RaycastGun gun = _playerCurrentGun.CurrentGun.GetComponent<RaycastGun>();
-
-        if (_playerCurrentGun.CurrentGun == null)
+        if (_playerCurrentGun.CurrentGun != null)
         {
-            return;
-        }
+            RaycastGun gun = _playerCurrentGun.CurrentGun.GetComponent<RaycastGun>();
 
-        if (gun.GunSettings.AllowButtonHold && _isShootHeld)
-        {
-            gun.InputShooting = true;
-        }
-
-        gun.Aiming = _isAimHeld;
-
-        //Controller logic to check if the player wants to reload or interact
-        if (_startControllerInteractTimer)
-        {
-            _controllerTimerToInteract += Time.deltaTime;
-
-            if (_controllerTimerToInteract >= _controllerTimeToInteract && !_interactFired)
+            if (gun.GunSettings.AllowButtonHold && _isShootHeld)
             {
-                _interactFired = true;
-                _startControllerInteractTimer = false;
+                gun.InputShooting = true;
+            }
 
-                if (_newPlayerInteraction.InteractionTest(out IInteractable interactable))
+            gun.Aiming = _isAimHeld;
+
+            //Controller logic to check if the player wants to reload or interact
+            if (_startControllerInteractTimer)
+            {
+                _controllerTimerToInteract += Time.deltaTime;
+
+                if (_controllerTimerToInteract >= _controllerTimeToInteract && !_interactFired)
                 {
-                    if (interactable.CanInteract(_newPlayerInteraction.InteractText, _playerMove.GetComponent<NewPlayerInteraction>()))
+                    _interactFired = true;
+                    _startControllerInteractTimer = false;
+
+                    if (_newPlayerInteraction.InteractionTest(out IInteractable interactable))
                     {
-                        _newPlayerInteraction.InteractQueued = true;
+                        if (interactable.CanInteract(_newPlayerInteraction.InteractText, _playerMove.GetComponent<NewPlayerInteraction>()))
+                        {
+                            _newPlayerInteraction.InteractQueued = true;
+                        }
+                    }
+                    else
+                    {
+                        gun.ReloadQueued = true;
                     }
                 }
-                else
+            }
+
+            if (_startReload)
+            {
+                _startReload = false;
+
+                if (!_interactFired)
                 {
                     gun.ReloadQueued = true;
                 }
             }
         }
 
-        if (_startReload)
+        else
         {
-            _startReload = false;
-
-            if (!_interactFired)
+            if (_startControllerInteractTimer)
             {
-                gun.ReloadQueued = true;
+                _controllerTimerToInteract += Time.deltaTime;
+
+                if (_controllerTimerToInteract >= _controllerTimeToInteract && !_interactFired)
+                {
+                    _interactFired = true;
+                    _startControllerInteractTimer = false;
+
+                    if (_newPlayerInteraction.InteractionTest(out IInteractable interactable))
+                    {
+                        if (interactable.CanInteract(_newPlayerInteraction.InteractText, _playerMove.GetComponent<NewPlayerInteraction>()))
+                        {
+                            _newPlayerInteraction.InteractQueued = true;
+                        }
+                    }
+                }
             }
         }
 
@@ -218,30 +238,33 @@ public class PlayerInputHandler : MonoBehaviour
 
     public void OnShoot(CallbackContext ctx)
     {
-        RaycastGun gun = _playerCurrentGun.CurrentGun.GetComponent<RaycastGun>();
+        if (_playerCurrentGun.CurrentGun != null)
+        {
+            RaycastGun gun = _playerCurrentGun.CurrentGun.GetComponent<RaycastGun>();
 
-        if (gun.GunSettings.AllowButtonHold)
-        {
-            if (ctx.started || ctx.performed)
+            if (gun.GunSettings.AllowButtonHold)
             {
-                _isShootHeld = true;
+                if (ctx.started || ctx.performed)
+                {
+                    _isShootHeld = true;
+                }
+                else if (ctx.canceled)
+                {
+                    _isShootHeld = false;
+                    gun.InputShooting = false;
+                }
             }
-            else if (ctx.canceled)
+            else
             {
-                _isShootHeld = false;
-                gun.InputShooting = false;
-            }
-        }
-        else
-        {
-            if (ctx.started && !_shootInputHandled)
-            {
-                gun.InputShooting = true;
-                _shootInputHandled = true;
-            }
-            else if (ctx.canceled)
-            {
-                _shootInputHandled = false;
+                if (ctx.started && !_shootInputHandled)
+                {
+                    gun.InputShooting = true;
+                    _shootInputHandled = true;
+                }
+                else if (ctx.canceled)
+                {
+                    _shootInputHandled = false;
+                }
             }
         }
     }

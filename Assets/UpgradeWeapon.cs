@@ -14,19 +14,19 @@ public class UpgradeWeapon : MonoBehaviour, IInteractable
 
     public bool CanInteract(TextMeshProUGUI interactText, NewPlayerInteraction playerInteraction)
     {
-        if(playerInteraction.GetComponent<PlayerCurrentGun>().CurrentGun == null)
+        if(playerInteraction.GetComponent<PlayerCurrentGun>().CurrentGun != null)
         {
-            interactText.gameObject.SetActive(false);
-            return false;
+            _currentGun = playerInteraction.GetComponent<PlayerCurrentGun>().CurrentGun.GetComponent<RaycastGun>();
         }
 
-        _currentGun = playerInteraction.GetComponent<PlayerCurrentGun>().CurrentGun.GetComponent<RaycastGun>();
-
-        if (!_currentGun.Upgraded && !GunInMachine)
+        if(_currentGun != null)
         {
-            interactText.text = "Press F to Upgrade Weapon [Cost: " + _pointCostBuy + "]";
-            interactText.gameObject.SetActive(true);
-            return true;
+            if (!_currentGun.Upgraded && !GunInMachine)
+            {
+                interactText.text = "Press F to Upgrade Weapon [Cost: " + _pointCostBuy + "]";
+                interactText.gameObject.SetActive(true);
+                return true;
+            }
         }
 
         if(GunInMachine && CanTakeWeapon)
@@ -44,51 +44,56 @@ public class UpgradeWeapon : MonoBehaviour, IInteractable
     {
         PlayerCurrentGun playerCurrentGun = playerInteraction.GetComponent<PlayerCurrentGun>();
 
-        _currentGun = playerCurrentGun.CurrentGun.GetComponent<RaycastGun>();
+        if (playerInteraction.GetComponent<PlayerCurrentGun>().CurrentGun != null)
+        {
+            _currentGun = playerInteraction.GetComponent<PlayerCurrentGun>().CurrentGun.GetComponent<RaycastGun>();
+        }
 
         Points playerPoints = playerInteraction.GetComponent<Points>();
 
         //If the player had not upgraded the gun and wants to upgrade it
-        if (playerPoints.Money >= _pointCostBuy && !_currentGun.Upgraded && !GunInMachine && !CanTakeWeapon)
+        if(_currentGun != null)
         {
-            _gunName = _currentGun.name;
-
-            playerPoints.RemovePoints(_pointCostBuy);
-
-            Destroy(playerCurrentGun.CurrentGun.gameObject);
-
-            playerCurrentGun.SwitchGun();
-
-            switch (_currentGun.name)
+            if (playerPoints.Money >= _pointCostBuy && !_currentGun.Upgraded && !GunInMachine && !CanTakeWeapon)
             {
-                case "M1911":
-                    _gunHolderObject = Instantiate(GameManager.Instance.GunUpgradeStartingGameObjects[0], UpgradeAnimation.transform);
-                    break;
-                case "M1928":
-                    _gunHolderObject = Instantiate(GameManager.Instance.GunUpgradeStartingGameObjects[1], UpgradeAnimation.transform);
-                    break;
-                case "P90":
-                    _gunHolderObject = Instantiate(GameManager.Instance.GunUpgradeStartingGameObjects[2], UpgradeAnimation.transform);
-                    break;
-                case "P90(Clone)":
-                    _gunHolderObject = Instantiate(GameManager.Instance.GunUpgradeStartingGameObjects[2], UpgradeAnimation.transform);
-                    break;
+                _gunName = _currentGun.name;
 
-                default:
-                    _gunHolderObject = Instantiate(GameManager.Instance.GunUpgradeStartingGameObjects[0], UpgradeAnimation.transform);
-                    break;
+                playerPoints.RemovePoints(_pointCostBuy);
+
+                Destroy(playerCurrentGun.CurrentGun.gameObject);
+
+                playerCurrentGun.SwitchGun();
+
+                switch (_currentGun.name)
+                {
+                    case "M1911":
+                        _gunHolderObject = Instantiate(GameManager.Instance.GunUpgradeStartingGameObjects[0], UpgradeAnimation.transform);
+                        break;
+                    case "M1928":
+                        _gunHolderObject = Instantiate(GameManager.Instance.GunUpgradeStartingGameObjects[1], UpgradeAnimation.transform);
+                        break;
+                    case "P90":
+                        _gunHolderObject = Instantiate(GameManager.Instance.GunUpgradeStartingGameObjects[2], UpgradeAnimation.transform);
+                        break;
+                    case "P90(Clone)":
+                        _gunHolderObject = Instantiate(GameManager.Instance.GunUpgradeStartingGameObjects[2], UpgradeAnimation.transform);
+                        break;
+
+                    default:
+                        _gunHolderObject = Instantiate(GameManager.Instance.GunUpgradeStartingGameObjects[0], UpgradeAnimation.transform);
+                        break;
+                }
+
+                UpgradeAnimation.Play("UpgradeWeapon");
+
+                GunInMachine = true;
+
+                return true;
             }
-
-            UpgradeAnimation.Play("UpgradeWeapon");
-
-            GunInMachine = true;
-
-            return true;
         }
 
         else if (GunInMachine && CanTakeWeapon)
         {
-
             GunInMachine = false;
             CanTakeWeapon = false;
 
@@ -120,7 +125,13 @@ public class UpgradeWeapon : MonoBehaviour, IInteractable
 
             Destroy(_gunHolderObject);
 
-            if (playerCurrentGun.NextGun == null)
+            if(playerCurrentGun.CurrentGun == null)
+            {
+                playerCurrentGun.CurrentGun = upgradedGun;
+                playerCurrentGun.GunAnimator = playerCurrentGun.CurrentGun.transform.Find("WeaponMesh").GetComponent<Animator>();
+            }
+
+            else if (playerCurrentGun.NextGun == null)
             {
                 playerCurrentGun.NextGun = upgradedGun;
 

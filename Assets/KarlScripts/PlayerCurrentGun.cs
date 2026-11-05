@@ -176,7 +176,10 @@ public class PlayerCurrentGun : MonoBehaviour
     {
         GrenadeActive = true;
         CanSwitchGuns = false;
-        CurrentGun.SetActive(false);
+        if(CurrentGun != null)
+        {
+            CurrentGun.SetActive(false);
+        }
         Grenade.SetActive(true);
         GrenadeAnimator.SetBool("GrenadePull", true);
     }
@@ -185,7 +188,10 @@ public class PlayerCurrentGun : MonoBehaviour
     {
         KnifeActive = true;
         CanSwitchGuns = false;
-        CurrentGun.SetActive(false);
+        if(CurrentGun != null)
+        {
+            CurrentGun.SetActive(false);
+        }
         Knife.SetActive(true);
         KnifeAnimator.SetBool("KnifePull", true);
     }
@@ -194,7 +200,10 @@ public class PlayerCurrentGun : MonoBehaviour
     {
         GrenadeActive = false;
         CanSwitchGuns = true;
-        CurrentGun.SetActive(true);
+        if(CurrentGun != null)
+        {
+            CurrentGun.SetActive(true);
+        }
         Grenade.SetActive(false);
     }
 
@@ -202,7 +211,10 @@ public class PlayerCurrentGun : MonoBehaviour
     {
         KnifeActive = false;
         CanSwitchGuns = true;
-        CurrentGun.SetActive(true);
+        if(CurrentGun != null)
+        {
+            CurrentGun.SetActive(true);
+        }
         Knife.SetActive(false);
     }
 }

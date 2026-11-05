@@ -37,7 +37,16 @@ public class WallBuy : MonoBehaviour, IInteractable
 
     public bool CanInteract(TextMeshProUGUI interactText, NewPlayerInteraction playerInteraction)
     {
-        string currentGun = playerInteraction.GetComponent<PlayerCurrentGun>().CurrentGun.name;
+        string currentGun;
+
+        if (playerInteraction.gameObject.GetComponent<PlayerCurrentGun>().CurrentGun == null)
+        {
+            currentGun = "";
+        }
+        else
+        {
+            currentGun = playerInteraction.gameObject.GetComponent<PlayerCurrentGun>().CurrentGun.name;
+        }
 
         string secondGun;
 
@@ -72,7 +81,18 @@ public class WallBuy : MonoBehaviour, IInteractable
 
     public bool Interact(NewPlayerInteraction playerInteraction)
     {
-        string currentGun = playerInteraction.GetComponent<PlayerCurrentGun>().CurrentGun.name;
+        string currentGun;
+
+        if (playerInteraction.gameObject.GetComponent<PlayerCurrentGun>().CurrentGun == null)
+        {
+            currentGun = "";
+        }
+        else
+        {
+
+            currentGun = playerInteraction.gameObject.GetComponent<PlayerCurrentGun>().NextGun.name;
+        }
+
         string secondGun;
 
         if (playerInteraction.gameObject.GetComponent<PlayerCurrentGun>().NextGun == null)
@@ -119,7 +139,14 @@ public class WallBuy : MonoBehaviour, IInteractable
                     break;
             }
 
-            if (playerCurrentGun.NextGun == null)
+            if(playerCurrentGun.CurrentGun == null)
+            {
+                playerCurrentGun.CurrentGun = wallBuyGun;
+                wallBuyGun.SetActive(true);
+                playerCurrentGun.GunAnimator = playerCurrentGun.CurrentGun.transform.Find("WeaponMesh").GetComponent<Animator>();
+            }
+
+            else if (playerCurrentGun.NextGun == null)
             {
                 playerCurrentGun.NextGun = wallBuyGun;
 
