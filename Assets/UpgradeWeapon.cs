@@ -90,63 +90,75 @@ public class UpgradeWeapon : MonoBehaviour, IInteractable
 
                 return true;
             }
+
+            else if (GunInMachine && CanTakeWeapon)
+            {
+                GetUpgradedGun(playerCurrentGun);
+
+                return true;
+            }
         }
 
         else if (GunInMachine && CanTakeWeapon)
         {
-            GunInMachine = false;
-            CanTakeWeapon = false;
-
-            UpgradeAnimation.Stop("UpgradeWeaponMoveBack");
-
-            Transform playerGunSpawn = playerCurrentGun.GunHolder;
-
-            GameObject upgradedGun;
-
-            switch (_gunName)
-            {
-                case "M1911":
-                    upgradedGun = Instantiate(GameManager.Instance.UpgradedGunGameObjects[0], playerGunSpawn);
-                    break;
-                case "M1928":
-                    upgradedGun = Instantiate(GameManager.Instance.UpgradedGunGameObjects[1], playerGunSpawn);
-                    break;
-                case "P90":
-                    upgradedGun = Instantiate(GameManager.Instance.UpgradedGunGameObjects[2], playerGunSpawn);
-                    break;
-                case "P90(Clone)":
-                    upgradedGun = Instantiate(GameManager.Instance.UpgradedGunGameObjects[2], playerGunSpawn);
-                    break;
-
-                default:
-                    upgradedGun = Instantiate(GameManager.Instance.UpgradedGunGameObjects[0], playerGunSpawn);
-                    break;
-            }
-
-            Destroy(_gunHolderObject);
-
-            if(playerCurrentGun.CurrentGun == null)
-            {
-                playerCurrentGun.CurrentGun = upgradedGun;
-                playerCurrentGun.GunAnimator = playerCurrentGun.CurrentGun.transform.Find("WeaponMesh").GetComponent<Animator>();
-            }
-
-            else if (playerCurrentGun.NextGun == null)
-            {
-                playerCurrentGun.NextGun = upgradedGun;
-
-                playerCurrentGun.SwitchGun();
-            }
-
-            else
-            {
-                playerCurrentGun.CurrentGun = upgradedGun;
-                playerCurrentGun.GunAnimator = playerCurrentGun.CurrentGun.transform.Find("WeaponMesh").GetComponent<Animator>();
-            }
+            GetUpgradedGun(playerCurrentGun);
 
             return true;
         }
 
         return false;
+    }
+
+    private void GetUpgradedGun(PlayerCurrentGun playerCurrentGun)
+    {
+        GunInMachine = false;
+        CanTakeWeapon = false;
+
+        UpgradeAnimation.Stop("UpgradeWeaponMoveBack");
+
+        Transform playerGunSpawn = playerCurrentGun.GunHolder;
+
+        GameObject upgradedGun;
+
+        upgradedGun = SpawnUpgradedGun(_gunName, playerGunSpawn);
+
+        Destroy(_gunHolderObject);
+
+        if (playerCurrentGun.CurrentGun == null)
+        {
+            playerCurrentGun.CurrentGun = upgradedGun;
+            playerCurrentGun.GunAnimator = playerCurrentGun.CurrentGun.transform.Find("WeaponMesh").GetComponent<Animator>();
+        }
+
+        else if (playerCurrentGun.NextGun == null)
+        {
+            playerCurrentGun.NextGun = upgradedGun;
+
+            playerCurrentGun.SwitchGun();
+        }
+
+        else
+        {
+            playerCurrentGun.CurrentGun = upgradedGun;
+            playerCurrentGun.GunAnimator = playerCurrentGun.CurrentGun.transform.Find("WeaponMesh").GetComponent<Animator>();
+        }
+    }
+
+    private GameObject SpawnUpgradedGun(string gunName, Transform gunSpawn)
+    {
+        switch (gunName)
+        {
+            case "M1911":
+                return Instantiate(GameManager.Instance.UpgradedGunGameObjects[0], gunSpawn);
+            case "M1928":
+                return Instantiate(GameManager.Instance.UpgradedGunGameObjects[1], gunSpawn);
+            case "P90":
+                return Instantiate(GameManager.Instance.UpgradedGunGameObjects[2], gunSpawn);
+            case "P90(Clone)":
+                return Instantiate(GameManager.Instance.UpgradedGunGameObjects[2], gunSpawn);
+
+            default:
+                return Instantiate(GameManager.Instance.UpgradedGunGameObjects[0], gunSpawn);
+        }
     }
 }

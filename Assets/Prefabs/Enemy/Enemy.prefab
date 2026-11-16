@@ -134,6 +134,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1eabd4a6b9f9e60449da211bf28ddcc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _zombieTurningSpeed: 10
+  _attackRange: 1.8
   _enemyState: 0
   _barrierObject: {fileID: 0}
   EnemySpawner: {fileID: 0}

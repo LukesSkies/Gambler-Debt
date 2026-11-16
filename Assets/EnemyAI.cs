@@ -14,6 +14,9 @@ public class EnemyAI : MonoBehaviour
         HitPlayer,
     }
 
+    [SerializeField] private float _zombieTurningSpeed = 10;
+    [SerializeField] private float _attackRange;
+
     [SerializeField] private EnemyStates _enemyState;
 
     private NavMeshAgent _agent;
@@ -30,6 +33,11 @@ public class EnemyAI : MonoBehaviour
     public bool CanRun;
     public bool CanJog;
     [SerializeField] private bool _walkedToBarriers;
+
+    private bool InAttackRange()
+    {
+        return DistanceToPlayer() <= _attackRange;
+    }
 
 
     private void Awake()
@@ -77,8 +85,8 @@ public class EnemyAI : MonoBehaviour
                 _enemyAnimation.Animator.SetBool("hit", false);
                 _enemyAnimation.Animator.SetBool("isStumbling", true);
                 _agent.SetDestination(_player.transform.position);
-                transform.LookAt(transform.position);
-                if(DistanceToPlayer() <= _agent.stoppingDistance + 0.2f)
+                FacePlayer();
+                if (InAttackRange())
                 {
                     _enemyState = EnemyStates.HitPlayer;
                 }
@@ -89,8 +97,8 @@ public class EnemyAI : MonoBehaviour
                 _enemyAnimation.Animator.SetBool("isRunning", true);
                 _enemyAnimation.Animator.SetBool("isStumbling", false);
                 _agent.SetDestination(_player.transform.position);
-                transform.LookAt(transform.position);
-                if (DistanceToPlayer() <= _agent.stoppingDistance + 0.2f)
+                FacePlayer();
+                if (InAttackRange())
                 {
                     _enemyState = EnemyStates.HitPlayer;
                 }
@@ -101,14 +109,15 @@ public class EnemyAI : MonoBehaviour
                 _enemyAnimation.Animator.SetBool("isRunning", false);
                 _enemyAnimation.Animator.SetBool("isStumbling", false);
                 _agent.SetDestination(_player.transform.position);
-                transform.LookAt(transform.position);
-                if (DistanceToPlayer() <= _agent.stoppingDistance + 0.2f)
+                FacePlayer();
+                if (InAttackRange())
                 {
                     _enemyState = EnemyStates.HitPlayer;
                 }
                 break;
             case EnemyStates.HitPlayer:
                 _agent.ResetPath();
+                FacePlayer();
                 _enemyAnimation.Animator.SetBool("hit", true);
                 if(DistanceToPlayer() > _agent.stoppingDistance + 0.2f)
                 {
@@ -139,38 +148,27 @@ public class EnemyAI : MonoBehaviour
         {
             if (CanJog)
             {
-                if (DistanceToPlayer() <= _agent.stoppingDistance + 0.2f)
-                {
-                    _enemyState = EnemyStates.HitPlayer;
-                }
-                else
-                {
-                    _enemyState = EnemyStates.JogToPlayer;
-                }
+                _agent.stoppingDistance = 1.2f;
+                _enemyState = InAttackRange() ? EnemyStates.HitPlayer : EnemyStates.JogToPlayer;
             }
             else if (CanRun)
             {
-                if(DistanceToPlayer() <= _agent.stoppingDistance + 0.2f)
-                {
-                    _enemyState = EnemyStates.HitPlayer;
-                }
-                else
-                {
-                    _enemyState = EnemyStates.RunToPlayer;
-                }
+                _agent.stoppingDistance = 1.2f;
+                _enemyState = InAttackRange() ? EnemyStates.HitPlayer : EnemyStates.RunToPlayer;
             }
-            else if(!CanJog && !CanRun)
+            else
             {
-                if (DistanceToPlayer() <= _agent.stoppingDistance + 0.2f)
-                {
-                    _enemyState = EnemyStates.HitPlayer;
-                }
-                else
-                {
-                    _enemyState = EnemyStates.WalkToPlayer;
-                }
+                _agent.stoppingDistance = 1.5f;
+                _enemyState = InAttackRange() ? EnemyStates.HitPlayer : EnemyStates.WalkToPlayer;
             }
         }
+    }
+    private void FacePlayer()
+    {
+        Vector3 dir = _player.transform.position - transform.position;
+        dir.y = 0f;
+
+        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), _zombieTurningSpeed * Time.deltaTime);
     }
 
     private float DistanceToPlayer()
