@@ -58,5 +58,7 @@ public class Points : MonoBehaviour
 
         pointTextUI.text = "-" + pointAmmount.ToString();
         pointGlowTextUI.text = "-" + pointAmmount.ToString();
+
+        AudioManager.Instance.PlayOneShot(FMODEvents.Instance.Purchase, transform.position);
     }
 }

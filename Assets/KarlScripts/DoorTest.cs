@@ -75,7 +75,7 @@ public class DoorTest : MonoBehaviour, IInteractable
         if (points == null || points.Money < _pointCost)
             return false;
 
-        points.Money -= _pointCost;
+        points.RemovePoints(_pointCost);
 
         OpenLinkedDoors();
 

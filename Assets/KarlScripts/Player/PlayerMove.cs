@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using FMOD.Studio;
 public class PlayerMove : MonoBehaviour
 {
     [Header("Movement")]
@@ -97,6 +98,8 @@ public class PlayerMove : MonoBehaviour
     private Coroutine _gunRotationCoroutine;
     private Coroutine _scaleCoroutine;
 
+    private EventInstance _playerFootSteps;
+
     [HideInInspector]public enum MovementState 
     {
         walking,
@@ -125,6 +128,8 @@ public class PlayerMove : MonoBehaviour
         CanSprint = false;
         CanMove = false;
         _startYScale = _playerMesh.localScale.y;
+
+        _playerFootSteps = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.PlayerFootsteps);
     }
 
     void FixedUpdate()
@@ -172,6 +177,7 @@ public class PlayerMove : MonoBehaviour
         SpeedControl();
         StateHandler();
         StaminaHandler();
+        UpdateSound();
 
         if (IsSliding)
         {
@@ -673,5 +679,27 @@ public class PlayerMove : MonoBehaviour
         Debug.DrawRay(_debugLowerOrigin, _debugDirection, Color.green);
         Debug.DrawRay(_debugUpperOrigin, _debugDirection, Color.green);
         Debug.DrawRay(_debugDownOrigin, Vector3.down, Color.green);
+    }
+
+    private void UpdateSound()
+    {
+        //Play footstep audio only if the player is walking
+        if (State == MovementState.walking)
+        {
+            PLAYBACK_STATE playbackState;
+            _playerFootSteps.getPlaybackState(out playbackState);
+
+            if (playbackState.Equals(PLAYBACK_STATE.STOPPED))
+            {
+                Debug.Log("Start Audio");
+                _playerFootSteps.start();
+            }
+        }
+
+        else
+        {
+            Debug.Log("Stop Audio");
+            _playerFootSteps.stop(STOP_MODE.ALLOWFADEOUT);
+        }
     }
 }

@@ -296,7 +296,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &175737285
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -374,12 +374,12 @@ MonoBehaviour:
   GunGameObjects:
   - {fileID: 2319241646404104450, guid: 8e86bc21f36b41d4386239eb8dbee369, type: 3}
   - {fileID: 7895509035022002616, guid: 5ac939d750ba4424b8c090f014032748, type: 3}
+  UpgradedGunGameObjects: []
+  GunUpgradeStartingGameObjects: []
+  GunUpgradeEndingGameObjects: []
   ZombieSpawnBarriers: []
   Player0IsUsingKeyboardOrMouse: 1
   PlayerDead: 0
-  ZombieSpawnRate: 0
-  ZombieCount: 0
-  MaxZombieCount: 180000001e000000240000002a000000
   Zombie: {fileID: 0}
   PointsAdditionText: {fileID: 900689745866168219, guid: 7f2ada91a96e7414b8a30ea2b0ee5cd2, type: 3}
   SlotItemPrefab: {fileID: 8609754123483267540, guid: 27afb0753bdd75a43ac5322726e5b92a, type: 3}
