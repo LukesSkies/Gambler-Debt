@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d19d98c2290a6ff44915f4fde8300f58, type: 3}
+  m_Name: Dirty Martini
+  m_EditorClassIdentifier: 
+  perkName: Dirty Martini
+  tierSprites:
+  - {fileID: 21300000, guid: 6736a109764321a4f97203bb96998e52, type: 3}
+  - {fileID: 21300000, guid: 73f29db9deedc6a4d8dd196020e4cd6c, type: 3}
+  - {fileID: 21300000, guid: 38de7bdd95b0f3b4f8a9a338d09d61ef, type: 3}
+  inspectSprite: {fileID: 21300000, guid: edf04b62e8cd2204db9d6cc06f4ba328, type: 3}
+  inspectScale: 1
+  cooldownDuration: 0
+  tierDescriptions:
+  - 
+  - 
+  - 

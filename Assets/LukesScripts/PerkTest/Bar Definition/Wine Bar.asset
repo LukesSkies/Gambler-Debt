@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e1862e8ce42c8e4d86a067d4243b40e, type: 3}
+  m_Name: Wine Bar
+  m_EditorClassIdentifier: 
+  barName: Wine Bar
+  barSprite: {fileID: 0}
+  perks:
+  - {fileID: 11400000, guid: 0b3728ad126ae6a4488bd93e5ec4f94b, type: 2}
+  - {fileID: 11400000, guid: eb7f0414b7892664aa95d40f3e78677e, type: 2}
+  - {fileID: 11400000, guid: 8976d78aecd0ffd4b9b64ee336569bcf, type: 2}
+  - {fileID: 11400000, guid: 5c046f90386d408498a8c31451d99b33, type: 2}
+  - {fileID: 11400000, guid: 6298e1a19c8d97a45a0c578e37bbe5f9, type: 2}
+  - {fileID: 11400000, guid: b7bc415b31f054a47977e3e5e8a487ca, type: 2}

@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d19d98c2290a6ff44915f4fde8300f58, type: 3}
+  m_Name: Bloody Mary
+  m_EditorClassIdentifier: 
+  perkName: Bloody Mary
+  tierSprites:
+  - {fileID: 21300000, guid: 10e2d7ebd5977804a92d9590e4fc8e27, type: 3}
+  - {fileID: 21300000, guid: 50dba4dff82038d4391ce477a30b7794, type: 3}
+  - {fileID: 21300000, guid: e50b7d3360a5e624ba1358a89bd4b55c, type: 3}
+  inspectSprite: {fileID: 21300000, guid: edf04b62e8cd2204db9d6cc06f4ba328, type: 3}
+  inspectScale: 1
+  cooldownDuration: 0
+  tierDescriptions:
+  - 
+  - 
+  - 

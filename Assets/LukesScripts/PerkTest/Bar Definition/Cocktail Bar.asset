@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e1862e8ce42c8e4d86a067d4243b40e, type: 3}
+  m_Name: Cocktail Bar
+  m_EditorClassIdentifier: 
+  barName: Cocktail Bar
+  barSprite: {fileID: 0}
+  perks:
+  - {fileID: 11400000, guid: b5800e434f75ab44483d8c91e8ac6d2c, type: 2}
+  - {fileID: 11400000, guid: 1116c69ba9959db408337be49e8cd82e, type: 2}
+  - {fileID: 11400000, guid: 851c729d7feca3d4ab88228509286538, type: 2}
+  - {fileID: 11400000, guid: e440a109bb3e52c44b2b99be48e20542, type: 2}
+  - {fileID: 11400000, guid: aa1e624065b211d4d860d8740404e3ed, type: 2}
+  - {fileID: 11400000, guid: a7c9453fd5b9a374eb9d3fe1486bd9b0, type: 2}

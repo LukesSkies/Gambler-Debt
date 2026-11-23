@@ -77,10 +77,7 @@ public class PerkInspectCarousel : MonoBehaviour
 
     private Coroutine queueCoroutine;
 
-
-    // =========================================================
     // INITIALISATION
-    // =========================================================
 
     private void Start()
     {
@@ -176,11 +173,7 @@ public class PerkInspectCarousel : MonoBehaviour
         return true;
     }
 
-
-    // =========================================================
     // INPUT
-    // =========================================================
-
     private void Update()
     {
         if (!isInitialised)
@@ -271,11 +264,7 @@ public class PerkInspectCarousel : MonoBehaviour
         );
     }
 
-
-    // =========================================================
     // PUBLIC CONTROLS
-    // =========================================================
-
     public void PreviousPerk()
     {
         QueueInput(-1);
@@ -304,11 +293,7 @@ public class PerkInspectCarousel : MonoBehaviour
         }
     }
 
-
-    // =========================================================
     // INPUT QUEUE
-    // =========================================================
-
     private IEnumerator ProcessInputQueue()
     {
         while (inputQueue.Count > 0)
@@ -331,11 +316,7 @@ public class PerkInspectCarousel : MonoBehaviour
         UpdateButtonStates();
     }
 
-
-    // =========================================================
     // CAROUSEL TRANSITION
-    // =========================================================
-
     private IEnumerator TransitionToPerk(
         int direction,
         int targetIndex
@@ -362,11 +343,7 @@ public class PerkInspectCarousel : MonoBehaviour
             ? bottomScaleMultiplier
             : topScaleMultiplier;
 
-
-        // -----------------------------------------------------
         // 1. Move the current model out and fade out old text.
-        // -----------------------------------------------------
-
         yield return AnimateModel(
             currentModel,
             currentModelBaseScale,
@@ -375,11 +352,7 @@ public class PerkInspectCarousel : MonoBehaviour
             0f
         );
 
-
-        // -----------------------------------------------------
         // 2. Destroy the old model completely.
-        // -----------------------------------------------------
-
         if (currentModel != null)
         {
             currentModel.SetActive(false);
@@ -395,19 +368,13 @@ public class PerkInspectCarousel : MonoBehaviour
 
         yield return null;
 
-
-        // -----------------------------------------------------
         // 3. Update the selected perk.
-        // -----------------------------------------------------
-
         currentIndex = targetIndex;
 
         UpdateDescription();
 
 
-        // -----------------------------------------------------
         // 4. Spawn the incoming model at TOP or BOTTOM.
-        // -----------------------------------------------------
 
         currentModel = CreateModel(
             perks[currentIndex],
@@ -424,11 +391,7 @@ public class PerkInspectCarousel : MonoBehaviour
             yield break;
         }
 
-
-        // -----------------------------------------------------
         // 5. Animate the new model into MIDDLE.
-        // -----------------------------------------------------
-
         yield return AnimateModel(
             currentModel,
             currentModelBaseScale,
@@ -442,11 +405,7 @@ public class PerkInspectCarousel : MonoBehaviour
         UpdateButtonStates();
     }
 
-
-    // =========================================================
     // MODEL CREATION
-    // =========================================================
-
     private GameObject CreateModel(
         PerkInspectEntry perk,
         Transform spawnPosition,
@@ -493,10 +452,7 @@ public class PerkInspectCarousel : MonoBehaviour
     }
 
 
-    // =========================================================
     // MODEL ANIMATION
-    // =========================================================
-
     private IEnumerator AnimateModel(
         GameObject model,
         Vector3 baseScale,
@@ -607,11 +563,7 @@ public class PerkInspectCarousel : MonoBehaviour
             descriptionCanvasGroup.alpha = targetTextAlpha;
     }
 
-
-    // =========================================================
     // TEXT
-    // =========================================================
-
     private void UpdateDescription()
     {
         PerkInspectEntry perk = perks[currentIndex];
@@ -627,11 +579,7 @@ public class PerkInspectCarousel : MonoBehaviour
         }
     }
 
-
-    // =========================================================
     // INFINITE LOOPING
-    // =========================================================
-
     private int WrapIndex(int index)
     {
         return (index % perks.Count + perks.Count) % perks.Count;

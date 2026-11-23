@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e1862e8ce42c8e4d86a067d4243b40e, type: 3}
+  m_Name: Vodka Bar
+  m_EditorClassIdentifier: 
+  barName: Vodka Bar
+  barSprite: {fileID: 0}
+  perks:
+  - {fileID: 11400000, guid: 55c9142845e06424c9f92a5d34516bb8, type: 2}
+  - {fileID: 11400000, guid: e7e927d12a945794fb3e0e91eeb5276d, type: 2}
+  - {fileID: 11400000, guid: b71d3c99acd9d4f4d900516d307d53d1, type: 2}
+  - {fileID: 11400000, guid: 4effa9d40c3de5a44bf02b619e817b3a, type: 2}
+  - {fileID: 11400000, guid: 214cf8db1eebf3c4bbe8729222584fe0, type: 2}
+  - {fileID: 11400000, guid: 1a4afa2a8ae667849b00f2e3920a4193, type: 2}
