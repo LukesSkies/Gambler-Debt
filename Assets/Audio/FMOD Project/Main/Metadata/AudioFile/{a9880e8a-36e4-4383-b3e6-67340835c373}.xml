@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="AudioFile" id="{a9880e8a-36e4-4383-b3e6-67340835c373}">
+		<property name="assetPath">
+			<value>Guns/Pistol/sfx_wpn_hgn_tail_01.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>4</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{82680fc9-fd03-4f87-9a60-d7c6b22f3d20}</destination>
+		</relationship>
+	</object>
+</objects>

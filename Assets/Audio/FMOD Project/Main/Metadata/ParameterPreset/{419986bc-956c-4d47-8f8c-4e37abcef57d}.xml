@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="ParameterPreset" id="{419986bc-956c-4d47-8f8c-4e37abcef57d}">
+		<property name="name">
+			<value>ShotVarient</value>
+		</property>
+		<relationship name="folder">
+			<destination>{843846c7-5411-49f5-8552-d4f5004f3f29}</destination>
+		</relationship>
+		<relationship name="parameter">
+			<destination>{34a579fb-b26c-414e-ba37-cee9f2a6584b}</destination>
+		</relationship>
+	</object>
+	<object class="GameParameter" id="{34a579fb-b26c-414e-ba37-cee9f2a6584b}">
+		<property name="parameterType">
+			<value>1</value>
+		</property>
+		<property name="maximum">
+			<value>3</value>
+		</property>
+		<property name="initialValue">
+			<value>0</value>
+		</property>
+	</object>
+</objects>

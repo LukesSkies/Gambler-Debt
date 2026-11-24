@@ -1,6 +1,7 @@
+using FMOD.Studio;
+using FMODUnity;
 using System.Collections;
 using UnityEngine;
-using FMOD.Studio;
 public class PlayerMove : MonoBehaviour
 {
     [Header("Movement")]
@@ -161,6 +162,9 @@ public class PlayerMove : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.P))
+            RuntimeManager.PlayOneShot(FMODEvents.Instance.PlayerFootsteps, transform.position);
+
         if (GameManager.Instance.PlayerDead)
         {
             CanMove = false;
@@ -683,23 +687,20 @@ public class PlayerMove : MonoBehaviour
 
     private void UpdateSound()
     {
-        //Play footstep audio only if the player is walking
+        _playerFootSteps.set3DAttributes(RuntimeUtils.To3DAttributes(transform));
+
+        _playerFootSteps.getPlaybackState(out PLAYBACK_STATE playbackState);
+
         if (State == MovementState.walking)
         {
-            PLAYBACK_STATE playbackState;
-            _playerFootSteps.getPlaybackState(out playbackState);
-
-            if (playbackState.Equals(PLAYBACK_STATE.STOPPED))
+            if (playbackState != PLAYBACK_STATE.PLAYING && playbackState != PLAYBACK_STATE.STARTING)
             {
-                Debug.Log("Start Audio");
                 _playerFootSteps.start();
             }
         }
-
-        else
+        else if (playbackState == PLAYBACK_STATE.PLAYING || playbackState == PLAYBACK_STATE.STARTING)
         {
-            Debug.Log("Stop Audio");
-            _playerFootSteps.stop(STOP_MODE.ALLOWFADEOUT);
+            _playerFootSteps.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
         }
     }
 }

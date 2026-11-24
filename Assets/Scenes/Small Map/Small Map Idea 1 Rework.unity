@@ -77605,6 +77605,26 @@ PrefabInstance:
       propertyPath: _redFlash
       value: 
       objectReference: {fileID: 26155991}
+    - target: {fileID: 4091682994771187425, guid: 994cefa7247ddf442acb884b46608924, type: 3}
+      propertyPath: <GunSound>k__BackingField.Path
+      value: event:/Pistol
+      objectReference: {fileID: 0}
+    - target: {fileID: 4091682994771187425, guid: 994cefa7247ddf442acb884b46608924, type: 3}
+      propertyPath: <GunSound>k__BackingField.Guid.Data1
+      value: 1749583338
+      objectReference: {fileID: 0}
+    - target: {fileID: 4091682994771187425, guid: 994cefa7247ddf442acb884b46608924, type: 3}
+      propertyPath: <GunSound>k__BackingField.Guid.Data2
+      value: 1308254058
+      objectReference: {fileID: 0}
+    - target: {fileID: 4091682994771187425, guid: 994cefa7247ddf442acb884b46608924, type: 3}
+      propertyPath: <GunSound>k__BackingField.Guid.Data3
+      value: -515328598
+      objectReference: {fileID: 0}
+    - target: {fileID: 4091682994771187425, guid: 994cefa7247ddf442acb884b46608924, type: 3}
+      propertyPath: <GunSound>k__BackingField.Guid.Data4
+      value: -1038203035
+      objectReference: {fileID: 0}
     - target: {fileID: 6707296402679762961, guid: 994cefa7247ddf442acb884b46608924, type: 3}
       propertyPath: m_Name
       value: NewPlayer0

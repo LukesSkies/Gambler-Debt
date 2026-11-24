@@ -1,4 +1,6 @@
 using Biostart.Impact;
+using FMOD.Studio;
+using FMODUnity;
 using TMPro;
 using UnityEngine;
 
@@ -17,6 +19,9 @@ public class RaycastGun : MonoBehaviour
     [SerializeField] private GameObject _metalSparks;
     [SerializeField] private GameObject _bulletHole;
     [SerializeField] private float _bulletHoleDelay;
+
+    [Header("Sound")]
+    [field: SerializeField] public EventReference GunSound { get; private set; }
 
     [Header("Debug")]
     public bool Upgraded;
@@ -160,6 +165,7 @@ public class RaycastGun : MonoBehaviour
         for (int i = 0; i < GunSettings.BulletsPerTap; i++)
         {
             FireRaycast();
+            PlaySound();
         }
 
         _gunRecoil.RecoilFire();
@@ -291,5 +297,17 @@ public class RaycastGun : MonoBehaviour
     {
         _gunName.text = GunSettings.GunName;
         _gunAmmo.text = _bulletsLeft + "/" + ReserveAmmo;
+    }
+
+    private void PlaySound()
+    {
+        if(!GunSound.IsNull)
+        {
+            EventInstance shot = AudioManager.Instance.CreateEventInstance(GunSound);
+            shot.setParameterByName("ShotVarient", Random.Range(0, 3));
+            shot.set3DAttributes(RuntimeUtils.To3DAttributes(transform));
+            shot.start();
+            shot.release();
+        }
     }
 }

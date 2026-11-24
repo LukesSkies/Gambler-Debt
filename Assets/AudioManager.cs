@@ -26,4 +26,9 @@ public class AudioManager : MonoBehaviour
         EventInstance eventInstance = RuntimeManager.CreateInstance(eventReferance);
         return eventInstance;
     }
+
+    public void SetAudioPaused(string busName, bool paused)
+    {
+        RuntimeManager.GetBus("bus:/" + busName).setPaused(paused);
+    }
 }
