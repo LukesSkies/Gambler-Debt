@@ -5502,6 +5502,20 @@ MonoBehaviour:
   _metalSparks: {fileID: 8799125985890215030, guid: 6d01214b10078e2419ed79d84bdceb73, type: 3}
   _bulletHole: {fileID: 1840760722859414925, guid: dd288a26a0b79a847b485f7ead90a32f, type: 3}
   _bulletHoleDelay: 5
+  <GunSound>k__BackingField:
+    Guid:
+      Data1: 1749583338
+      Data2: 1308254058
+      Data3: -515328598
+      Data4: -1038203035
+    Path: event:/Pistol
+  <GunSoundInside>k__BackingField:
+    Guid:
+      Data1: -792426067
+      Data2: 1282783137
+      Data3: 897495720
+      Data4: 391733234
+    Path: event:/PistolInside
   Upgraded: 0
   _allowInvoke: 1
   _allowRaycastShown: 1

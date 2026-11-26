@@ -1,3 +1,4 @@
+using FMODUnity;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -84,11 +85,13 @@ public class GameplayMenus : MonoBehaviour
 
     public void Restart()
     {
+        RuntimeManager.GetBus("bus:/").stopAllEvents(FMOD.Studio.STOP_MODE.IMMEDIATE);
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     public void Quit()
     {
+        RuntimeManager.GetBus("bus:/").stopAllEvents(FMOD.Studio.STOP_MODE.IMMEDIATE);
         Application.Quit();
     }
 
@@ -138,11 +141,13 @@ public class GameplayMenus : MonoBehaviour
 
     public void LoadTestMap()
     {
+        RuntimeManager.GetBus("bus:/").stopAllEvents(FMOD.Studio.STOP_MODE.IMMEDIATE);
         SceneManager.LoadScene("TestingMovement2");
     }
 
     public void LoadSmallMap()
     {
+        RuntimeManager.GetBus("bus:/").stopAllEvents(FMOD.Studio.STOP_MODE.IMMEDIATE);
         SceneManager.LoadScene("Small Map Idea 1 Rework");
     }
 

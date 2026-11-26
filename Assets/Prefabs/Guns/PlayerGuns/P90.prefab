@@ -9897,17 +9897,32 @@ MonoBehaviour:
   _aimingPos: {x: 0, y: -0.212, z: 0.363}
   _timeToAim: 0.2
   Aiming: 0
+  ReloadQueued: 0
   _muzzleFlash: {fileID: 1935461194361345727}
   _metalSparks: {fileID: 8799125985890215030, guid: 6d01214b10078e2419ed79d84bdceb73, type: 3}
   _bulletHole: {fileID: 1840760722859414925, guid: dd288a26a0b79a847b485f7ead90a32f, type: 3}
   _bulletHoleDelay: 5
+  <GunSound>k__BackingField:
+    Guid:
+      Data1: 830135642
+      Data2: 1320518278
+      Data3: -490670973
+      Data4: 2038549056
+    Path: event:/P90
+  <GunSoundInside>k__BackingField:
+    Guid:
+      Data1: 1081449746
+      Data2: 1101663320
+      Data3: 175543452
+      Data4: 709711862
+    Path: event:/P90Inside
+  Upgraded: 0
   _allowInvoke: 1
   _allowRaycastShown: 1
   InputShooting: 0
   CanAim: 0
+  ReserveAmmo: 0
   _bulletsLeft: 0
-  _bulletsShot: 0
-  _reserveAmmo: 0
   _shooting: 0
   _readyToShoot: 0
   _reloading: 0

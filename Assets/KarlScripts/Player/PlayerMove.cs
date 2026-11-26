@@ -72,6 +72,13 @@ public class PlayerMove : MonoBehaviour
     public bool SlidingQueued;
     public bool JumpQueued;
 
+    [Header("Sound")]
+    [SerializeField] private float _walkStepInterval = 0.5f;
+    [SerializeField] private float _sprintStepInterval = 0.33f;
+    [SerializeField] private float _footstepStopDelay = 0.15f;
+    private float _stopDelayTimer;
+    private float _stepTimer;
+
     [Header("PlayerInput")]
     public Vector2 PlayerDir;
 
@@ -130,7 +137,7 @@ public class PlayerMove : MonoBehaviour
         CanMove = false;
         _startYScale = _playerMesh.localScale.y;
 
-        _playerFootSteps = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.PlayerFootsteps);
+        _playerFootSteps = RuntimeManager.CreateInstance(FMODEvents.Instance.PlayerFootsteps);
     }
 
     void FixedUpdate()
@@ -162,9 +169,6 @@ public class PlayerMove : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.P))
-            RuntimeManager.PlayOneShot(FMODEvents.Instance.PlayerFootsteps, transform.position);
-
         if (GameManager.Instance.PlayerDead)
         {
             CanMove = false;
@@ -687,11 +691,39 @@ public class PlayerMove : MonoBehaviour
 
     private void UpdateSound()
     {
-        _playerFootSteps.set3DAttributes(RuntimeUtils.To3DAttributes(transform));
+        /*_playerFootSteps.set3DAttributes(RuntimeUtils.To3DAttributes(transform));
 
         _playerFootSteps.getPlaybackState(out PLAYBACK_STATE playbackState);
 
-        if (State == MovementState.walking)
+        bool moving = State == MovementState.walking || State == MovementState.sprinting;
+
+        if (!moving)
+        {
+            _stepTimer = 0f;
+            return;
+        }
+
+        _stepTimer -= Time.deltaTime;
+        if (_stepTimer <= 0f)
+        {
+            _playerFootSteps.start();
+            _stepTimer = State == MovementState.sprinting ? _sprintStepInterval : _walkStepInterval;
+        }*/
+
+        _stepTimer -= Time.deltaTime; // always counts down, never reset
+
+        bool moving = (State == MovementState.walking || State == MovementState.sprinting)
+                      && GroundCheck();
+
+        if (!moving) return;
+
+        if (_stepTimer <= 0f)
+        {
+            AudioManager.Instance.PlayOneShot(FMODEvents.Instance.PlayerFootsteps, transform.position);
+            _stepTimer = State == MovementState.sprinting ? _sprintStepInterval : _walkStepInterval;
+        }
+
+        /*if (State == MovementState.walking || State == MovementState.sprinting)
         {
             if (playbackState != PLAYBACK_STATE.PLAYING && playbackState != PLAYBACK_STATE.STARTING)
             {
@@ -701,6 +733,15 @@ public class PlayerMove : MonoBehaviour
         else if (playbackState == PLAYBACK_STATE.PLAYING || playbackState == PLAYBACK_STATE.STARTING)
         {
             _playerFootSteps.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+        }*/
+    }
+
+    private void OnDestroy()
+    {
+        if (_playerFootSteps.isValid())
+        {
+            _playerFootSteps.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+            _playerFootSteps.release();
         }
     }
 }

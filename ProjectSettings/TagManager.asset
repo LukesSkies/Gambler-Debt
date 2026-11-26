@@ -9,6 +9,7 @@ TagManager:
   - Barrier
   - EnemySpawn
   - EnemyBase
+  - InsideTrigger
   layers:
   - Default
   - TransparentFX

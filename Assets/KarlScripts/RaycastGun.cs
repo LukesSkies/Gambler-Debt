@@ -22,6 +22,7 @@ public class RaycastGun : MonoBehaviour
 
     [Header("Sound")]
     [field: SerializeField] public EventReference GunSound { get; private set; }
+    [field: SerializeField] public EventReference GunSoundInside { get; private set; }
 
     [Header("Debug")]
     public bool Upgraded;
@@ -53,6 +54,8 @@ public class RaycastGun : MonoBehaviour
 
     private PlayerPerks _playerPerks;
 
+    private PlayerInsideBuilding _playerInsideBuilding;
+
     private void Awake()
     {
         _mainCam = Camera.main;
@@ -72,6 +75,8 @@ public class RaycastGun : MonoBehaviour
         _gunAnimator = transform.Find("WeaponMesh").GetComponent<Animator>();
 
         _playerPerks = transform.root.GetComponent<PlayerPerks>();
+
+        _playerInsideBuilding = transform.root.GetComponent<PlayerInsideBuilding>();
     }
 
     void Start()
@@ -301,9 +306,19 @@ public class RaycastGun : MonoBehaviour
 
     private void PlaySound()
     {
-        if(!GunSound.IsNull)
+        EventInstance shot;
+
+        if (!GunSound.IsNull && !_playerInsideBuilding.PlayerInBuilding)
         {
-            EventInstance shot = AudioManager.Instance.CreateEventInstance(GunSound);
+            shot = AudioManager.Instance.CreateOneShotInstance(GunSound);
+            shot.setParameterByName("ShotVarient", Random.Range(0, 3));
+            shot.set3DAttributes(RuntimeUtils.To3DAttributes(transform));
+            shot.start();
+            shot.release();
+        }
+        else if(!GunSoundInside.IsNull && _playerInsideBuilding.PlayerInBuilding)
+        {
+            shot = AudioManager.Instance.CreateOneShotInstance(GunSoundInside);
             shot.setParameterByName("ShotVarient", Random.Range(0, 3));
             shot.set3DAttributes(RuntimeUtils.To3DAttributes(transform));
             shot.start();

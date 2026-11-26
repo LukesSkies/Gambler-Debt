@@ -850,13 +850,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4b33051a057d494aa51c77e9a09c00d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _purchaseSound:
-    Guid:
-      Data1: -1273204662
-      Data2: 1331786671
-      Data3: 267231651
-      Data4: 254433308
-    Path: event:/Purchase
   Money: 100000
 --- !u!114 &4515097563085895640
 MonoBehaviour:
@@ -1936,6 +1929,26 @@ PrefabInstance:
     - target: {fileID: 3752698977840158311, guid: e165ef9928836ec488501099b8a0d378, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8533208295509242944, guid: e165ef9928836ec488501099b8a0d378, type: 3}
+      propertyPath: <GunSound>k__BackingField.Path
+      value: event:/Pistol
+      objectReference: {fileID: 0}
+    - target: {fileID: 8533208295509242944, guid: e165ef9928836ec488501099b8a0d378, type: 3}
+      propertyPath: <GunSound>k__BackingField.Guid.Data1
+      value: 1749583338
+      objectReference: {fileID: 0}
+    - target: {fileID: 8533208295509242944, guid: e165ef9928836ec488501099b8a0d378, type: 3}
+      propertyPath: <GunSound>k__BackingField.Guid.Data2
+      value: 1308254058
+      objectReference: {fileID: 0}
+    - target: {fileID: 8533208295509242944, guid: e165ef9928836ec488501099b8a0d378, type: 3}
+      propertyPath: <GunSound>k__BackingField.Guid.Data3
+      value: -515328598
+      objectReference: {fileID: 0}
+    - target: {fileID: 8533208295509242944, guid: e165ef9928836ec488501099b8a0d378, type: 3}
+      propertyPath: <GunSound>k__BackingField.Guid.Data4
+      value: -1038203035
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

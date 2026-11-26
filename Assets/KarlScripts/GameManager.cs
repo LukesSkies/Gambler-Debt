@@ -98,14 +98,22 @@ public class GameManager : MonoBehaviour
             Time.timeScale = 0;
             Cursor.lockState = CursorLockMode.Confined;
             Cursor.visible = true;
-            AudioManager.Instance.SetAudioPaused("Gameplay", true);
+
+            if(AudioManager.Instance != null)
+            {
+                AudioManager.Instance.SetAudioPaused("Gameplay", true);
+            }
         }
         else if(!Paused && !PlayerDead)
         {
             Time.timeScale = 1;
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
-            AudioManager.Instance.SetAudioPaused("Gameplay", false);
+
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.SetAudioPaused("Gameplay", false);
+            }
         }
     }
 
